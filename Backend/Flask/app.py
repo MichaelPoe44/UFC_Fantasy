@@ -1,6 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+#Set-ExecutionPolicy Unrestricted -Scope Process
+#to use activate.ps1
+
 app = Flask(__name__)
 #for developement allows requests from same ports
 CORS(app, origins=["http://localhost:5173"])#the dev react server
