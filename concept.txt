@@ -1,0 +1,4 @@
+frontend using vite 
+
+backend using python and flask backend stores
+data in database using SQLite
