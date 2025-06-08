@@ -2,16 +2,17 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 #Set-ExecutionPolicy Unrestricted -Scope Process
-#to use activate.ps1
+#to use activate.ps1 and to use npm
+#flask --app <name of file> run
 
 app = Flask(__name__)
 #for developement allows requests from same ports
 CORS(app, origins=["http://localhost:5173"])#the dev react server
 
-incomes = [{
+incomes = {
     "description":"salary",
-    "amount":5000,
-}]
+    "amount":4000,
+}
 
 
 @app.route('/incomes')
