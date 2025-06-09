@@ -35,6 +35,17 @@ def get_fighter_stats(name):
     soup = BeautifulSoup(page.content,'html.parser')
 
 
+    #find headshot image
+    fighter_image_url = soup.find(class_="image-style-event-results-athlete-headshot").get("src")
+
+    #find current dvision
+    fighter_division = soup.find(class_="hero-profile__division-title").text
+
+    #find record
+    record = soup.find(class_="hero-profile__division-body").text
+
+
+
     #find accuracies and clean
     accuracies = soup.find_all(class_="e-chart-circle__percent")
     fighter_accuracy["strike"] = accuracies[0].text.replace("%","")
@@ -56,16 +67,17 @@ def get_fighter_stats(name):
         temp = wins[index+3].text.split()
         percent_win_by[key] = temp[1].replace("%","").replace("(","").replace(")","")
 
+
     full_stats = {
         "fighter_name":name,
+        "fighter_img": fighter_image_url,
+        "fighter_division":fighter_division,
         "fighter_accuracy": fighter_accuracy,
         "fighter_info": fighter_info,
+        "record": record,
         "percent_win_by": percent_win_by,
     }
 
     return full_stats 
 
-
-
-
-
+print(get_fighter_stats("jon-jones"))

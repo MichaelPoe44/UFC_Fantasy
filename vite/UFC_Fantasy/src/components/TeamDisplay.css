@@ -1,0 +1,56 @@
+.team-container {
+  padding: 2rem;
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.team-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.fighter-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.fighter-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fighter-card:hover {
+  transform: translateY(-5px);
+  
+}
+
+.fighter-image {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+}
+
+.fighter-info {
+  padding: 1rem;
+  text-align: center;
+}
+
+.fighter-info h3 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0 0.25rem;
+  color: #222;
+}
+
+.fighter-info p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #666;
+}
