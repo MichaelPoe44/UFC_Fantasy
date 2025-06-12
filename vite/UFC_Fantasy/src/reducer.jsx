@@ -14,16 +14,32 @@ user: {
  
     ]},
 }
+
+
+
+
+const initialState = {
+    user: null,
+    leagues: [],
+    league_ids: [],
+}
 */
 
 //https://www.frontendmag.com/tutorials/usereducer-vs-usestate/
 export default function reducer(state, action){
     switch (action.type){
 
-        case "ADD_LEAGUE":
+        case "CREATE_LEAGUE":
+            const uniqueID = (Date.now() * Math.random()).toString().substring(0,5)
+            return{
+                ...state,
+                leagues: [...state.leagues, action.name],
+                league_ids: [...state.league_ids, uniqueID]
+            }
+        case "JOIN_LEAGUE":
             return {
                 ...state,
-                leagues: [...state.leagues, action.league]
+                leagues: [...state.leagues, action.name]
             } 
 
         case "do something else":

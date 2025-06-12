@@ -1,0 +1,23 @@
+
+.create_button{
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    background-color: #e50914;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+.join_button{
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    background-color: #e50914;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}

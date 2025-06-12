@@ -9,7 +9,7 @@ export default function Home(){
         <section className="hero">
             <h1>Welcome to UFC Fantasy</h1>
             <p>Build you team. Earn points. Dominate the leaderboard.</p>
-            <Link to="/get-started">
+            <Link to="/league-menu">
                 <button className="get_started_button">Get Started</button>
             </Link>
         </section>
