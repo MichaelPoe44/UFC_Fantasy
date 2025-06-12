@@ -2,3 +2,11 @@ frontend using vite
 
 backend using python and flask backend stores
 data in database using SQLite
+
+
+
+User:
+    can create Leaggues
+    
+    in Leaggues:
+        team in each leuge

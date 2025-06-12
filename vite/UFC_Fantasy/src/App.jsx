@@ -6,6 +6,8 @@ import Profile from "./pages/Profile.jsx"
 import GetStarted from "./pages/GetStarted.jsx"
 import './App.css'
 import { useState } from "react"
+import { StateProvider } from "./StateProvider.jsx"
+import LeagueMenu from "./pages/LeagueMenu.jsx"
 
 function App() {
 
@@ -13,13 +15,15 @@ function App() {
 
   return (
     <>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />}/>
-        <Route path="/get-started" element={<GetStarted team={team} change_team={change_team}/>}/>
-        <Route path="/profile" element={<Profile team={team} change_team={change_team}/>}/>
-        <Route path="/about" element={<About />}/>
-      </Routes>
+    <StateProvider>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />}/>
+          <Route path="/get-started" element={<GetStarted team={team} change_team={change_team}/>}/>
+          <Route path="/profile" element={<Profile team={team} change_team={change_team}/>}/>
+          <Route path="/league-menu" element={<LeagueMenu />}/>
+        </Routes>
+    </StateProvider>
     </>
   )
 }

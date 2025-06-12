@@ -80,4 +80,3 @@ def get_fighter_stats(name):
 
     return full_stats 
 
-print(get_fighter_stats("jon-jones"))

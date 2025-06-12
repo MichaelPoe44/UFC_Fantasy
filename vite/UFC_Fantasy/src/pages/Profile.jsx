@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import TeamDisplay from "../components/TeamDisplay.jsx"
+import { getStateContext } from "../StateProvider.jsx";
 
 
 
@@ -19,24 +20,29 @@ const get_stats = async (fighter_name, set_fighter) => {    //my flask endpoint
 
 
 export default function Profile({team, change_team}){
+    //////example
+    const [user, set_user] = getUserContext();
 
-
-    const [fighter_stats, set_fighter] = useState({})
+    const [fighter_stats, set_fighter] = useState({});
     
+
+
     //grab stats when page first renders
     useEffect(() => {
         get_stats("jon-jones",set_fighter);
         console.log(fighter_stats);
     },[])
     
+
+
     //logs stats when they change (preventing empty json while waiting)
     useEffect(() => {
         console.log(fighter_stats)
     }, [fighter_stats])
     
-
+    //example
     const log_amount = () => {
-        console.log(fighter_stats)
+        console.log(user)
     }
 
     
