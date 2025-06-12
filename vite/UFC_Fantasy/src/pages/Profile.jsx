@@ -19,13 +19,12 @@ const get_stats = async (fighter_name, set_fighter) => {    //my flask endpoint
 
 
 
-export default function Profile({team, change_team}){
+export default function Profile(){
     //////example
-    const [user, set_user] = getUserContext();
+    const [state, dispatch] = getStateContext();
 
     const [fighter_stats, set_fighter] = useState({});
     
-
 
     //grab stats when page first renders
     useEffect(() => {
