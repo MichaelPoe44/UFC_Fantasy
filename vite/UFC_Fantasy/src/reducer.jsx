@@ -23,7 +23,7 @@ export default function reducer(state, action){
         case "ADD_LEAGUE":
             return {
                 ...state,
-                leagueNames: [...state.leagueNames, action.league]
+                leagues: [...state.leagues, action.league]
             } 
 
         case "do something else":

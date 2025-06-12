@@ -21,7 +21,7 @@ const get_stats = async (fighter_name, set_fighter) => {    //my flask endpoint
 
 export default function Profile(){
     //////example
-    const [state, dispatch] = getStateContext();
+    const {state, dispatch} = getStateContext();
 
     const [fighter_stats, set_fighter] = useState({});
     

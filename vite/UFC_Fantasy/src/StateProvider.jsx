@@ -4,7 +4,7 @@ import reducer from "./reducer";
 
 const initialState = {
     user: null,
-    leagueNames: [],
+    leagues: [],
 }
 
 
