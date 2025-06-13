@@ -1,23 +1,63 @@
-
-.create_button{
-    padding: 0.75rem 1.5rem;
-    margin-top: 1rem;
-    font-size: 1.1rem;
-    background-color: #e50914;
-    border: none;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
+.league_menu{
+    max-width: 500px;
+    margin: 50px auto;
+    text-align: center;
 }
 
+h1{
+     margin-bottom: 40px;
+  color: #e0e0e0;
+}
 
-.join_button{
-    padding: 0.75rem 1.5rem;
-    margin-top: 1rem;
-    font-size: 1.1rem;
-    background-color: #e50914;
-    border: none;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
+.card{
+    background-color: #1c1c1e;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.toggle_button{
+    background-color: #3a3af5;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.toggle_button:hover{
+    background-color: #2c2ccc;
+}
+.form{
+  margin-top: 15px;
+}
+
+.form > input {
+    padding: 10px;
+  width: 70%;
+  border: 1px solid #555;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #2a2a2d;
+  color: white;
+}
+
+.form > button {
+    display: block;
+  margin: 10px auto 0;
+  padding: 10px 25px;
+  background-color: #00c896;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.form > button:hover{
+    background-color: #00a97a;
 }

@@ -6,30 +6,34 @@ import "./LeagueMenu.css"
 
 
 export default function LeagueMenu(){
-    
+    //user data
     const {state, dispatch} = getStateContext();
 
     //for league creation
     const [showCreateForm, setShowCreateForm] = useState(false)
-    const [leageName, setName] = useState("");
+    const [leagueName, setName] = useState("");
 
     //for joining league
     const [showJoinForm, setShowJoinForm] = useState(false)
-    const [leageId, setId] = useState("");
+    const [leagueId, setId] = useState("");
 
 
-    const create_league = () => {
+    const create_league = (e) => {
+        e.preventDefault()
+        console.log("1");
         dispatch({
             type: "CREATE_LEAGUE",
-            name: leageName,
+            name: leagueName,
         })
         setName("")
+        console.log("2");
     }
 
-    const join_league = () => {
+    const join_league = (e) => {
+        e.preventDefault()
         dispatch({
             type: "JOIN_LEAGUE",
-            id: leageId,
+            id: leagueId,
         })
         setId("")
     }
@@ -50,7 +54,7 @@ export default function LeagueMenu(){
                         <input
                             type="text"
                             placeholder="Enter League Name"
-                            value={leageName}
+                            value={leagueName}
                             onChange={(e) => setName(e.target.value)}
                             required 
                         />
@@ -62,14 +66,14 @@ export default function LeagueMenu(){
                 {/*need to fix the onclick activating both and move the css over from get started*/}
             <div className="card">
                 <button className="toggle_button" onClick={() => setShowJoinForm(!showJoinForm)}>
-                    {showCreateForm ? "Cancel" : "Join a League"}
+                    {showJoinForm ? "Cancel" : "Join a League"}
                 </button>
-                {showCreateForm && (
+                {showJoinForm && (
                     <form className="form" onSubmit={join_league}>
                         <input
                             type="text"
                             placeholder="Enter League Id"
-                            value={leageId}
+                            value={leagueId}
                             onChange={(e) => setId(e.target.value)}
                             required 
                         />
@@ -78,7 +82,7 @@ export default function LeagueMenu(){
                 )}
             </div>
 
-
+            <button onClick={do_this}>log leagues</button>
         </div>
     );
 }

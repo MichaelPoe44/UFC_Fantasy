@@ -28,7 +28,7 @@ const initialState = {
 //https://www.frontendmag.com/tutorials/usereducer-vs-usestate/
 export default function reducer(state, action){
     switch (action.type){
-
+        //should prolly send to the api to store this stuff
         case "CREATE_LEAGUE":
             const uniqueID = (Date.now() * Math.random()).toString().substring(0,5)
             return{
@@ -39,7 +39,8 @@ export default function reducer(state, action){
         case "JOIN_LEAGUE":
             return {
                 ...state,
-                leagues: [...state.leagues, action.name]
+                leagues: [...state.leagues, action.name],
+                league_ids: [...state.league_ids, action.id]
             } 
 
         case "do something else":
