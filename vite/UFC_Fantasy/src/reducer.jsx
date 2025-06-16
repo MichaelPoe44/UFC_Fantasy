@@ -1,18 +1,12 @@
 
 /*
 state{
-user: {
-    id:
-    username:
-    pass:
-    leagues: [
-        leagueName:{
-            id:
-            members: [usernmaes]
-            roster:
-        }
- 
-    ]},
+    user: {
+        userName:
+        password:    
+    },
+    leagues: [],
+    league_ids: [],
 }
 
 
@@ -24,6 +18,7 @@ const initialState = {
     league_ids: [],
 }
 */
+//mayber keep username logged in state and only store password in backend
 
 //https://www.frontendmag.com/tutorials/usereducer-vs-usestate/
 export default function reducer(state, action){
@@ -36,12 +31,27 @@ export default function reducer(state, action){
                 leagues: [...state.leagues, action.name],
                 league_ids: [...state.league_ids, uniqueID]
             }
+
         case "JOIN_LEAGUE":
             return {
                 ...state,
                 leagues: [...state.leagues, action.name],
                 league_ids: [...state.league_ids, action.id]
             } 
+
+        case "REGISTER":
+            return {
+                ...state,
+                user: action.user
+            }
+
+        case "LOGIN":
+            //check if username in database
+            //do nothing for now
+            return {
+                ...state,
+
+            }
 
         case "do something else":
             // do sum else and update state

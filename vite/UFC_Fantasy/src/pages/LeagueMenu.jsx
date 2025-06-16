@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getStateContext } from "../StateProvider";
-import "./LeagueMenu.css"
+import "../pages_css/LeagueMenu.css"
 
 
 
@@ -63,7 +63,7 @@ export default function LeagueMenu(){
                 )}
             </div>
 
-                {/*need to fix the onclick activating both and move the css over from get started*/}
+                
             <div className="card">
                 <button className="toggle_button" onClick={() => setShowJoinForm(!showJoinForm)}>
                     {showJoinForm ? "Cancel" : "Join a League"}
