@@ -2,7 +2,7 @@
     height: 60px;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 99;
     background-color: black;
     display: flex;
     align-items: center;
@@ -18,6 +18,7 @@
 .drop_down_button{
     margin-left: 25px;
     margin-top: 5px;
+    cursor: pointer;
 }
 
 .logout{
@@ -38,12 +39,5 @@
     top: 10px;
 } 
 
-.profile_icon{
-    align-items: center;
-    height: 30px;
-}
 
-.profile_hello{
-    margin-top: -5px;
-}
 

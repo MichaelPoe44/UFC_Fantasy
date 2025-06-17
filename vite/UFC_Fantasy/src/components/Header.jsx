@@ -3,7 +3,7 @@ import { getStateContext } from "../StateProvider";
 import "./Header.css";
 import {Link, useLocation} from "react-router-dom";
 
-export default function Header(){
+export default function Header({setShowSidebar, showSidebar}){
     const {state, dispatch} = getStateContext();
 
     //for checking if on profile
@@ -28,9 +28,9 @@ export default function Header(){
 
     return(
         <div className="header">
-            <Link to="/">
-                <img className="drop_down_button" src="bars.svg" />
-            </Link>
+            
+            <img className="drop_down_button" src="bars.svg" onClick={() => setShowSidebar(!showSidebar)}/>
+            
             
             <Link to="/get-started">
                 <p style={{position: "absolute", left: "160px", top: "0px"}}>get started</p>

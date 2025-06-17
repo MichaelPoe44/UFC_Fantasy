@@ -1,0 +1,19 @@
+
+
+.sidebar{
+    position: fixed;
+    z-index: 100;
+    background-color: white;
+    height: 100%;
+    width: 25%;
+    margin-left: 0px;
+    border-radius: 5px;
+}
+
+
+.exit_button{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
