@@ -20,10 +20,30 @@
     margin-top: 5px;
 }
 
-.profile_icon{
+.logout{
     position: absolute;
-    right: 30px;
+    right: 35px;
     top: 15px;
     height: 30px;
+    width: 65px;
+    background-color: #e50914;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.profile{
+    position: absolute;
+    right: 30px;
+    top: 10px;
 } 
+
+.profile_icon{
+    align-items: center;
+    height: 30px;
+}
+
+.profile_hello{
+    margin-top: -5px;
+}
 

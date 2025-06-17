@@ -3,7 +3,6 @@ import Header from "./components/Header.jsx"
 import Home from "./pages/Home.jsx"
 import Profile from "./pages/Profile.jsx"
 import GetStarted from "./pages/GetStarted.jsx"
-import './App.css'
 import { StateProvider } from "./StateProvider.jsx"
 import LeagueMenu from "./pages/LeagueMenu.jsx"
 import Login from "./pages/Login.jsx"

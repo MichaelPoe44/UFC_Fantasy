@@ -52,6 +52,13 @@ export default function reducer(state, action){
                 ...state,
 
             }
+        
+        case "LOGOUT":
+            return {
+                user: null,
+                leagues: [],
+                league_ids: []
+            }
 
         case "do something else":
             // do sum else and update state

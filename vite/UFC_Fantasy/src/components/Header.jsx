@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getStateContext } from "../StateProvider";
 import "./Header.css";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 
 export default function Header(){
     const {state, dispatch} = getStateContext();
 
-    const [onProfile, setOnProfile] = useState(false)
+    //for checking if on profile
+    const [onProfile, setOnProfile] = useState()
+    const current_route = useLocation().pathname;
+    
+
+    //checks if on profile page everytime new page rendered
+    useEffect( () => {
+        if (current_route == "/profile") setOnProfile(true);
+        else if (current_route != "/profile") setOnProfile(false)
+    },[current_route])
+
+    
+    const handleLogout = () => {
+        if ((state.user != null) && onProfile){
+            dispatch({
+                type: "LOGOUT"
+            })
+        }
+    }
 
     return(
         <div className="header">
@@ -18,20 +36,15 @@ export default function Header(){
                 <p style={{position: "absolute", left: "160px", top: "0px"}}>get started</p>
             </Link>
 
-            {/*check if on profile page if are change icon to sign out button 
+    
             
-            {onProfile && 
-                <link>
-                <sign out button>
-            }
-            */}
-        
-            <Link to="/profile">
-                <img className="profile_icon" src="profile.svg"/>
-                <p className="hello">
-                    Hello {state.user ? "Guest" : state.user.userName}
-                </p>
+            <Link to={state.user ? (onProfile ? "/profile" : "/") : "/login"}>
+                <button className="logout" onClick={handleLogout}>
+                    {state.user ? (onProfile ? "Profile" : "Log Out") : "Log in"}
+                </button>
             </Link>
+            
+
         </div>
 
     )
