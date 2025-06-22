@@ -14,15 +14,17 @@ export default function Sidebar({setShowSidebar, showSidebar}){
     useEffect( () => {
         if (current_route != previous_route){
             setShowSidebar(false)
-            console.log("ran")
         }
     }, [current_route])
 
 
     return(
         <div className="sidebar">
-            
-            <Navigation name="Home" destination="/"/>
+            <div className="nav_container">
+                <Navigation name="Home" destination="/"/>
+                <Navigation name="Profile" destination="/profile"/>
+                <Navigation name="Leagues" destination="/league-menu"/>
+            </div>
 
 
         </div>
@@ -35,8 +37,8 @@ export default function Sidebar({setShowSidebar, showSidebar}){
 function Navigation({name, destination, }){
 
     return(
-        <Link to={destination}>
-            <div>
+        <Link to={destination} style={{textDecoration: "none"}}>
+            <div className="nav_item">
                 {name}
             </div>
         </Link>

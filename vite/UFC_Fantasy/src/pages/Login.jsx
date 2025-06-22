@@ -44,14 +44,14 @@ export default function Login(){
         <div className="login">
 
             <div className="login_container">
-            <h1>Sign-In</h1>
+            <h1>Sign In</h1>
 
             <form>
                 <h5>Username</h5>
-                <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)}></input>
+                <input type="text" value={userName} placeholder="Username" onChange={(e) => setUserName(e.target.value)}></input>
 
                 <h5>Password</h5>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+                <input type="password" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)}></input>
             
                 <button className="logInButton" type="submit" onClick={login}>Log In</button>
                 <button className="registerButton" type="submit" onClick={register}>Register</button>
