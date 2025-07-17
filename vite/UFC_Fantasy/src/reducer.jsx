@@ -1,12 +1,41 @@
 
 /*
+backend storage outline:
+store every user:
+user:{ 
+    credentials: { 
+        username:
+        pass:
+        id:
+    },   
+    leagues_in: [League_id, id, id, id] 
+}
+store leagues:
+League_id:{
+    info:{ name, id, date, #participants, score, ect},
+    participants: [ 
+        username/id:{team, //maybe score},
+        username/id:{team, //maybe score}
+    ]
+}   
+---------------------------------------------------------------
+in frontend
 state{
     user: {
         userName:
-        password:    
+        password:
+        id:
     },
-    leagues: [],
-    league_ids: [],
+    leagues_in: [ID, ID, ID],
+    leagues: [
+        League_id:{
+            info:{ name, id, date, #participants, score, ect},
+            participants: [ 
+                username/id:{team, //maybe score},
+                username/id:{team, //maybe score}
+            ]
+        }   
+    ],
 }
 
 

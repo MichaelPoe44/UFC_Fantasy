@@ -20,11 +20,24 @@ def get_stats():
     return jsonify(fighter_stats)
 
 
-@app.route('/my-team', methods=["POST"])
+@app.route('/', methods=["POST"])
 def add_fighter():
     #need the user and fighter
     #get team append fighter
     #incomes.append(request.get_json())
     return '', 204
+
+@app.route('/api/register-user', methods=["POST"])
+def create_user(username, password):
+    #check other usernames to make sure no repeats
+    #create a unique id
+    #need to update info in frontend here or somewhere else
+    #201 is created
+    #409 is conflict like duplicate username
+
+@app.rout('/api/get-user-data', methods=["GET"])
+def get_user_data():
+    #get data for user
+    return jsonify("""stats stored in db""")
 
 
