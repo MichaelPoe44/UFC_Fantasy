@@ -12,24 +12,24 @@ user:{
 }
 store leagues:
 League_id:{
-    info:{ name, id, date, #participants, score, ect},
-    participants: [ 
+    info:{ name, id, admin, #participants, score, ect},
+    participants: {
         username/id:{team, //maybe score},
         username/id:{team, //maybe score}
-    ]
+}
 }   
 ---------------------------------------------------------------
 in frontend
 state{
     user: {
         userName:
-        password:
+        password: //maybe dont store password in front end
         id:
     },
     leagues_in: [ID, ID, ID],
     leagues: [
         League_id:{
-            info:{ name, id, date, #participants, score, ect},
+            info:{ name, id, admin, #participants, score, ect},
             participants: [ 
                 username/id:{team, //maybe score},
                 username/id:{team, //maybe score}
@@ -44,7 +44,6 @@ state{
 const initialState = {
     user: null,
     leagues: [],
-    league_ids: [],
 }
 */
 //mayber keep username logged in state and only store password in backend
@@ -56,6 +55,7 @@ export default function reducer(state, action){
         case "CREATE_LEAGUE":
             const uniqueID = (Date.now() * Math.random()).toString().substring(0,5)
             return{
+                //fix
                 ...state,
                 leagues: [...state.leagues, action.name],
                 league_ids: [...state.league_ids, uniqueID]
@@ -63,6 +63,7 @@ export default function reducer(state, action){
 
         case "JOIN_LEAGUE":
             return {
+                //fix
                 ...state,
                 leagues: [...state.leagues, action.name],
                 league_ids: [...state.league_ids, action.id]
@@ -75,18 +76,18 @@ export default function reducer(state, action){
             }
 
         case "LOGIN":
-            //check if username in database
-            //do nothing for now
+
             return {
                 ...state,
-
+                user: action.user,
+                leagues: action.leagues
             }
         
         case "LOGOUT":
             return {
                 user: null,
                 leagues: [],
-                league_ids: []
+                
             }
 
         case "do something else":

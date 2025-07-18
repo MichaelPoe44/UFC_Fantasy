@@ -38,9 +38,9 @@ export default function Header({setShowSidebar, showSidebar}){
 
     
             
-            <Link to={state.user ? (onProfile ? "/profile" : "/") : "/login"}>
+            <Link to={state.user ? (onProfile ? "/" : "/profile") : "/login"}>
                 <button className="logout" onClick={handleLogout}>
-                    {state.user ? (onProfile ? "Profile" : "Log Out") : "Log in"}
+                    {state.user ? (onProfile ? "Log Out" : "Profile") : "Log in"}
                 </button>
             </Link>
             

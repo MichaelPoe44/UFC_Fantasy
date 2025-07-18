@@ -34,10 +34,74 @@ def create_user(username, password):
     #need to update info in frontend here or somewhere else
     #201 is created
     #409 is conflict like duplicate username
+    return
 
-@app.rout('/api/get-user-data', methods=["GET"])
-def get_user_data():
-    #get data for user
-    return jsonify("""stats stored in db""")
+@app.route('/api/try-login', methods=["GET"])
+def try_login(currentUsername, CurrentPassword):
+    #check if username and pass match a current user
+    #if so
+    #get data for user and the leagues they in
+    #return jsonify("""stats stored in db""")
+
+    #if not return an error login
+    user_info = {
+        "credentials": { 
+            "username": "michael",
+            "pass": 1234,
+            "id": 111
+        },   
+        "leagues_in": [12, 34]
+    }
+
+    Leagues_info = {
+        12:{
+            "info":{
+                "name": "first one",
+                "id": 12,
+                "admin": "my id",
+                "num_participants": 3
+            },
+            "participants": {
+                "michael": "great team",
+                "ryne": "bad team",
+                "seth": "good team"
+            }
+        },
+
+        34:{
+            "info":{
+                "name": "second one",
+                "id": 34, 
+                "admin": "my id",
+                "num_participants": 3
+            },
+            "participants": {
+                "michael": "great team",
+                "cole": "booty team",
+                "chad": "no team"
+            }
+
+        } 
+    }
+    temp = {
+        "user": user_info,
+        "leagues": Leagues_info 
+    }
+    return jsonify(temp)
 
 
+@app.route('/api/create-league', methods=["POST"])
+def create_user():
+    """make a random leauge id like 5 long and dont match others
+    store it with the admin 
+    return the id and league 
+    """
+    return
+
+
+@app.route('/api/join-league', methods=["POST"])
+def create_user():
+    """ check for a league with that id
+     add user to leauge and return league id and leage info
+    """
+    return
