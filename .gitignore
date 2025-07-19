@@ -2,3 +2,4 @@ testing
 .DS_store
 .venv/
 *.pyc 
+sql_testing/
