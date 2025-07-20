@@ -29,6 +29,7 @@ def add_fighter():
 
 @app.route('/api/register-user', methods=["POST"])
 def create_user(username, password):
+    #encrypt passwords with sha256
     #check other usernames to make sure no repeats
     #create a unique id
     #need to update info in frontend here or somewhere else
