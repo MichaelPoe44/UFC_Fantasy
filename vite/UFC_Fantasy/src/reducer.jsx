@@ -8,14 +8,14 @@ user:{
         pass:
         id:
     },   
-    leagues_in: [League_id, id, id, id] 
 }
+User_leagues   
+    user and league id 
+
 store leagues:
 League_id:{
-    info:{ name, id, admin, #participants, score, ect},
-    participants: {
-        username/id:{team, //maybe score},
-        username/id:{team, //maybe score}
+    info:{ name, id, admin, #participants,join code,  score, ect},
+    
 }
 }   
 ---------------------------------------------------------------
@@ -29,7 +29,7 @@ state{
     leagues_in: [ID, ID, ID],
     leagues: [
         League_id:{
-            info:{ name, id, admin, #participants, score, ect},
+            info:{ name, id, admin, #participants,join code, score, ect},
             participants: [ 
                 username/id:{team, //maybe score},
                 username/id:{team, //maybe score}
