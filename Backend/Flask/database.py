@@ -55,7 +55,7 @@ Teams
 user_id     league_id    name       fighter_name  
 """
 ##################################################################################################################################
-
+#creating a user should take a user and pass a return the user id
 def create_user(username, hashedpassword):
     try:
         mycursor.execute("INSERT INTO Users (username, password_hash) VALUES (%s,%s)", (username, hashedpassword))
@@ -69,7 +69,7 @@ def create_user(username, hashedpassword):
             return {"success": False, "error": "Database Error"}
 
 
-
+#take league name and creator id and return the league info 
 def create_league(name, user_id):
 
     #to make a unique code
@@ -90,7 +90,23 @@ def create_league(name, user_id):
         mycursor.execute("INSERT INTO Users_Leagues (league_id, user_id) VALUES (%s,%s)", (league_id, user_id))
 
         db.commit()
-        return {"success": True}
+
+        username = mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (user_id,))
+        return {"success": True, "league": {
+            league_id: {
+                "league_info":{
+                    "name": name,
+                    "admin_id": user_id,
+                    "num_particpiants": 1,
+                    "join_code": code
+                },
+                "league_participants":{
+                    user_id:{
+                        "username": username
+                    }
+                }
+            }
+        }}
     
     except Error as e:
         db.rollback()
@@ -100,13 +116,17 @@ def create_league(name, user_id):
 
 def join_league(user_id, join_code):
 
-    mycursor.execute("SELECT league_id FROM Leagues WHERE join_code = %s", (join_code,))
+    mycursor.execute("SELECT * FROM Leagues WHERE join_code = %s", (join_code,))
     row = mycursor.fetchone()
     #if couldnt find a league with that code
     if row == None:
         return {"success": False, "error": "Wrong code or League DNE"}
 
     league_id = row[0]
+    name = row[1]
+    admin_id = row[2]
+    current_num_participants = row[3]
+    
     
     #if user already in that league
     mycursor.execute("SELECT * FROM Users_Leagues WHERE league_id = %s AND user_id = %s", (league_id, user_id))
@@ -117,11 +137,41 @@ def join_league(user_id, join_code):
     #now user is not in league already and it exists                Just switching syntax between f string for practice
     try:
         mycursor.execute("INSERT INTO Users_Leagues (league_id, user_id) VALUES (%s,%s)", (league_id, user_id))
-
         mycursor.execute("UPDATE Leagues SET num_participants = num_participants + 1 WHERE league_id = %s", (league_id,))
-
         db.commit()
-        return {"success": True}
+
+        num_participants = current_num_participants + 1
+        #now need all other participants in league
+        mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", league_id)
+        temp_rows = mycursor.fetchall()
+        if len(temp_rows) != num_participants:
+            return {"success": False, "error": "Error getting information"}
+        
+
+        league_participants = {} 
+        for participants_id in temp_rows:
+            player_info = {}
+
+            ##can swap name for team name
+            ###########################get each player team in here
+            mycursor.execute("SELECT username FROM Users WHERE user_id = %s", participants_id)
+            r = mycursor.fetchone()
+
+            player_info["username"] = r[0]
+            league_participants[participants_id] = player_info
+
+        return {"success": True, "league": {
+            league_id: {
+                "league_info":{
+                    "name": name,
+                    "admin_id": admin_id,
+                    "num_particpiants": num_participants,
+                    "join_code": join_code
+                },
+                "league_participants": league_participants
+                
+            }
+        }}
 
     except Error as e:
         db.rollback()
@@ -187,23 +237,31 @@ def user_login(username, hashedpassword):
         
         leagues_in[league_id] = league
     
-    return {"success": True, "Leagues":leagues_in}
+    all_info = {
+        "user": {
+            "username": username,
+            "user_id": user_id
+        },
+        "leagues": leagues_in
+    }
+    
+    return {"success": True, "user_data": all_info}
 
 
 
 
 
-print("Users--------------------------------")
-mycursor.execute("SELECT * FROM Users")
-for x in mycursor:
-    print(x)
+# print("Users--------------------------------")
+# mycursor.execute("SELECT * FROM Users")
+# for x in mycursor:
+#     print(x)
 
-print("leagues-------------------------------")
-mycursor.execute("SELECT * FROM Leagues")
-for x in mycursor:
-    print(x)
+# print("leagues-------------------------------")
+# mycursor.execute("SELECT * FROM Leagues")
+# for x in mycursor:
+#     print(x)
 
-print("Users_Leagues-------------------------")
-mycursor.execute("SELECT * FROM Users_Leagues")
-for x in mycursor:
-    print(x)
+# print("Users_Leagues-------------------------")
+# mycursor.execute("SELECT * FROM Users_Leagues")
+# for x in mycursor:
+#     print(x)

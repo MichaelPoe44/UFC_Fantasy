@@ -28,13 +28,19 @@ state{
     },
     leagues_in: [ID, ID, ID],
     leagues: [
-        League_id:{
-            info:{ name, id, admin, #participants,join code, score, ect},
-            participants: [ 
-                username/id:{team, //maybe score},
-                username/id:{team, //maybe score}
-            ]
-        }   
+        league_id: {
+                "league_info":{
+                    "name": name,
+                    "admin_id": user_id,
+                    "num_particpiants": 1,
+                    "join_code": code
+                },
+                "league_participants":{
+                    user_id:{
+                        "username": username
+                    }
+                }
+            }  
     ],
 }
 

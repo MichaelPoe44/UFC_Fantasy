@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from scrape import get_fighter_stats
+import database
+import bcrypt
 
 #Set-ExecutionPolicy Unrestricted -Scope Process
 #to use activate.ps1 and to use npm
@@ -12,7 +14,7 @@ app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173"])#the dev react server
 
  
-
+#maybe switch to json package as argument
 @app.route('/api/fighter', methods=["GET"])
 def get_stats():
     fighter_name = request.args.get('name')
@@ -27,82 +29,86 @@ def add_fighter():
     #incomes.append(request.get_json())
     return '', 204
 
+
+
+
 @app.route('/api/register-user', methods=["POST"])
-def create_user(username, password):
-    #encrypt passwords with sha256
-    #check other usernames to make sure no repeats
-    #create a unique id
-    #need to update info in frontend here or somewhere else
-    #201 is created
-    #409 is conflict like duplicate username
-    return
+def register_user():
+    data = request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    #encrypt password
+    password_bytes = password.encode("utf-8")
+    hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+    hashed_pass = hash.decode("utf-8")
+
+    response = create_user(username, hashed_pass)
+
+    if response["success"] == True:
+        user = {
+            "username": username,
+            "user_id": response["user_id"]
+        }
+        return jsonify(user)
+    
+    elif response["success"] == False:
+        return response["error"] 
+
+    return "Unknown Error"
+
+
+
+
+@app.route('/api/register -league', methods=["POST"])
+def register_league():
+    data = request.get_json()
+    league_name = data.get("name")
+    user_id = data.get("id")
+
+    response = create_league(league_name, user_id)
+    
+    if response["success"] == True:
+        return jsonify(response["league"])
+    
+    elif response["success"] == False:
+        return response["error"] 
+
+    return "Unknown Error"
+
 
 @app.route('/api/try-login', methods=["GET"])
 def try_login(currentUsername, CurrentPassword):
-    #check if username and pass match a current user
-    #if so
-    #get data for user and the leagues they in
-    #return jsonify("""stats stored in db""")
+    data = request.get_json()
+    currentUsername = data.get("currentUsername")
+    CurrentPassword = data.get("currentPassword")
 
-    #if not return an error login
-    user_info = {
-        "credentials": { 
-            "username": "michael",
-            "pass": 1234,
-            "id": 111
-        },   
-        "leagues_in": [12, 34]
-    }
+    response = user_login(currentUsername, CurrentPassword)
+    
+    if response["success"] == True:
+        return jsonify(response["user_data"])
+    
+    elif response["success"] == False:
+        return response["error"] 
 
-    Leagues_info = {
-        12:{
-            "info":{
-                "name": "first one",
-                "id": 12,
-                "admin": "my id",
-                "num_participants": 3
-            },
-            "participants": {
-                "michael": "great team",
-                "ryne": "bad team",
-                "seth": "good team"
-            }
-        },
+    return "Unknown Error"
 
-        34:{
-            "info":{
-                "name": "second one",
-                "id": 34, 
-                "admin": "my id",
-                "num_participants": 3
-            },
-            "participants": {
-                "michael": "great team",
-                "cole": "booty team",
-                "chad": "no team"
-            }
+    
 
-        } 
-    }
-    temp = {
-        "user": user_info,
-        "leagues": Leagues_info 
-    }
-    return jsonify(temp)
-
-
-@app.route('/api/create-league', methods=["POST"])
-def create_user():
-    """make a random leauge id like 5 long and dont match others
-    store it with the admin 
-    return the id and league 
-    """
-    return
 
 
 @app.route('/api/join-league', methods=["POST"])
-def create_user():
-    """ check for a league with that id
-     add user to leauge and return league id and leage info
-    """
-    return
+def join__league():
+    data = request.get_json()
+    join_code = data.get("join_code")
+    user_id = data.get("id")
+
+    response = join_league(user_id, join_code)
+
+    if response["success"] == True:
+        return jsonify(response["league"])
+    
+    elif response["success"] == False:
+        return response["error"] 
+
+    return "Unknown Error"
