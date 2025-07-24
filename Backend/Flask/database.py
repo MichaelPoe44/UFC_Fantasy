@@ -83,8 +83,9 @@ def create_league(name, user_id):
         
         code = ''.join(secrets.choice(characters) for i in range(6))
         
-        mycursor.execute("SELECT * FROM Leagues WHERE join_code = %s", (code,))
-        if not mycursor.fetchone():
+        mycursor.execute("SELECT league_id FROM Leagues WHERE join_code = %s", (code,))
+        row = mycursor.fetchone()
+        if row == None:
             break
 
 
@@ -96,9 +97,10 @@ def create_league(name, user_id):
 
         db.commit()
 
-        username = mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (user_id,))
-        return {"success": True, "league": {
-            league_id: {
+        mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (user_id,))
+        row = mycursor.fetchone()
+        username = row[0]
+        return {"success": True, "league_id": league_id, "league": {
                 "league_info":{
                     "name": name,
                     "admin_id": user_id,
@@ -110,7 +112,7 @@ def create_league(name, user_id):
                         "username": username
                     }
                 }
-            }
+            
         }}
     
     except Error as e:
@@ -185,10 +187,10 @@ def join_league(user_id, join_code):
 
 
 #will need to add info grabing for the teams of each player
-def user_login(username, hashedpassword):
+def user_login(username):
     
     #look for the user
-    mycursor.execute("SELECT user_id FROM Users WHERE username = %s AND password_hash = %s", (username, hashedpassword))
+    mycursor.execute("SELECT user_id FROM Users WHERE username = %s", (username,))
     row = mycursor.fetchone()
     
     #if no user with those credentials
@@ -203,12 +205,13 @@ def user_login(username, hashedpassword):
     rows = mycursor.fetchall()
 
     leagues_in = {}
-    for league_id in rows:
+    for x in rows:
+        league_id = x[0]
         league = {}
         league_info = {}
 
-        #grab the league info                         in this format since already a tuple from the rows
-        mycursor.execute("SELECT * FROM Leagues WHERE league_id = %s", league_id)
+        #grab the league info                         
+        mycursor.execute("SELECT * FROM Leagues WHERE league_id = %s", (league_id,))
         temp_row = mycursor.fetchone()
         num_participants = temp_row[3]
 
@@ -219,19 +222,20 @@ def user_login(username, hashedpassword):
         league["league_info"] = league_info
                     
         #grab the info for each player in that league
-        mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", league_id)
+        mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", (league_id,))
         temp_rows = mycursor.fetchall()
         if len(temp_rows) != num_participants:
             return {"success": False, "error": "Error getting information"}
         
 
         league_participants = {} 
-        for participants_id in temp_rows:
+        for y in temp_rows:
+            participants_id = y[0]
             player_info = {}
 
             ##can swap name for team name
             ###########################get each player team in here
-            mycursor.execute("SELECT username FROM Users WHERE user_id = %s", participants_id)
+            mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (participants_id,))
             r = mycursor.fetchone()
             
             player_info["username"] = r[0]
@@ -253,7 +257,13 @@ def user_login(username, hashedpassword):
     return {"success": True, "user_data": all_info}
 
 
+def get_hash_for_user(username):
 
+    mycursor.execute("SELECT password_hash FROM Users WHERE username = %s", (username,))
+    row = mycursor.fetchone()
+    if (row == None):
+        return None
+    return row[0]
 
 
 # print("Users--------------------------------")

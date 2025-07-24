@@ -54,3 +54,15 @@
     border: 1px solid;
     margin-top: 10px;
 }
+
+
+
+.error {
+  color: #d4351c;              /* High-contrast red for accessibility */ 
+  background-color: #ffe6e6;   /* Light red background */
+  border: 1px solid #d4351c;
+  padding: 8px 12px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}

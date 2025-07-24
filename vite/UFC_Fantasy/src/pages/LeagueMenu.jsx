@@ -4,6 +4,33 @@ import "../pages_css/LeagueMenu.css"
 
 
 
+const try_create_league = async (leagueName, state, dispatch) => {
+    const user_id = state.user.user_id;
+    const payload = {
+        "name": leagueName,
+        "id": user_id
+    }
+
+    const response = await fetch("http://127.0.0.1:5000/api/register-league", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    }
+    );
+    const data = await response.json();
+    console.log(data)
+    if (data.success == true){
+        dispatch({
+            type: "CREATE_LEAGUE",
+            league_id: data.league_id,
+            league: data.league
+        })
+    }
+}
+
+
 
 export default function LeagueMenu(){
     //user data
@@ -15,27 +42,17 @@ export default function LeagueMenu(){
 
     //for joining league
     const [showJoinForm, setShowJoinForm] = useState(false)
-    const [leagueId, setId] = useState("");
+    const [joinCode, setJoinCode] = useState("");
 
 
     const create_league = (e) => {
         e.preventDefault()
-        console.log("1");
-        dispatch({
-            type: "CREATE_LEAGUE",
-            name: leagueName,
-        })
-        setName("")
-        console.log("2");
+        try_create_league(leagueName, state, dispatch)
     }
 
     const join_league = (e) => {
         e.preventDefault()
-        dispatch({
-            type: "JOIN_LEAGUE",
-            id: leagueId,
-        })
-        setId("")
+        
     }
 
     const do_this = () => {
@@ -72,8 +89,8 @@ export default function LeagueMenu(){
                     <form className="form" onSubmit={join_league}>
                         <input
                             type="text"
-                            placeholder="Enter League Id"
-                            value={leagueId}
+                            placeholder="Enter League Code"
+                            value={joinCode}
                             onChange={(e) => setId(e.target.value)}
                             required 
                         />

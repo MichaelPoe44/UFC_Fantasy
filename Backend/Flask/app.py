@@ -38,7 +38,7 @@ def register_user():
     username = data.get("username")
     password = data.get("password")
 
-    #encrypt password
+    #hash password
     password_bytes = password.encode("utf-8")
     hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
     hashed_pass = hash.decode("utf-8")
@@ -50,7 +50,7 @@ def register_user():
 
 
 
-@app.route('/api/register -league', methods=["POST"])
+@app.route('/api/register-league', methods=["POST"])
 def register_league():
     data = request.get_json()
     league_name = data.get("name")
@@ -58,31 +58,27 @@ def register_league():
 
     response = database.create_league(league_name, user_id)
     
-    if response["success"] == True:
-        return jsonify(response["league"])
-    
-    elif response["success"] == False:
-        return response["error"] 
-
-    return "Unknown Error"
+    return jsonify(response)
 
 
-@app.route('/api/try-login', methods=["GET"])
-def try_login(currentUsername, CurrentPassword):
+
+@app.route('/api/try-login', methods=["POST"])
+def try_login():
     data = request.get_json()
-    currentUsername = data.get("currentUsername")
-    CurrentPassword = data.get("currentPassword")
+    currentUsername = data.get("currentUserName")
+    currentPassword = data.get("currentPassword")
 
-    response = database.user_login(currentUsername, CurrentPassword)
+    #check if currentPassword matches the password stored
+    stored_hash = database.get_hash_for_user(currentUsername)
+    if stored_hash == None:
+        return jsonify({"success": False, "error": "User does not exist"})
     
-    if response["success"] == True:
-        return jsonify(response["user_data"])
+    if stored_hash and bcrypt.checkpw(currentPassword.encode("utf-8"), stored_hash.encode("utf-8")):
+        response = database.user_login(currentUsername)
     
-    elif response["success"] == False:
-        return response["error"] 
-
-    return "Unknown Error"
-
+        return jsonify(response)
+    
+    return jsonify({"success": False, "error": "username or password incorrect"})
     
 
 

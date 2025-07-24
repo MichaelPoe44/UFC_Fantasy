@@ -1,21 +1,41 @@
 import { useState } from "react";
 import { getStateContext } from "../StateProvider";
+import { useNavigate } from "react-router-dom"
 import "../pages_css/Login.css";
 
 
-const try_login = async (currentUserName, currentPassword, dispatch) => {
-    const response = await fetch("http://127.0.0.1:5000/api/try-login");
-    const user_info = await response.json();
-    console.log(user_info);
-    dispatch({
+const try_login = async (currentUserName, currentPassword, dispatch, navigate, setErrorMessage) => {
+    const payload = {
+        currentUserName: currentUserName,
+        currentPassword: currentPassword
+    }
+
+    //send to database
+    const response = await fetch("http://127.0.0.1:5000/api/try-login",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+
+    //look at the response
+    if (data.success == true){
+        dispatch({
             type: "LOGIN",
-            user: user_info.user,
-            leagues: user_info.leagues
+            user: data.user_data.user,
+            leagues: data.user_data.leagues
         })
+        navigate("/")
+    }
+    else if (data.success == false){
+        setErrorMessage(data.error)
+    }
 }
 
 
-const try_register = async (currentUserName, currentPassword, dispatch) => {
+const try_register = async (currentUserName, currentPassword, dispatch, navigate, setErrorMessage) => {
     const payload = {
         username: currentUserName,
         password: currentPassword
@@ -38,11 +58,11 @@ const try_register = async (currentUserName, currentPassword, dispatch) => {
             type: "REGISTER",
             user: data.user
         })
+        navigate("/")
     }
 
     else if (data.success == false){
-        //alert user
-        console.log(data.error)
+        setErrorMessage(data.error)
     }
     
 }
@@ -52,7 +72,8 @@ const try_register = async (currentUserName, currentPassword, dispatch) => {
 
 export default function Login(){
     const {state, dispatch} = getStateContext();
-
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("")
 
     const [currentUserName, setcurrentUserName] = useState("");
     const [currentPassword, setCurrentPassword] = useState("");
@@ -60,13 +81,14 @@ export default function Login(){
 
     const register = (e) => {
         e.preventDefault();
-        try_register(currentUserName, currentPassword, dispatch)
+        if (currentUserName = "")
+        try_register(currentUserName, currentPassword, dispatch, navigate, setErrorMessage)
         //if successful push back to home page or profile
     }
 
     const login = (e) => {
         e.preventDefault();
-        try_login(currentUserName, currentPassword, dispatch);
+        try_login(currentUserName, currentPassword, dispatch, navigate, setErrorMessage);
         //call api
         //get info and dispatch info to context layer
 
@@ -78,6 +100,12 @@ export default function Login(){
 
             <div className="login_container">
             <h1>Sign In</h1>
+
+            {errorMessage && (
+                <div className="error">
+                    <p>{errorMessage}</p>
+                </div>
+            )}
 
             <form>
                 <h5>Username</h5>

@@ -4,8 +4,8 @@ import reducer from "./reducer";
 
 const initialState = {
     user: null,
-    leagues: []
-}
+    leagues: {},
+};
 
 
 const StateContext = createContext();
