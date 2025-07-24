@@ -15,6 +15,39 @@ const try_login = async (currentUserName, currentPassword, dispatch) => {
 }
 
 
+const try_register = async (currentUserName, currentPassword, dispatch) => {
+    const payload = {
+        username: currentUserName,
+        password: currentPassword
+    }
+
+    //send to database
+    const response = await fetch("http://127.0.0.1:5000/api/register-user", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    }
+    );
+    const data = await response.json();
+    
+    //store in frontend
+    if (data.success == true){
+        dispatch({
+            type: "REGISTER",
+            user: data.user
+        })
+    }
+
+    else if (data.success == false){
+        //alert user
+        console.log(data.error)
+    }
+    
+}
+
+
 
 
 export default function Login(){
@@ -27,17 +60,8 @@ export default function Login(){
 
     const register = (e) => {
         e.preventDefault();
-        //call api
-        //get info and dispatch info to context layer
-        dispatch({
-            type: "REGISTER",
-            user: {
-                userName: currentUserName,
-                password: currentPassword,
-            }
-        })
-
-        //push back
+        try_register(currentUserName, currentPassword, dispatch)
+        //if successful push back to home page or profile
     }
 
     const login = (e) => {

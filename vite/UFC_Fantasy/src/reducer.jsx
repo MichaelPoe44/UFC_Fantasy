@@ -26,7 +26,6 @@ state{
         password: //maybe dont store password in front end
         id:
     },
-    leagues_in: [ID, ID, ID],
     leagues: [
         league_id: {
                 "league_info":{

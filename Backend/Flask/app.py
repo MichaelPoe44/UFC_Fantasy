@@ -43,19 +43,9 @@ def register_user():
     hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
     hashed_pass = hash.decode("utf-8")
 
-    response = create_user(username, hashed_pass)
+    response = database.create_user(username, hashed_pass)
 
-    if response["success"] == True:
-        user = {
-            "username": username,
-            "user_id": response["user_id"]
-        }
-        return jsonify(user)
-    
-    elif response["success"] == False:
-        return response["error"] 
-
-    return "Unknown Error"
+    return jsonify(response)
 
 
 
@@ -66,7 +56,7 @@ def register_league():
     league_name = data.get("name")
     user_id = data.get("id")
 
-    response = create_league(league_name, user_id)
+    response = database.create_league(league_name, user_id)
     
     if response["success"] == True:
         return jsonify(response["league"])
@@ -83,7 +73,7 @@ def try_login(currentUsername, CurrentPassword):
     currentUsername = data.get("currentUsername")
     CurrentPassword = data.get("currentPassword")
 
-    response = user_login(currentUsername, CurrentPassword)
+    response = database.user_login(currentUsername, CurrentPassword)
     
     if response["success"] == True:
         return jsonify(response["user_data"])
@@ -103,7 +93,7 @@ def join__league():
     join_code = data.get("join_code")
     user_id = data.get("id")
 
-    response = join_league(user_id, join_code)
+    response = database.join_league(user_id, join_code)
 
     if response["success"] == True:
         return jsonify(response["league"])

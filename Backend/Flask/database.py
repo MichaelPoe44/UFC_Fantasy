@@ -60,9 +60,14 @@ def create_user(username, hashedpassword):
     try:
         mycursor.execute("INSERT INTO Users (username, password_hash) VALUES (%s,%s)", (username, hashedpassword))
         db.commit()
-        return {"success": True, "user_id": mycursor.lastrowid}
+        return {"success": True, 
+                "user": {
+                    "username": username,
+                    "user_id": mycursor.lastrowid
+                }}
     
     except Error as e:
+        db.rollback()
         if "Duplicate entry" in str(e):
             return {"success": False, "error": "Username already exists"}
         else:
