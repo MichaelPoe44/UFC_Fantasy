@@ -81,7 +81,9 @@ export default function Login(){
 
     const register = (e) => {
         e.preventDefault();
-        if (currentUserName = "")
+        if (currentUserName == ""){
+            return;
+        }   
         try_register(currentUserName, currentPassword, dispatch, navigate, setErrorMessage)
         //if successful push back to home page or profile
     }

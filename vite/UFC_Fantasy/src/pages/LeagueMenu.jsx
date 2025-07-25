@@ -13,9 +13,7 @@ const try_create_league = async (leagueName, state, dispatch) => {
 
     const response = await fetch("http://127.0.0.1:5000/api/register-league", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(payload)
     }
     );
@@ -28,6 +26,23 @@ const try_create_league = async (leagueName, state, dispatch) => {
             league: data.league
         })
     }
+}
+
+
+const try_join_league = async (joinCode, state, dispatch) => {
+    const user_id = state.user.user_id;
+    const payload = {
+        "join_code": joinCode,
+        "id": user_id
+    };
+
+    const response = await fetch("http://127.0.0.1:5000/api/join-league", {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    })
+    const data = await response.json()
+    console.log(data)
 }
 
 
@@ -46,12 +61,13 @@ export default function LeagueMenu(){
 
 
     const create_league = (e) => {
-        e.preventDefault()
-        try_create_league(leagueName, state, dispatch)
+        e.preventDefault();
+        try_create_league(leagueName, state, dispatch);
     }
 
     const join_league = (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        try_join_league(joinCode, state, dispatch);
         
     }
 
@@ -89,9 +105,9 @@ export default function LeagueMenu(){
                     <form className="form" onSubmit={join_league}>
                         <input
                             type="text"
-                            placeholder="Enter League Code"
+                            placeholder="Enter League's Join Code"
                             value={joinCode}
-                            onChange={(e) => setId(e.target.value)}
+                            onChange={(e) => setJoinCode(e.target.value)}
                             required 
                         />
                         <button type="submit">Join</button>

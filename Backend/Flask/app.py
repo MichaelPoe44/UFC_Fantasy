@@ -91,10 +91,4 @@ def join__league():
 
     response = database.join_league(user_id, join_code)
 
-    if response["success"] == True:
-        return jsonify(response["league"])
-    
-    elif response["success"] == False:
-        return response["error"] 
-
-    return "Unknown Error"
+    return jsonify(response)

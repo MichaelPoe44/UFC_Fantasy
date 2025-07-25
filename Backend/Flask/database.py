@@ -9,6 +9,7 @@ db = mysql.connector.connect(
     passwd="Froggy122204",
     database="mytest"
 )
+db.autocommit = False
 
 """
 Example Use Case Flow
@@ -122,6 +123,7 @@ def create_league(name, user_id):
 
 
 def join_league(user_id, join_code):
+    DEBUG = ""
 
     mycursor.execute("SELECT * FROM Leagues WHERE join_code = %s", (join_code,))
     row = mycursor.fetchone()
@@ -134,55 +136,55 @@ def join_league(user_id, join_code):
     admin_id = row[2]
     current_num_participants = row[3]
     
-    
+    DEBUG = "1"
     #if user already in that league
     mycursor.execute("SELECT * FROM Users_Leagues WHERE league_id = %s AND user_id = %s", (league_id, user_id))
     if mycursor.fetchone() != None:
         return {"success": False, "eror": "User already in this League"}
     
-
+    DEBUG = "2"
     #now user is not in league already and it exists                Just switching syntax between f string for practice
     try:
         mycursor.execute("INSERT INTO Users_Leagues (league_id, user_id) VALUES (%s,%s)", (league_id, user_id))
         mycursor.execute("UPDATE Leagues SET num_participants = num_participants + 1 WHERE league_id = %s", (league_id,))
         db.commit()
-
+        DEBUG = "3"
         num_participants = current_num_participants + 1
         #now need all other participants in league
-        mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", league_id)
+        mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s",  (league_id,))
         temp_rows = mycursor.fetchall()
         if len(temp_rows) != num_participants:
             return {"success": False, "error": "Error getting information"}
         
-
+        DEBUG = "4"
         league_participants = {} 
-        for participants_id in temp_rows:
+        for x in temp_rows:
+            participants_id = x[0]
             player_info = {}
 
             ##can swap name for team name
             ###########################get each player team in here
-            mycursor.execute("SELECT username FROM Users WHERE user_id = %s", participants_id)
+            mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (participants_id,))
             r = mycursor.fetchone()
 
             player_info["username"] = r[0]
             league_participants[participants_id] = player_info
-
-        return {"success": True, "league": {
-            league_id: {
-                "league_info":{
-                    "name": name,
-                    "admin_id": admin_id,
-                    "num_particpiants": num_participants,
-                    "join_code": join_code
-                },
-                "league_participants": league_participants
-                
-            }
-        }}
+        DEBUG = "5"
+        return {"success": True, "league_id": league_id,
+                "league":{
+                    "league_info":{
+                        "name": name,
+                        "admin_id": admin_id,
+                        "num_particpiants": num_participants,
+                        "join_code": join_code
+                    },
+                    "league_participants": league_participants
+                }
+        }
 
     except Error as e:
         db.rollback()
-        return {"success": False, "error": "Database Error"}
+        return {"success": False, "error": "Database Error", "debug": DEBUG}
 
 
 
@@ -266,6 +268,7 @@ def get_hash_for_user(username):
     return row[0]
 
 
+
 # print("Users--------------------------------")
 # mycursor.execute("SELECT * FROM Users")
 # for x in mycursor:
@@ -280,3 +283,5 @@ def get_hash_for_user(username):
 # mycursor.execute("SELECT * FROM Users_Leagues")
 # for x in mycursor:
 #     print(x)
+
+
