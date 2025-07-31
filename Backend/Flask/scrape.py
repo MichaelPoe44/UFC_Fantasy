@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 
 
-BASE_URL = 'https://www.ufc.com/athlete/'
+SINGLE_URL = 'https://www.ufc.com/athlete/'
+POOL_URL = 'https://www.ufc.com/rankings'
 
 fighter_accuracy = {
     "strike":None,
@@ -29,7 +30,7 @@ percent_win_by = {
 def get_fighter_stats(name):
 
     #send a request and get the page content in a soup
-    page = requests.get(f"{BASE_URL}{name}")
+    page = requests.get(f"{SINGLE_URL}{name}")
     if (page.status_code != 200):
         print("bad request")
     soup = BeautifulSoup(page.content,'html.parser')
@@ -79,4 +80,62 @@ def get_fighter_stats(name):
     }
 
     return full_stats 
+
+
+
+fighter_pool = {
+    "Flyweight": {
+        #name: rank,
+        #name: rank,
+    },
+    "Bantamweight":{},
+    "Featherweight":{},
+    "Lightweight":{},
+    "Welterweight":{},
+    "Middleweight":{},
+    "Light Heavyweight":{},
+    "Heavyweight":{}
+}
+
+def get_fighter_pool():
+
+    headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                  'AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/114.0.0.0 Safari/537.36',
+    'Accept-Language': 'en-US,en;q=0.9'
+    }
+
+
+
+    #send a request and get the page content in a soup
+    page = requests.get('https://www.ufc.com/rankings', headers=headers)
+    if (page.status_code != 200):
+        print(page.status_code)
+        print("bad request")
+    soup = BeautifulSoup(page.content,'html.parser')
+
+    for weightclass in fighter_pool:
+        #get info for each division
+        header = soup.find("div",string=weightclass)
+        content = header.find_next_sibling("div")
+
+        #get the champion
+        fighter_pool[weightclass]["0"] = content.find("a").text
+
+        #get contenders
+        contenders = content.find_all("tr")
+        for i in range(len(contenders)):
+            row = contenders[i]
+            contender = row.find("a").text
+            fighter_pool[weightclass][i+1] = contender
+
+
+    print(fighter_pool)
+
+
+    return ()
+
+
+get_fighter_pool()
 

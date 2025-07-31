@@ -285,3 +285,15 @@ def get_hash_for_user(username):
 #     print(x)
 
 
+"""
+CREATE TABLE fighters (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    weight_class VARCHAR(50) NOT NULL,
+    rank INT,                -- 1 to 15
+    active BOOLEAN DEFAULT TRUE,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+""""

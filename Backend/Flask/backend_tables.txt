@@ -1,0 +1,34 @@
+Users
+user_id     username    password_hash
+
+Leagues
+league_id   name        admin_id        num_participants    join_code
+
+Users_Leagues
+league_id   user_id
+
+Teams
+user_id     league_id    name       fighter_name
+
+
+Fighter_pool  """universal"""
+id          name        weight_class     rank       last_updated
+
+league_draft (
+  id INT PRIMARY KEY,
+  league_id INT,
+  current_round INT,
+  current_pick_user_id INT,
+  total_picks INT,
+  draft_order JSON,
+  status ENUM('not_started', 'in_progress', 'complete')
+)
+
+draft_picks (
+  id INT PRIMARY KEY,
+  league_id INT,
+  user_id INT,
+  fighter_id INT,
+  weight_class VARCHAR,
+  round INT
+)
