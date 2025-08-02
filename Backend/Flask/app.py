@@ -3,6 +3,8 @@ from flask_cors import CORS
 from scrape import get_fighter_stats
 import database
 import bcrypt
+import random
+import json
 
 #Set-ExecutionPolicy Unrestricted -Scope Process
 #to use activate.ps1 and to use npm
@@ -92,3 +94,21 @@ def join__league():
     response = database.join_league(user_id, join_code)
 
     return jsonify(response)
+
+
+
+@app.route('/api/draft/start/<int:league_id>', methods=["POST"])
+def start_draft(league_id):
+
+    participants = database.get_league_members(league_id)
+
+    draft_order = random.sample(participants, len(participants))
+    total_rounds = 16  #2 fighters per weightclass maybe later add dynamic amount of fighters per class
+
+    draft_order_json = json.dumps(draft_order)
+    
+    #make function in db
+    start_draft(league_id, draft_order, total_rounds)
+    database.start_draft(league_id, draft_order[0], draft_order_json, total_rounds)
+
+

@@ -60,6 +60,8 @@ Teams
 user_id     league_id    name       fighter_name  
 """
 ##################################################################################################################################
+#users and leagues handling
+
 #creating a user should take a user and pass a return the user id
 def create_user(username, hashedpassword):
     try:
@@ -269,7 +271,18 @@ def get_hash_for_user(username):
         return None
     return row[0]
 
+def get_league_members(league_id):
 
+    mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", (league_id,))
+    rows = mycursor.fetchall()
+    
+    #just to get it out of tuple form
+    participants = [row[0] for row in rows]
+
+    return participants
+
+#####################################################################################
+#fighters and drafting
 
 def update_fighter_pool(pool):
     
@@ -281,6 +294,12 @@ def update_fighter_pool(pool):
             mycursor.execute("INSERT INTO Fighter_Pool (name, weight_class, ranking) VALUES (%s,%s,%s)", (fighter, weight_class, rank))
     
     db.commit()
+
+
+
+
+
+
 
 
 
@@ -313,6 +332,15 @@ def update_fighter_pool(pool):
 
 !!!!!!!!!!!!!!!!!!!
 
+create a new league_draft and when draft starts then after first pick it in progress
+create new draft pick at every pick
 
+mycursor.execute("CREATE TABLE League_Draft (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_picks int NOT NULL, draft_order JSON NOT NULL, status ENUM('not_started', 'in_progress', 'complete'), FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")
+                                                                                        
+mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
+
+
+def start_draft(league_id, current_pick_user_id, draft_order, total_rounds):
+    return
 
 """
