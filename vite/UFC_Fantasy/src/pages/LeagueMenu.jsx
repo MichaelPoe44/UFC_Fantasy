@@ -4,7 +4,7 @@ import "../pages_css/LeagueMenu.css"
 
 
 
-const try_create_league = async (leagueName, state, dispatch) => {
+const try_create_league = async (leagueName, state, dispatch, setErrorMessage) => {
     const user_id = state.user.user_id;
     const payload = {
         "name": leagueName,
@@ -26,10 +26,13 @@ const try_create_league = async (leagueName, state, dispatch) => {
             league: data.league
         })
     }
+    else if (data.success == false){
+        setErrorMessage(data.error)
+    }
 }
 
 
-const try_join_league = async (joinCode, state, dispatch) => {
+const try_join_league = async (joinCode, state, dispatch, setErrorMessage) => {
     const user_id = state.user.user_id;
     const payload = {
         "join_code": joinCode,
@@ -42,14 +45,27 @@ const try_join_league = async (joinCode, state, dispatch) => {
         body: JSON.stringify(payload)
     })
     const data = await response.json()
-    console.log(data)
-}
+
+    if (data.success == true){
+        dispatch({
+            type: "JOIN_LEAGUE",
+            league_id: data.league_id,
+            league: data.league
+        })
+    }
+    else if (data.success == false){
+        console.log(data.error)
+        setErrorMessage(data.error)
+    }
+}   
 
 
 
 export default function LeagueMenu(){
     //user data
     const {state, dispatch} = getStateContext();
+
+    const [errorMessage, setErrorMessage] = useState("")
 
     //for league creation
     const [showCreateForm, setShowCreateForm] = useState(false)
@@ -62,12 +78,12 @@ export default function LeagueMenu(){
 
     const create_league = (e) => {
         e.preventDefault();
-        try_create_league(leagueName, state, dispatch);
+        try_create_league(leagueName, state, dispatch, setErrorMessage);
     }
 
     const join_league = (e) => {
         e.preventDefault();
-        try_join_league(joinCode, state, dispatch);
+        try_join_league(joinCode, state, dispatch, setErrorMessage);
         
     }
 

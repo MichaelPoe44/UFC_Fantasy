@@ -35,6 +35,10 @@ mycursor = db.cursor()
 # #one to many teams table
 #mycursor.execute("CREATE TABLE Teams (user_id int NOT NULL, league_id int NOT NULL, name varchar(128) NOT NULL, fighter_name varchar(128), UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
 
+#fighter pool
+# mycursor.execute("CREATE TABLE Fighter_Pool (fighter_id int PRIMARY KEY AUTO_INCREMENT, name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, ranking int NOT NULL, last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
+
+
 # mycursor.execute("DESCRIBE Users")
 # mycursor.execute("DESCRIBE Leagues")
 # # mycursor.execute("DESCRIBE Users_Leagues")
@@ -123,7 +127,6 @@ def create_league(name, user_id):
 
 
 def join_league(user_id, join_code):
-    DEBUG = ""
 
     mycursor.execute("SELECT * FROM Leagues WHERE join_code = %s", (join_code,))
     row = mycursor.fetchone()
@@ -136,19 +139,19 @@ def join_league(user_id, join_code):
     admin_id = row[2]
     current_num_participants = row[3]
     
-    DEBUG = "1"
+
     #if user already in that league
     mycursor.execute("SELECT * FROM Users_Leagues WHERE league_id = %s AND user_id = %s", (league_id, user_id))
     if mycursor.fetchone() != None:
-        return {"success": False, "eror": "User already in this League"}
+        return {"success": False, "error": "User already in this League"}
     
-    DEBUG = "2"
+
     #now user is not in league already and it exists                Just switching syntax between f string for practice
     try:
         mycursor.execute("INSERT INTO Users_Leagues (league_id, user_id) VALUES (%s,%s)", (league_id, user_id))
         mycursor.execute("UPDATE Leagues SET num_participants = num_participants + 1 WHERE league_id = %s", (league_id,))
         db.commit()
-        DEBUG = "3"
+
         num_participants = current_num_participants + 1
         #now need all other participants in league
         mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s",  (league_id,))
@@ -156,7 +159,6 @@ def join_league(user_id, join_code):
         if len(temp_rows) != num_participants:
             return {"success": False, "error": "Error getting information"}
         
-        DEBUG = "4"
         league_participants = {} 
         for x in temp_rows:
             participants_id = x[0]
@@ -169,7 +171,7 @@ def join_league(user_id, join_code):
 
             player_info["username"] = r[0]
             league_participants[participants_id] = player_info
-        DEBUG = "5"
+
         return {"success": True, "league_id": league_id,
                 "league":{
                     "league_info":{
@@ -184,7 +186,7 @@ def join_league(user_id, join_code):
 
     except Error as e:
         db.rollback()
-        return {"success": False, "error": "Database Error", "debug": DEBUG}
+        return {"success": False, "error": "Database Error"}
 
 
 
@@ -269,6 +271,20 @@ def get_hash_for_user(username):
 
 
 
+def update_fighter_pool(pool):
+    
+    #clear out everything in previous table
+    mycursor.execute("TRUNCATE TABLE Fighter_Pool")
+
+    for weight_class, rankings in pool.items():
+        for rank, fighter in rankings.items():
+            mycursor.execute("INSERT INTO Fighter_Pool (name, weight_class, ranking) VALUES (%s,%s,%s)", (fighter, weight_class, rank))
+    
+    db.commit()
+
+
+
+
 # print("Users--------------------------------")
 # mycursor.execute("SELECT * FROM Users")
 # for x in mycursor:
@@ -284,30 +300,19 @@ def get_hash_for_user(username):
 # for x in mycursor:
 #     print(x)
 
+# print("Fighter_Pool-------------------------")
+# mycursor.execute("SELECT * FROM Fighter_Pool")
+# for x in mycursor:
+#     print(x)
+
+
+
 
 """
-CREATE TABLE Fighter_pool (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    weight_class VARCHAR(50) NOT NULL,
-    rank INT,                -- 1 to 15
-    active BOOLEAN DEFAULT TRUE,
-    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+
 
 !!!!!!!!!!!!!!!!!!!
-mycursor.execute("CREATE TABLE Fighter_Pool (fighter_id int PRIMARY KEY AUTO_INCREMENT, name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, rank int NOT NULL, last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
 
 
-def update_fighter_pool(pool):
-
-    #clear out everything in previous table
-    mycursor.execute("TRUNCATE TABLE Fighter_Pool")
-
-    for weight_class, rankings in pool.items():
-
-        for rank, fighter in rankings.items():
-
-            mycursor.execute("INSERT INTO Fighter_Pool (name, weight_class, rank) VALUES (%s,%s,%s)", (fighter, weight_class, rank))
 
 """

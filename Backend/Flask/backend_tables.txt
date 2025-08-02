@@ -8,11 +8,22 @@ Users_Leagues
 league_id   user_id
 
 Teams
-user_id     league_id    name       fighter_name
+user_id     league_id    name       fighter_name  //add slots for each division
 
 
 Fighter_pool  """universal"""
-id          name        weight_class     rank       last_updated
+id          name        weight_class     ranking       last_updated
+
+
+CREATE TABLE Fighter_pool (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    weight_class VARCHAR(50) NOT NULL,
+    ranking INT,                -- 1 to 15
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
 
 league_draft (
   id INT PRIMARY KEY,

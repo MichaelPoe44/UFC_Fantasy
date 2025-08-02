@@ -1,4 +1,4 @@
-#from database import update_fighter_pool
+from database import update_fighter_pool
 from scrape import get_fighter_pool
 
 """

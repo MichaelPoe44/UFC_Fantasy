@@ -67,8 +67,7 @@ export default function reducer(state, action){
             return {
                 //fix
                 ...state,
-                leagues: [...state.leagues, action.name],
-                league_ids: [...state.league_ids, action.id]
+                leagues: {...state.leagues, [action.league_id]: action.league}
             } 
 
         case "REGISTER":
