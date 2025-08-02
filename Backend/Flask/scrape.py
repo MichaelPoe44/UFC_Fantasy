@@ -130,12 +130,7 @@ def get_fighter_pool():
             contender = row.find("a").text
             fighter_pool[weightclass][i+1] = contender
 
-
-    print(fighter_pool)
-
-
-    return ()
+    return (fighter_pool)
 
 
-get_fighter_pool()
 

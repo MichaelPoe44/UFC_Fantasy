@@ -286,7 +286,7 @@ def get_hash_for_user(username):
 
 
 """
-CREATE TABLE fighters (
+CREATE TABLE Fighter_pool (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     weight_class VARCHAR(50) NOT NULL,
@@ -295,5 +295,19 @@ CREATE TABLE fighters (
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+!!!!!!!!!!!!!!!!!!!
+mycursor.execute("CREATE TABLE Fighter_Pool (fighter_id int PRIMARY KEY AUTO_INCREMENT, name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, rank int NOT NULL, last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
 
-""""
+
+def update_fighter_pool(pool):
+
+    #clear out everything in previous table
+    mycursor.execute("TRUNCATE TABLE Fighter_Pool")
+
+    for weight_class, rankings in pool.items():
+
+        for rank, fighter in rankings.items():
+
+            mycursor.execute("INSERT INTO Fighter_Pool (name, weight_class, rank) VALUES (%s,%s,%s)", (fighter, weight_class, rank))
+
+"""
