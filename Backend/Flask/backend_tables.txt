@@ -16,10 +16,10 @@ id          name        weight_class     ranking       last_updated
 
 
 League_Draft
-id  |   league_id |  current_round  |  current_pick_user_id  |  total_picks | draft_order JSON  |  status ENUM('not_started', 'in_progress', 'complete'),
+id  |   league_id |  current_round  |  current_pick_user_id  |  total_rounds | draft_order JSON  |  status ENUM('not_started', 'in_progress', 'complete'),
 
 Draft_Picks
-id |   league_id | user_id |  fighter | weight_class | round
+id |   league_id | user_id |  fighter_name | weight_class | round
 
 
 

@@ -96,19 +96,44 @@ def join__league():
     return jsonify(response)
 
 
-
+#starts draft
 @app.route('/api/draft/start/<int:league_id>', methods=["POST"])
 def start_draft(league_id):
 
     participants = database.get_league_members(league_id)
+    participants_id = [id for id in participants]
 
-    draft_order = random.sample(participants, len(participants))
+    draft_order = random.sample(participants_id, len(participants_id))
     total_rounds = 16  #2 fighters per weightclass maybe later add dynamic amount of fighters per class
 
-    draft_order_json = json.dumps(draft_order)
     
-    #make function in db
-    start_draft(league_id, draft_order, total_rounds)
-    database.start_draft(league_id, draft_order[0], draft_order_json, total_rounds)
+    response = database.start_draft(league_id, draft_order, total_rounds)
+
+    return response
+
+
+#checks state of draft
+@app.route('/api/draft/state/<int:league_id>', methods=["GET"])
+def get_draft_state(league_id):
+
+
+
+
+@app.route('/api/draft/pick', methods=["POST"])
+def draft_pick():
+    data = request.get_json()
+    league_id = data.get("league_id")
+    user_id = data.get("user_id")
+    fighter_name = data.get("fighter_name")
+    weight_class = data.get("weight_class")
+    
+    round = data.get("round") #might change to get from the check state
+
+    #use get state to check if its their pick if fighter taken ect
+
+    response = database.draft_pick(league_id, user_id, fighter_name, weight_class)
+
+
+
 
 

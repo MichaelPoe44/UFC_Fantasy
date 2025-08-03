@@ -1,6 +1,6 @@
 import random
 import json
-
+# import database
 
 
 
@@ -8,10 +8,13 @@ import json
 
 
 participants = [2, 14, 18]
+length = len(participants)
+position = 2
+
+is_last = True if (position % length == (length - 1)) else False
+is_first = True if (position % length == 0) else False
 
 
-draft_order = random.sample(participants, len(participants))
-total_rounds = 16  #2 fighters per weightclass maybe later add dynamic amount of fighters per class
-
-this = json.dumps(draft_order)
-print(this)
+print(is_last)
+print(is_first)
+print()

@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 import string 
 import secrets
+import json
 
 db = mysql.connector.connect(
     host="localhost",
@@ -271,14 +272,18 @@ def get_hash_for_user(username):
         return None
     return row[0]
 
+
 def get_league_members(league_id):
 
     mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", (league_id,))
     rows = mycursor.fetchall()
     
-    #just to get it out of tuple form
-    participants = [row[0] for row in rows]
-
+    participants = {}
+    for x in rows:
+        participant_id = x[0]
+        mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (participant_id,))
+        row = mycursor.fetchone()
+        participants[participant_id] = row[0]
     return participants
 
 #####################################################################################
@@ -326,21 +331,112 @@ def update_fighter_pool(pool):
 
 
 
+def start_draft(league_id, draft_order, total_rounds):
+
+    #check if draft aleardy started
+    mycursor.execute("SELECT status FROM League_Draft WHERE league_id = %s", (league_id,))
+    row = mycursor.fetchone()
+
+    if row:
+        return{"success": False, "error":"League already started/completed draft"}
+
+
+    current_pick = draft_order[0]
+
+    try:
+        draft_order_json = json.dumps(draft_order)
+        mycursor.execute("INSERT INTO League_Drafts (league_id, current_round, current_pick_user_id, total_rounds, draft_order, status) VALUES (%s,%s,%s,%s,%s,%s)", (league_id, 1, current_pick, total_rounds, draft_order_json, "in_progress"))
+        db.commit()
+        return {"success":True, "draft_info":{
+            "current_pick": current_pick,
+            "draft_order": draft_order
+        }}
+
+    except Error as e:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+    
+    
+
+def draft_pick(league_id, user_id, fighter_name, weight_class):
+
+
+    #assume can make the pick after checking the state
+
+    try:
+        mycursor.execute("SELECT draft_order, current_round, total_rounds FROM League_Drafts where league_id = %s", (league_id,)) 
+        row = mycursor.fetchone()
+        order, round, total_rounds = row[0]
+        draft_order = json.loads(order)
+
+        mycursor.execute("INSERT INTO Draft_Picks (league_id, user_id, fighter_name, weight_class, round) VALUES (%s,%s,%s,%s,%s)", (league_id, user_id, fighter_name, weight_class, round))
+
+
+        #find the next turn using snake draft
+        #last player of round 1 starts round 2 and goes in reverse
+        
+        is_end_of_draft = False
+        is_end_of_round = False
+        position = draft_order.index(user_id)
+        length = len(draft_order)
+        is_last = True if (position % length == (length - 1)) else False
+        is_first = True if (position % length == 0) else False
+        is_odd_round = True if (round % 2 == 1) else False 
+        
+        if is_odd_round:
+            if (not is_last):
+                next_pick = draft_order[(position + 1)]
+            elif (is_last):
+                next_pick = user_id #next pick will be himself
+                is_end_of_round = True
+
+        elif (not is_odd_round):
+            if (not is_first):
+                next_pick = draft_order[(position - 1)]
+            elif (is_first):
+                next_pick = user_id #next pick himself
+                is_end_of_round = True
+
+        if (is_end_of_round and (round == total_rounds)):
+            is_end_of_draft = True
+
+        #update state of league draft
+        query = "UPDATE League_Drafts SET current_pick_user_id = %s WHERE league_id = %s"
+        params = (next_pick, league_id)
+
+        if is_end_of_round:
+            query = "UPDATE League_Drafts SET current_pick_user_id = %s, current_round = current_round + 1  WHERE league_id = %s"
+            if is_end_of_draft:
+                query = "UPDATE League_Drafts SET status = %s WHERE league_id = %s"
+                params = ('complete', league_id)
+
+        mycursor.execute(query, params)
+
+
+
+    except Error as e:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+
+
 
 """
 
 
+
 !!!!!!!!!!!!!!!!!!!
 
-create a new league_draft and when draft starts then after first pick it in progress
+create a new league_draft and when draft starts then afte
 create new draft pick at every pick
 
-mycursor.execute("CREATE TABLE League_Draft (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_picks int NOT NULL, draft_order JSON NOT NULL, status ENUM('not_started', 'in_progress', 'complete'), FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")
+mycursor.execute("CREATE TABLE League_Drafts (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_rounds int NOT NULL, draft_order JSON NOT NULL, status ENUM('not_started', 'in_progress', 'complete'), FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")
                                                                                         
-mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
+mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter_name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
 
 
-def start_draft(league_id, current_pick_user_id, draft_order, total_rounds):
-    return
+League_Drafts
+id  |   league_id |  current_round  |  current_pick_user_id  |  total_rounds | draft_order JSON  |  status 
 
+Draft_Picks
+id |   league_id | user_id |  fighter_name | weight_class | round
 """
