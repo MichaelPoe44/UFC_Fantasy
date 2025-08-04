@@ -366,7 +366,7 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
     try:
         mycursor.execute("SELECT draft_order, current_round, total_rounds FROM League_Drafts where league_id = %s", (league_id,)) 
         row = mycursor.fetchone()
-        order, round, total_rounds = row[0]
+        order, round, total_rounds = row
         draft_order = json.loads(order)
 
         mycursor.execute("INSERT INTO Draft_Picks (league_id, user_id, fighter_name, weight_class, round) VALUES (%s,%s,%s,%s,%s)", (league_id, user_id, fighter_name, weight_class, round))
@@ -412,11 +412,51 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
 
         mycursor.execute(query, params)
 
+        db.commit()
 
+        return {"success": True}
 
     except Error as e:
         db.rollback()
         return {"success": False, "error": "Database Error"}
+
+
+
+
+def draft_status(league_id):
+
+
+    try:
+ 
+        mycursor.execute("SELECT current_round, current_pick_user_id, status FROM League_Drafts WHERE league_id = %s", (league_id,))
+        row = mycursor.fetchone()
+        (current_round, current_pick_user_id, status) = row
+
+
+        mycursor.execute("SELECT user_id, fighter_name, weight_class, round_picked FROM Draft_Picks WHERE league_id = %s", (league_id,))
+        rows = mycursor.fetchall()
+        
+        #each pick   {user_id:, fighter_name:, weight_class:, round_picked:, }
+        picks = []
+        for row in rows:
+            (user_id, fighter_name, weight_class, round_picked) = row
+            
+            picks.append({"user_id": user_id, "fighter_name": fighter_name, "weight_class": weight_class, "round_picked": round_picked})
+            
+
+
+
+        return {"success":True, "payload": {
+            "status": status,
+            "current_pick_user": current_pick_user_id,
+            "round": current_round,
+            "picks": picks,
+        }}
+
+    except Error as e:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+
 
 
 
@@ -431,12 +471,12 @@ create new draft pick at every pick
 
 mycursor.execute("CREATE TABLE League_Drafts (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_rounds int NOT NULL, draft_order JSON NOT NULL, status ENUM('not_started', 'in_progress', 'complete'), FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")
                                                                                         
-mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter_name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
+mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter_name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round_picked int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
 
 
 League_Drafts
 id  |   league_id |  current_round  |  current_pick_user_id  |  total_rounds | draft_order JSON  |  status 
 
 Draft_Picks
-id |   league_id | user_id |  fighter_name | weight_class | round
+id |   league_id | user_id |  fighter_name | weight_class | round_picked
 """
