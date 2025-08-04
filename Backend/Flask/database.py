@@ -39,6 +39,13 @@ mycursor = db.cursor()
 #fighter pool
 # mycursor.execute("CREATE TABLE Fighter_Pool (fighter_id int PRIMARY KEY AUTO_INCREMENT, name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, ranking int NOT NULL, last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
 
+#league draft tables
+# mycursor.execute("CREATE TABLE League_Drafts (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_rounds int NOT NULL, draft_order JSON NOT NULL, status ENUM('not_started', 'in_progress', 'complete'), FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")                                                                                     
+# mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter_name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round_picked int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
+
+
+
+
 
 # mycursor.execute("DESCRIBE Users")
 # mycursor.execute("DESCRIBE Leagues")
@@ -301,10 +308,29 @@ def update_fighter_pool(pool):
     db.commit()
 
 
+def get_fighter_pool():
 
+    #weight_class: {rank: name, rank:name}
+    fighter_pool = {
+        "Flyweight": {},
+        "Bantamweight":{},
+        "Featherweight":{},
+        "Lightweight":{},
+        "Welterweight":{},
+        "Middleweight":{},
+        "Light Heavyweight":{},
+        "Heavyweight":{}
+        }
+    
+    for weight_class in fighter_pool:
+        mycursor.execute("SELECT name, ranking FROM Fighter_Pool WHERE weight_class = %s", (weight_class,))
+        rows = mycursor.fetchall()
 
+        for row in rows:
+            (fighter_name, rank) = row
+            fighter_pool[weight_class][rank] = fighter_name
 
-
+    return fighter_pool
 
 
 
@@ -329,12 +355,16 @@ def update_fighter_pool(pool):
 # for x in mycursor:
 #     print(x)
 
+# print("League_Drafts-------------------------")
+# mycursor.execute("SELECT * FROM League_Drafts")
+# for x in mycursor:
+#     print(x)
 
 
 def start_draft(league_id, draft_order, total_rounds):
 
     #check if draft aleardy started
-    mycursor.execute("SELECT status FROM League_Draft WHERE league_id = %s", (league_id,))
+    mycursor.execute("SELECT status FROM League_Drafts WHERE league_id = %s", (league_id,))
     row = mycursor.fetchone()
 
     if row:
@@ -360,16 +390,15 @@ def start_draft(league_id, draft_order, total_rounds):
 
 def draft_pick(league_id, user_id, fighter_name, weight_class):
 
-
     #assume can make the pick after checking the state
 
     try:
         mycursor.execute("SELECT draft_order, current_round, total_rounds FROM League_Drafts where league_id = %s", (league_id,)) 
         row = mycursor.fetchone()
-        order, round, total_rounds = row
+        order, current_round, total_rounds = row
         draft_order = json.loads(order)
 
-        mycursor.execute("INSERT INTO Draft_Picks (league_id, user_id, fighter_name, weight_class, round) VALUES (%s,%s,%s,%s,%s)", (league_id, user_id, fighter_name, weight_class, round))
+        mycursor.execute("INSERT INTO Draft_Picks (league_id, user_id, fighter_name, weight_class, round_picked) VALUES (%s,%s,%s,%s,%s)", (league_id, user_id, fighter_name, weight_class, current_round))
 
 
         #find the next turn using snake draft
@@ -381,8 +410,9 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
         length = len(draft_order)
         is_last = True if (position % length == (length - 1)) else False
         is_first = True if (position % length == 0) else False
-        is_odd_round = True if (round % 2 == 1) else False 
+        is_odd_round = True if (current_round % 2 == 1) else False 
         
+
         if is_odd_round:
             if (not is_last):
                 next_pick = draft_order[(position + 1)]
@@ -397,8 +427,9 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
                 next_pick = user_id #next pick himself
                 is_end_of_round = True
 
-        if (is_end_of_round and (round == total_rounds)):
+        if (is_end_of_round and (current_round == total_rounds)):
             is_end_of_draft = True
+
 
         #update state of league draft
         query = "UPDATE League_Drafts SET current_pick_user_id = %s WHERE league_id = %s"
@@ -415,7 +446,8 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
         db.commit()
 
         return {"success": True}
-
+    
+        
     except Error as e:
         db.rollback()
         return {"success": False, "error": "Database Error"}
@@ -436,7 +468,7 @@ def draft_status(league_id):
         mycursor.execute("SELECT user_id, fighter_name, weight_class, round_picked FROM Draft_Picks WHERE league_id = %s", (league_id,))
         rows = mycursor.fetchall()
         
-        #each pick   {user_id:, fighter_name:, weight_class:, round_picked:, }
+        
         picks = []
         for row in rows:
             (user_id, fighter_name, weight_class, round_picked) = row
@@ -460,6 +492,55 @@ def draft_status(league_id):
 
 
 
+def can_make_pick(league_id, user_id, fighter_name, weight_class):
+    #check if can make pick
+    get_draft_state = draft_status(league_id)
+
+    if (get_draft_state["success"] != True):
+        return {"success": False, "error":"error getting status"}
+
+    draft_state = get_draft_state["payload"]
+
+    current_pick_user_id = draft_state["current_pick_user"]
+    status = draft_state["status"]
+    picks = draft_state["picks"]
+
+    #is the draft in progress
+    if (status != "in_progress"):
+        return {"success": False, "error": "draft not in progress"}
+    
+    #is it their pick
+    if (user_id != current_pick_user_id):
+        return {"success": False, "error": "not your turn"}
+    
+    #is the fighter taken
+    for pick in picks:
+        if (pick["fighter_name"] == fighter_name and pick["weight_class"] == weight_class):
+            return {"success": False, "error": "fighter already taken"}
+
+    #is the fighter in the pool
+    fighter_pool = get_fighter_pool()
+    if (fighter_name not in fighter_pool[weight_class].values()):
+        return {"success": False, "error": "Fighter not in draft pool"}
+
+
+    return {"success": True}
+
+
+
+
+def delete_league_draft(league_id):
+
+    try:
+        mycursor.execute("DELETE FROM League_Drafts WHERE league_id = %s", (league_id,))
+        if mycursor.rowcount != 1:
+            raise RuntimeError("MORE THAN 1 League AFFECTED: " + str(mycursor.rowcount))
+
+        mycursor.execute("DELETE FROM Draft_Picks WHERE league_id = %s", (league_id,))
+
+        db.commit()
+    except:
+        db.rollback()
 """
 
 
@@ -468,10 +549,6 @@ def draft_status(league_id):
 
 create a new league_draft and when draft starts then afte
 create new draft pick at every pick
-
-mycursor.execute("CREATE TABLE League_Drafts (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_rounds int NOT NULL, draft_order JSON NOT NULL, status ENUM('not_started', 'in_progress', 'complete'), FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")
-                                                                                        
-mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter_name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round_picked int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
 
 
 League_Drafts

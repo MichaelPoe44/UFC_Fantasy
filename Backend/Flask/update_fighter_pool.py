@@ -11,7 +11,7 @@ This file used for manual updates to the fighter pool
 pool = get_fighter_pool()
 
 if pool:
-    #update_fighter_pool(pool)
+
     update_fighter_pool(pool)
 else:
     print("error getting rankings from UFC")

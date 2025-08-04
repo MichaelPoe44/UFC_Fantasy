@@ -115,7 +115,9 @@ def start_draft(league_id):
 #checks state of draft
 @app.route('/api/draft/state/<int:league_id>', methods=["GET"])
 def get_draft_state(league_id):
+    response = database.draft_status(league_id)
 
+    return response
 
 
 
@@ -127,13 +129,13 @@ def draft_pick():
     fighter_name = data.get("fighter_name")
     weight_class = data.get("weight_class")
     
-    round = data.get("round") #might change to get from the check state
-
-    #use get state to check if its their pick if fighter taken ect
-
-    response = database.draft_pick(league_id, user_id, fighter_name, weight_class)
-
-
-
+    can_make_pick = database.can_make_pick(league_id,user_id, fighter_name, weight_class)
+    
+    if (can_make_pick["success"] == True):
+        response = database.draft_pick(league_id, user_id, fighter_name, weight_class)
+        return response
+    
+    elif (can_make_pick["success"] == False):
+        return can_make_pick
 
 
