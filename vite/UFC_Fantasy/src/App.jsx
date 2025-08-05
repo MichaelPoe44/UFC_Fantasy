@@ -12,6 +12,7 @@ import Login from "./pages/Login.jsx"
 import LeagueMenu from "./pages/LeagueMenu.jsx"
 import Profile from "./pages/Profile.jsx"
 import GetStarted from "./pages/GetStarted.jsx"
+import DraftLobby from "./pages/DraftLobby.jsx"
 
   // {showSidebar && (
   //           <Sidebar setShowSidebar={setShowSidebar}/>
@@ -35,6 +36,7 @@ function App() {
           <Route path="/profile" element={<Profile />}/>
           <Route path="/league-menu" element={<LeagueMenu />}/>
           <Route path="/login" element={<Login />}/>
+          <Route path="/draft" element={<DraftLobby />}/>
         </Routes>
     </StateProvider>
     </>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getStateContext } from "../StateProvider";
-import "./Header.css";
+import "./styles/Header.css";
 import {Link, useLocation} from "react-router-dom";
 
 export default function Header({setShowSidebar, showSidebar}){

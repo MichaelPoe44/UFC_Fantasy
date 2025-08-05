@@ -24,8 +24,8 @@ def get_stats():
     return jsonify(fighter_stats)
 
 
-@app.route('/', methods=["POST"])
-def add_fighter():
+# @app.route('/', methods=["POST"])
+# def add_fighter():
     #need the user and fighter
     #get team append fighter
     #incomes.append(request.get_json())
@@ -137,5 +137,14 @@ def draft_pick():
     
     elif (can_make_pick["success"] == False):
         return can_make_pick
+
+
+
+@app.route('/api/draft/get_fighter_pool', methods=["GET"])
+def get_pool():
+    
+    response = database.get_fighter_pool()
+    return response
+
 
 

@@ -476,8 +476,6 @@ def draft_status(league_id):
             picks.append({"user_id": user_id, "fighter_name": fighter_name, "weight_class": weight_class, "round_picked": round_picked})
             
 
-
-
         return {"success":True, "payload": {
             "status": status,
             "current_pick_user": current_pick_user_id,
@@ -513,6 +511,16 @@ def can_make_pick(league_id, user_id, fighter_name, weight_class):
     if (user_id != current_pick_user_id):
         return {"success": False, "error": "not your turn"}
     
+    #do they already have 2 fighters in that weightclass
+    #picks.append({"user_id": user_id, "fighter_name": fighter_name, "weight_class": weight_class, "round_picked": round_picked})
+    count = 0            
+    for pick in picks:
+        if (pick["user_id"] == user_id and pick["weight_class"] == weight_class):
+            count += 1
+    if count >= 2:
+        return {"success": False, "error": "Already have 2 fighters in that weight class"}
+
+
     #is the fighter taken
     for pick in picks:
         if (pick["fighter_name"] == fighter_name and pick["weight_class"] == weight_class):

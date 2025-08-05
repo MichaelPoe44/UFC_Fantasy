@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import "./Sidebar.css"
+import "./styles/Sidebar.css"
 import { Link, useLocation }  from "react-router-dom";
 
 
@@ -24,6 +24,7 @@ export default function Sidebar({setShowSidebar, showSidebar}){
                 <Navigation name="Home" destination="/"/>
                 <Navigation name="Profile" destination="/profile"/>
                 <Navigation name="Leagues" destination="/league-menu"/>
+
             </div>
 
 

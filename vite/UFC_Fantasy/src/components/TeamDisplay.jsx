@@ -1,4 +1,4 @@
-import "./TeamDisplay.css"
+import "./styles/TeamDisplay.css"
 
   
 export default function TeamDisplay() {

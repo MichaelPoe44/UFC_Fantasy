@@ -26,7 +26,7 @@ state{
         password: //maybe dont store password in front end
         id:
     },
-    leagues: [
+    leagues: {
         league_id: {
                 "league_info":{
                     "name": name,
@@ -39,8 +39,8 @@ state{
                         "username": username
                     }
                 }
-            }  
-    ],
+        }  
+    }
 }
 
 
@@ -48,7 +48,7 @@ state{
 
 const initialState = {
     user: null,
-    leagues: [],
+    leagues: {},
 }
 */
 //mayber keep username logged in state and only store password in backend
