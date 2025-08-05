@@ -1,32 +1,32 @@
+// DraftBoard.jsx
+import React from 'react';
 
+const DraftBoard = ({ picks }) => {
+  return (
+    <div className="draft-board">
+      <h3>Draft Picks</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Fighter</th>
+            <th>Weight Class</th>
+            <th>Round</th>
+          </tr>
+        </thead>
+        <tbody>
+          {picks.map((pick, idx) => (
+            <tr key={idx}>
+              <td>{pick.user_id}</td>
+              <td>{pick.fighter_name}</td>
+              <td>{pick.weight_class}</td>
+              <td>{pick.round_picked}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
-
-
-export default function DraftBoard({ draftState }){
-
-    if (!draftState?.draft_order) return null;
-
-
-    return(
-        <div className="draft_board">
-            <h3>Draft Board</h3>
-            
-            <ul>
-                {draftState.draft_order.map((userId, idx) => {
-                    const userPicks = draftState.picks.filter(p => p.user_id === userId);
-                    return (
-                        <li key={idx}>
-                            <strong>Player {userId}</strong>
-                            <ul>
-                                {userPicks.map(p => (
-                                    <li key={p.fighter_id}>{p.fighter_name} ({p.weight_class})</li>
-                                ))}
-                            </ul>
-                        </li>
-                    );
-                })}
-            </ul>
-
-        </div>
-    )
-}
+export default DraftBoard;

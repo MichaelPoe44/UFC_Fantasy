@@ -1,68 +1,111 @@
-import { useEffect, useState, useContext } from "react";
-import { getStateContext } from "./StateProvider";
-import FighterPool from "../components/FighterPool.jsx";
-import DraftBoard from "../components/DraftBoard.jsx";
-//import PickTimer from "../components/PickTimer.jsx"; //do i want pick timer?
-import { DraftContext} from "../components/DraftContext.jsx";
+import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+import FighterPool from './FighterPool';
+import DraftBoard from './DraftBoard';
+import { getStateContext } from '../StateProvider.jsx'; // adjust path as needed
+
+const DraftLobby = ({ leagueId }) => {
+  const [state, dispatch] = getStateContext(); // assume you store id, username, etc.
+  const [draftState, setDraftState] = useState(null);
+  const [fighterPool, setFighterPool] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
 
-export default function DraftLobby({ leagueId, UserId }){
-    const [state, dispatch] = getStateContext();
-
-    const {
-            status,
-            currentRound,
-            currentPickUserId,
-            myUserId,
-            leagueId,
-            isMyTurn,
-            picks,
-            fullFighterPool,
-            availableFighters,
-            fetchDraftState,
-            fetchFighterPool,
-            makePick,
-            loading
-        } = useContext(DraftContext);
-
-    const [selectedFighter, setSelectedFighter] = useState(null);
-
-    useEffect( () => {
-        fetchDraftState(leagueId, UserId);
-        const interval = setInterval(() => fetchDraftState(leagueId,  UserId), 3000); //gets any updates to the state every 3s
-        return () => clearInterval(interval); //stops getting updates if leave page
-    }, [leagueId]);
+  const fetchDraftState = async () => {
+    try {
+      const response = await fetch(`/api/draft/state/${leagueId}`);
+      const data = await response.json();
+      if (data.success) setDraftState(data.payload);
+    } 
+    catch (error) {
+      setError("Failed to fetch draft state", error);
+    }
+  };
 
 
-    const handlePick = () => {
-        if (isMyTurn && selectedFighter) {
-            makePick(selectedFighter.name, selectedFighter.weight_class);
-            setSelectedFighter(null)
-        }
+  const fetchFighterPool = async () => {
+    try {
+      const response = await fetch(`/api/draft/get_fighter_pool`);
+      const data = await response.json();
+      setFighterPool(data);
+    } 
+    catch (err) {
+      setError("Failed to fetch fighter pool", error);
+    }
+  };
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchDraftState();
+      await fetchFighterPool();
+      setLoading(false);
     };
+    fetchData();
+
+    const interval = setInterval(fetchDraftState, 3000); // polling
+    return () => clearInterval(interval);
+  }, []);
 
 
 
-    return(
-        <div className="draft_lobby">
-            <h2>{state.leagueId.league_info.name} Draft</h2>
+  const handlePick = async (fighterName, weightClass) => {
+    try {
 
-            {loading ? (<p>Loading draft...</p>) :(
-                <>
-                <FighterPool
-                    fighters={fighters}
-                    onSelect={setSelectedFighter}
-                    selectedFighter={selectedFighter}
-                />
+        const response = await fetch("http://127.0.0.1:5000/api/register-user", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                user_id: user.id,
+                league_id: leagueId,
+                fighter_name: fighterName,
+                weight_class: weightClass
+            })
+        });
+        const data = await response.json();
 
-                <button disabled={!isMyTurn || !selectedFighter} onClick={handlePick}>
-                    Draft Selected Fighter
-                </button>
+      if (!data.success) {
+        alert(data.error);
+      } 
+      else {
+        await fetchDraftState();
+      }
+    } 
+    catch (error) {
+      console.error(error);
+    }
+  };
 
-                <DraftBoard draftState={draftState} />
-                </>
-            )}
+  if (loading) return <p>Loading draft...</p>;
 
+  const isMyTurn = state.user.id === draftState.current_pick_user;
+  const draftOver = draftState.status === "complete";
 
-        </div>
-    )}
+  return (
+    <div className="draft-lobby">
+      <h2>UFC Fantasy Draft</h2>
+      <p>Status: {draftState.status}</p>
+      <p>Round: {draftState.round}</p>
+      <p>Current Pick: {isMyTurn ? "Your turn" : `User ${draftState.current_pick_user}'s turn`}</p>
+
+      {draftOver ? (
+        <h3>Draft Completed!</h3>
+      ) : (
+        <>
+          <FighterPool
+            fighterPool={fighterPool}
+            onPick={handlePick}
+            draftState={draftState}
+            userId={user.id}
+          />
+
+          <DraftBoard picks={draftState.picks} />
+        </>
+      )}
+    </div>
+  );
+};
+
+export default DraftLobby;

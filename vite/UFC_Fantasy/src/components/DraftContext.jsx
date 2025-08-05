@@ -1,20 +1,17 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 
 
-export const DraftContext = createContext();
+const DraftContext = createContext();
+
+export const useDraft = () => useContext(DraftContext)
 
 
 export const DraftProvider = ({ children }) => {
 
-    const [status, setStatus] = useState("not_started");
-    const [currentRound, setCurrentRound] = useState(null);
-    const [currentPickUserId, setCurrentPickUserId] = useState(null);
-    const [myUserId, setMyUserId] = useState(null);
-    const [leagueId, setLeagueId] = useState(null);
-    const [picks, setPicks] = useState([]);
-    const [fullFighterPool, setFullFighterPool] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [draftState, setDraftState] = useState(null);
+    const [fighterPool, setFighterPool] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
 
 

@@ -1,49 +1,50 @@
-import { useState } from "react";
-import { DraftContext } from "./DraftContext";
+// FighterPool.jsx
+import React, { useState } from 'react';
 
+const FighterPool = ({ fighterPool, onPick, draftState, userId }) => {
+  const [selectedWeight, setSelectedWeight] = useState("Lightweight");
 
-const weightClasses = [
-    "Flyweight",
-    "Bantamweight",
-    "Featherweight",
-    "Lightweight",
-    "Welterweight",
-    "Middleweight",
-    "Light Heavyweight",
-    "Heavyweight"
-]
+  const picks = draftState.picks.filter(pick => pick.user_id === userId);
+  const countInClass = (weightClass) =>
+    picks.filter(p => p.weight_class === weightClass).length;
 
-export default function FighterPool({ fighters, onSelect, selectedFighter }){
-    
-    const [filter, setFilter] = useState("All");
-    
-    const filtered = (filter == "All") ? fighters : fighters.filter(f => f.weight_class === filter)
-    
-    
-    return(
-        <div className="fighter_pool">
+  const isTaken = (name, weightClass) =>
+    draftState.picks.some(p => p.fighter_name === name && p.weight_class === weightClass);
 
-            <h3>Available Fighters</h3>
-            <select onChange={e => setFilter(e.target.value)} value={filter}>
-                <option value="All">All</option>
-                {weightClasses.map(wc => (
-                    <option key={wc} value={wc}>{wc}</option>
-                ))}
-            </select>
-            
-            <ul className="fighter_list">
-                {filtered.map(f => (
-                    <li
-                        key={f.name}
-                        className={(selectedFighter?.name === f.name) ? "selected" : ""}
-                        onClick={() => onSelect(f)}
-                    >
-                        {f.name} ({f.weight_class})    
-                    </li>
-                ))}
-        
-            </ul>
+  const handleSelect = (name) => {
+    if (countInClass(selectedWeight) >= 2) {
+      alert("You already have 2 fighters in this weight class.");
+      return;
+    }
 
-        </div>
-    )
-}
+    onPick(name, selectedWeight);
+  };
+
+  return (
+    <div className="fighter-pool">
+      <h3>Available Fighters</h3>
+      <select value={selectedWeight} onChange={(e) => setSelectedWeight(e.target.value)}>
+        {Object.keys(fighterPool).map(weight => (
+          <option key={weight}>{weight}</option>
+        ))}
+      </select>
+
+      <div className="fighters-list">
+        {Object.entries(fighterPool[selectedWeight])
+          .sort((a, b) => a[0] - b[0]) // sort by ranking
+          .map(([rank, name]) => (
+            <button
+              key={name}
+              disabled={isTaken(name, selectedWeight)}
+              onClick={() => handleSelect(name)}
+              className="fighter-button"
+            >
+              #{rank} - {name} {isTaken(name, selectedWeight) && "(Taken)"}
+            </button>
+          ))}
+      </div>
+    </div>
+  );
+};
+
+export default FighterPool;
