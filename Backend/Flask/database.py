@@ -386,7 +386,7 @@ def start_draft(league_id, draft_order, total_rounds):
         db.rollback()
         return {"success": False, "error": "Database Error"}
     
-    
+  
 
 def draft_pick(league_id, user_id, fighter_name, weight_class):
 
@@ -459,9 +459,11 @@ def draft_status(league_id):
 
 
     try:
- 
+        
         mycursor.execute("SELECT current_round, current_pick_user_id, status FROM League_Drafts WHERE league_id = %s", (league_id,))
         row = mycursor.fetchone()
+        if row == None:
+            return {"success":False, "error": "draft not started"}
         (current_round, current_pick_user_id, status) = row
 
 
@@ -502,7 +504,7 @@ def can_make_pick(league_id, user_id, fighter_name, weight_class):
     current_pick_user_id = draft_state["current_pick_user"]
     status = draft_state["status"]
     picks = draft_state["picks"]
-
+    
     #is the draft in progress
     if (status != "in_progress"):
         return {"success": False, "error": "draft not in progress"}

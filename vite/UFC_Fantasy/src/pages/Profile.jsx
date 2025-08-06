@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import TeamDisplay from "../components/TeamDisplay.jsx"
 import { getStateContext } from "../StateProvider.jsx";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -22,36 +23,51 @@ const get_stats = async (fighter_name, set_fighter) => {    //my flask endpoint
 export default function Profile(){
     //////example
     const {state, dispatch} = getStateContext();
-
-    const [fighter_stats, set_fighter] = useState({});
+    const navigate = useNavigate();
+    // const [fighter_stats, set_fighter] = useState({});
     
 
-    //grab stats when page first renders
-    useEffect(() => {
-        get_stats("jon-jones",set_fighter);
-        console.log(fighter_stats);
-    },[])
+    // //grab stats when page first renders
+    // useEffect(() => {
+    //     get_stats("jon-jones",set_fighter);
+    //     console.log(fighter_stats);
+    // },[])
     
 
 
-    //logs stats when they change (preventing empty json while waiting)
-    useEffect(() => {
-        console.log(fighter_stats)
-    }, [fighter_stats])
+    // //logs stats when they change (preventing empty json while waiting)
+    // useEffect(() => {
+    //     console.log(fighter_stats)
+    // }, [fighter_stats])
     
-    //example
-    const log_amount = () => {
-        console.log(user)
+    // //example
+    // const log_amount = () => {
+    //     console.log(user)
+    // }
+
+    
+    const handleClick = (e) => {
+        const id = e.target.value;
+        navigate(`/draft/${id}`)
+        
     }
 
-    
+
     return(
         <div className="profile">
+        <h1>here 1</h1>
         
-        <button onClick={() => console.log(team)}>this</button>
-        <button onClick={log_amount}>log stats</button>
+            {Object.entries(state.leagues).map(([leagueId, leagueObj]) => {
+                const info = leagueObj.league_info;
+                return(
 
-        <TeamDisplay />
+                <button key={leagueId} onClick={handleClick} value={leagueId}>League ID: {leagueId} {info.name}</button>
+                
+                );
+            })}
+        
+
+        <h1>here</h1>
 
         </div>
     )

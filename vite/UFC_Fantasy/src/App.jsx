@@ -36,7 +36,7 @@ function App() {
           <Route path="/profile" element={<Profile />}/>
           <Route path="/league-menu" element={<LeagueMenu />}/>
           <Route path="/login" element={<Login />}/>
-          <Route path="/draft:leagueId" element={<DraftLobby />}/>
+          <Route path="/draft/:leagueId" element={<DraftLobby />}/>
         </Routes>
     </StateProvider>
     </>
