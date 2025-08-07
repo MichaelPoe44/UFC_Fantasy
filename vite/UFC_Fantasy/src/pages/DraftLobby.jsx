@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FighterPool from '../components/FighterPool.jsx';
 import DraftBoard from '../components/DraftBoard.jsx';
@@ -12,7 +12,7 @@ import { getStateContext } from '../StateProvider.jsx';
 export default function DraftLobby(){
 
 
-  	const {state, dispatch} = getStateContext(); // assume you store id, username, etc.
+  	const {state, dispatch} = getStateContext(); 
   	const { leagueId } = useParams();
   	const [draftState, setDraftState] = useState(null);
   	const [fighterPool, setFighterPool] = useState({});
@@ -48,10 +48,8 @@ export default function DraftLobby(){
 				console.error(data.error)
 				navigate('/')
 			}
-      		if (data.success){							//draft state is not updating according
-				console.log("payload ", data.payload);	// to the payload
-				setDraftState(data.payload);
-				console.log("state: ", draftState);
+      		if (data.success){							
+				setDraftState(data.payload)
 			}
     		} 
     	catch (error) {
@@ -71,8 +69,7 @@ export default function DraftLobby(){
     	}
   	};
 
-
-
+	
   	useEffect(() => {
     	const fetchData = async () => {
      	 	await fetchDraftState();
@@ -89,7 +86,7 @@ export default function DraftLobby(){
 
   	const handlePick = async (fighterName, weightClass) => {
     	try {
-			console.log("I WANT TO MAKE PICK: ", state.user.user_id)
+			
         	const response = await fetch("http://127.0.0.1:5000/api/draft/pick", {
             	method: "POST",
             	headers: {"Content-Type": "application/json"},

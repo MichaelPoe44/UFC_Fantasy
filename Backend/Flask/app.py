@@ -117,6 +117,7 @@ def start_draft(league_id):
 def get_draft_state(league_id):
 
     response = database.draft_status(league_id)
+
     return response
 
 
@@ -147,4 +148,5 @@ def get_pool():
     return response
 
 
-
+database.delete_league_draft(9)
+start_draft(9)

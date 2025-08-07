@@ -4,13 +4,14 @@ import string
 import secrets
 import json
 
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="Froggy122204",
-    database="mytest"
-)
-db.autocommit = False
+
+host="localhost"
+user="root"
+passwd="Froggy122204"
+database="mytest"
+
+
+
 
 """
 Example Use Case Flow
@@ -23,7 +24,7 @@ User builds team → insert into teams, then insert fighters into team_fighters
 You can score teams based on real UFC event results and logic you define in backend
 """
 
-mycursor = db.cursor()
+
 
 #mycursor.execute("CREATE DATABASE mytest")
 
@@ -72,6 +73,17 @@ user_id     league_id    name       fighter_name
 
 #creating a user should take a user and pass a return the user id
 def create_user(username, hashedpassword):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
     try:
         mycursor.execute("INSERT INTO Users (username, password_hash) VALUES (%s,%s)", (username, hashedpassword))
         db.commit()
@@ -87,10 +99,25 @@ def create_user(username, hashedpassword):
             return {"success": False, "error": "Username already exists"}
         else:
             return {"success": False, "error": "Database Error"}
+    
+    finally:
+        mycursor.close()
+        db.close()
 
 
 #take league name and creator id and return the league info 
 def create_league(name, user_id):
+
+
+    db = mysql.connector.connect(
+            host=host,
+            user=user,
+            passwd=passwd,
+            database=database
+        )
+    db.autocommit = False
+    mycursor = db.cursor()
+
 
     #to make a unique code
     characters = string.ascii_letters + string.digits
@@ -133,15 +160,31 @@ def create_league(name, user_id):
     except Error as e:
         db.rollback()
         return {"success": False, "error": "Database Error"}
+    
+    finally:
+        mycursor.close()
+        db.close()
 
 
 
 def join_league(user_id, join_code):
 
+    db = mysql.connector.connect(
+            host=host,
+            user=user,
+            passwd=passwd,
+            database=database
+        )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+
     mycursor.execute("SELECT * FROM Leagues WHERE join_code = %s", (join_code,))
     row = mycursor.fetchone()
     #if couldnt find a league with that code
     if row == None:
+        mycursor.close()
+        db.close()
         return {"success": False, "error": "Wrong code or League DNE"}
 
     league_id = row[0]
@@ -153,6 +196,8 @@ def join_league(user_id, join_code):
     #if user already in that league
     mycursor.execute("SELECT * FROM Users_Leagues WHERE league_id = %s AND user_id = %s", (league_id, user_id))
     if mycursor.fetchone() != None:
+        mycursor.close()
+        db.close()
         return {"success": False, "error": "User already in this League"}
     
 
@@ -197,18 +242,35 @@ def join_league(user_id, join_code):
     except Error as e:
         db.rollback()
         return {"success": False, "error": "Database Error"}
+    
+    finally:
+        mycursor.close()
+        db.close()
 
 
 
 #will need to add info grabing for the teams of each player
 def user_login(username):
-    
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+
     #look for the user
     mycursor.execute("SELECT user_id FROM Users WHERE username = %s", (username,))
     row = mycursor.fetchone()
     
     #if no user with those credentials
     if row == None:
+        mycursor.close()
+        db.close()
         return {"success": False, "error": "User not found username or password may be wrong"}
     
     #now we know user matches credentials
@@ -239,6 +301,8 @@ def user_login(username):
         mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", (league_id,))
         temp_rows = mycursor.fetchall()
         if len(temp_rows) != num_participants:
+            mycursor.close()
+            db.close()
             return {"success": False, "error": "Error getting information"}
         
 
@@ -268,19 +332,49 @@ def user_login(username):
         "leagues": leagues_in
     }
     
+    
+    mycursor.close()
+    db.close()
     return {"success": True, "user_data": all_info}
 
 
 def get_hash_for_user(username):
 
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+
     mycursor.execute("SELECT password_hash FROM Users WHERE username = %s", (username,))
     row = mycursor.fetchone()
     if (row == None):
+        mycursor.close()
+        db.close()
         return None
+    
+    mycursor.close()
+    db.close()
     return row[0]
 
 
 def get_league_members(league_id):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
 
     mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", (league_id,))
     rows = mycursor.fetchall()
@@ -291,6 +385,9 @@ def get_league_members(league_id):
         mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (participant_id,))
         row = mycursor.fetchone()
         participants[participant_id] = row[0]
+
+    mycursor.close()
+    db.close()
     return participants
 
 #####################################################################################
@@ -298,6 +395,17 @@ def get_league_members(league_id):
 
 def update_fighter_pool(pool):
     
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+
     #clear out everything in previous table
     mycursor.execute("TRUNCATE TABLE Fighter_Pool")
 
@@ -306,9 +414,21 @@ def update_fighter_pool(pool):
             mycursor.execute("INSERT INTO Fighter_Pool (name, weight_class, ranking) VALUES (%s,%s,%s)", (fighter, weight_class, rank))
     
     db.commit()
-
+    mycursor.close()
+    db.close()
 
 def get_fighter_pool():
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
 
     #weight_class: {rank: name, rank:name}
     fighter_pool = {
@@ -330,44 +450,78 @@ def get_fighter_pool():
             (fighter_name, rank) = row
             fighter_pool[weight_class][rank] = fighter_name
 
+    mycursor.close()
+    db.close()
     return fighter_pool
 
 
 
+def print_my_info():
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
 
-# print("Users--------------------------------")
-# mycursor.execute("SELECT * FROM Users")
-# for x in mycursor:
-#     print(x)
+    # print("Users--------------------------------")
+    # mycursor.execute("SELECT * FROM Users")
+    # for x in mycursor:
+    #     print(x)
 
-# print("leagues-------------------------------")
-# mycursor.execute("SELECT * FROM Leagues")
-# for x in mycursor:
-#     print(x)
+    # print("leagues-------------------------------")
+    # mycursor.execute("SELECT * FROM Leagues")
+    # for x in mycursor:
+    #     print(x)
 
-# print("Users_Leagues-------------------------")
-# mycursor.execute("SELECT * FROM Users_Leagues")
-# for x in mycursor:
-#     print(x)
+    # print("Users_Leagues-------------------------")
+    # mycursor.execute("SELECT * FROM Users_Leagues")
+    # for x in mycursor:
+    #     print(x)
 
-# print("Fighter_Pool-------------------------")
-# mycursor.execute("SELECT * FROM Fighter_Pool")
-# for x in mycursor:
-#     print(x)
+    # print("Fighter_Pool-------------------------")
+    # mycursor.execute("SELECT * FROM Fighter_Pool")
+    # for x in mycursor:
+    #     print(x)
 
-# print("League_Drafts-------------------------")
-# mycursor.execute("SELECT * FROM League_Drafts")
-# for x in mycursor:
-#     print(x)
+    print("League_Drafts-------------------------")
+    mycursor.execute("SELECT * FROM League_Drafts")
+    for x in mycursor:
+        print(x)
+
+    mycursor.close()
+    db.close()
+
+
+
+
+
+
+
 
 
 def start_draft(league_id, draft_order, total_rounds):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
 
     #check if draft aleardy started
     mycursor.execute("SELECT status FROM League_Drafts WHERE league_id = %s", (league_id,))
     row = mycursor.fetchone()
 
     if row:
+        mycursor.close()
+        db.close()
         return{"success": False, "error":"League already started/completed draft"}
 
 
@@ -386,9 +540,24 @@ def start_draft(league_id, draft_order, total_rounds):
         db.rollback()
         return {"success": False, "error": "Database Error"}
     
+    finally:
+        mycursor.close()
+        db.close()
+    
   
 
 def draft_pick(league_id, user_id, fighter_name, weight_class):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
 
     #assume can make the pick after checking the state
 
@@ -451,11 +620,25 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
     except Error as e:
         db.rollback()
         return {"success": False, "error": "Database Error"}
+    
+    finally:
+        mycursor.close()
+        db.close()
 
 
 
 
 def draft_status(league_id):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
 
 
     try:
@@ -488,11 +671,17 @@ def draft_status(league_id):
     except Error as e:
         db.rollback()
         return {"success": False, "error": "Database Error"}
+    
+    finally:
+        mycursor.close()
+        db.close()
 
 
 
 
 def can_make_pick(league_id, user_id, fighter_name, weight_class):
+
+
     #check if can make pick
     get_draft_state = draft_status(league_id)
 
@@ -541,6 +730,17 @@ def can_make_pick(league_id, user_id, fighter_name, weight_class):
 
 def delete_league_draft(league_id):
 
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+
     try:
         mycursor.execute("DELETE FROM League_Drafts WHERE league_id = %s", (league_id,))
         if mycursor.rowcount != 1:
@@ -551,6 +751,10 @@ def delete_league_draft(league_id):
         db.commit()
     except:
         db.rollback()
+    
+    finally:
+        mycursor.close()
+        db.close()
 """
 
 
