@@ -35,7 +35,7 @@ You can score teams based on real UFC event results and logic you define in back
 # mycursor.execute("CREATE TABLE Users_Leagues (league_id int NOT NULL, user_id int NOT NULL, UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
 
 # #one to many teams table
-#mycursor.execute("CREATE TABLE Teams (user_id int NOT NULL, league_id int NOT NULL, name varchar(128) NOT NULL, fighter_name varchar(128), UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
+#mycursor.execute("CREATE TABLE Teams (user_id int NOT NULL, league_id int NOT NULL, name varchar(128) NOT NULL, Flyweight_1 varchar(50), Bantamweight_1 varchar(50), Featherweight_1 varchar(50), Lightweight_1 varchar(50), Welterweight_1 varchar(50), Middleweight_1 varchar(50), Light_Heavyweight_1 varchar(50), Heavyweight_1 varchar(50), Flyweight_2 varchar(50), Bantamweight_2 varchar(50), Featherweight_2 varchar(50), Lightweight_2 varchar(50), Welterweight_2 varchar(50), Middleweight_2 varchar(50), Light_Heavyweight_2 varchar(50), Heavyweight_2 varchar(50), UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
 
 #fighter pool
 # mycursor.execute("CREATE TABLE Fighter_Pool (fighter_id int PRIMARY KEY AUTO_INCREMENT, name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, ranking int NOT NULL, last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
@@ -440,7 +440,7 @@ def get_fighter_pool():
         "Middleweight":{},
         "Light Heavyweight":{},
         "Heavyweight":{}
-        }
+    }
     
     for weight_class in fighter_pool:
         mycursor.execute("SELECT name, ranking FROM Fighter_Pool WHERE weight_class = %s", (weight_class,))
@@ -476,6 +476,11 @@ def print_my_info():
     # for x in mycursor:
     #     print(x)
 
+    print("Teams-------------------------------")
+    mycursor.execute("SELECT * FROM Teams")
+    for x in mycursor:
+        print(x)
+
     # print("Users_Leagues-------------------------")
     # mycursor.execute("SELECT * FROM Users_Leagues")
     # for x in mycursor:
@@ -490,6 +495,15 @@ def print_my_info():
     mycursor.execute("SELECT * FROM League_Drafts")
     for x in mycursor:
         print(x)
+
+    print("Draft_Picks-------------------------")
+    mycursor.execute("SELECT * FROM Draft_Picks")
+    for x in mycursor:
+        print(x)
+    
+    # mycursor.execute("DESCRIBE Teams")
+    # for x in mycursor:
+    #     print(x)
 
     mycursor.close()
     db.close()
@@ -609,6 +623,8 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
             if is_end_of_draft:
                 query = "UPDATE League_Drafts SET status = %s WHERE league_id = %s"
                 params = ('complete', league_id)
+                end_of_draft_finalization(league_id, mycursor)
+                #can prolly delete the picks from the Draft_picks table here
 
         mycursor.execute(query, params)
 
@@ -726,6 +742,50 @@ def can_make_pick(league_id, user_id, fighter_name, weight_class):
     return {"success": True}
 
 
+def end_of_draft_finalization(league_id, mycursor):
+
+    mycursor.execute("SELECT user_id FROM Users_Leagues WHERE league_id = %s", (league_id,))
+    rows = mycursor.fetchall()
+
+    #for each user in the league
+    for x in rows:
+        user_id = x[0]
+        mycursor.execute("INSERT INTO Teams (user_id, league_id, name) VALUES (%s,%s,%s)", (user_id, league_id, "Team Name"))
+
+        #get all their picks
+        mycursor.execute("SELECT fighter_name, weight_class FROM Draft_Picks WHERE user_id = %s", (user_id,))
+        fighter_rows = mycursor.fetchall()
+
+        placed = {
+            "Flyweight": 0,
+            "Bantamweight": 0,
+            "Featherweight":0,
+            "Lightweight":0,
+            "Welterweight":0,
+            "Middleweight":0,
+            "Light Heavyweight":0,
+            "Heavyweight":0
+        }
+        #for each fighter picked by the user
+        for row in fighter_rows:
+            (fighter_name, weight_class) = row
+            
+            #this handles the space in Light heavyweight to match column 
+            col_name = f"{weight_class.replace(" ", "_")}_{placed[weight_class] + 1}"
+            query = f"UPDATE Teams SET {col_name} = %s WHERE user_id = %s AND league_id = %s"
+            mycursor.execute(query, (fighter_name, user_id, league_id))
+            placed[weight_class] += 1
+    
+    
+    
+
+print_my_info()
+
+
+    
+
+
+            
 
 
 def delete_league_draft(league_id):
@@ -747,6 +807,8 @@ def delete_league_draft(league_id):
             raise RuntimeError("MORE THAN 1 League AFFECTED: " + str(mycursor.rowcount))
 
         mycursor.execute("DELETE FROM Draft_Picks WHERE league_id = %s", (league_id,))
+
+        mycursor.execute("DELETE FROM Teams WHERE league_id = %s", (league_id))
 
         db.commit()
     except:

@@ -148,5 +148,4 @@ def get_pool():
     return response
 
 
-database.delete_league_draft(9)
-start_draft(9)
+
