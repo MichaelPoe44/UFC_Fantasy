@@ -48,7 +48,7 @@ export default function Profile(){
     
     const handleClick = (e) => {
         const id = e.target.value;
-        navigate(`/draft/${id}`)
+        navigate(`/my-league/${id}`)
         
     }
 

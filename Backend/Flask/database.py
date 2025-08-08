@@ -263,6 +263,8 @@ def user_login(username):
     mycursor = db.cursor()
 
 
+    all_team_columns = "name, Flyweight_1, Bantamweight_1, Featherweight_1, Lightweight_1, Welterweight_1, Middleweight_1, Light_Heavyweight_1, Heavyweight_1, Flyweight_2, Bantamweight_2, Featherweight_2, Lightweight_2, Welterweight_2, Middleweight_2, Light_Heavyweight_2, Heavyweight_2"
+
     #look for the user
     mycursor.execute("SELECT user_id FROM Users WHERE username = %s", (username,))
     row = mycursor.fetchone()
@@ -311,16 +313,38 @@ def user_login(username):
             participants_id = y[0]
             player_info = {}
 
-            ##can swap name for team name
-            ###########################get each player team in here
             mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (participants_id,))
             r = mycursor.fetchone()
             
             player_info["username"] = r[0]
 
+
+            query = f"SELECT {all_team_columns} FROM Teams WHERE user_id = %s AND league_id = %s"
+            mycursor.execute(query, (user_id, league_id))
+            row = mycursor.fetchone()
+
+            if (row != None): #make sure player has a team
+                team = {}
+                team["name"] = row[0]
+                
+                team["Flyweight"] = {"1": row[1], "2": row[9]}
+                team["Bantamweight"] = {"1": row[2], "2": row[10]}
+                team["Featherweight"] = {"1": row[3], "2": row[11]}
+                team["Lightweight"] = {"1": row[4], "2": row[12]}
+                team["Welterweight"] = {"1": row[5], "2": row[13]}
+                team["Middleweight"] = {"1": row[6], "2": row[14]}
+                team["Light Heavyweight"] = {"1": row[7], "2": row[15]}
+                team["Heavyweight"] = {"1": row[8], "2": row[16]}
+                
+            
+                player_info["team"] = team
+
+            else: #player has no team
+                player_info["team"] = None
+
             league_participants[participants_id] = player_info
             league["league_participants"] = league_participants
-
+            
         
         leagues_in[league_id] = league
     
@@ -476,10 +500,10 @@ def print_my_info():
     # for x in mycursor:
     #     print(x)
 
-    print("Teams-------------------------------")
-    mycursor.execute("SELECT * FROM Teams")
-    for x in mycursor:
-        print(x)
+    # print("Teams-------------------------------")
+    # mycursor.execute("SELECT * FROM Teams")
+    # for x in mycursor:
+    #     print(x)
 
     # print("Users_Leagues-------------------------")
     # mycursor.execute("SELECT * FROM Users_Leagues")
@@ -491,15 +515,15 @@ def print_my_info():
     # for x in mycursor:
     #     print(x)
 
-    print("League_Drafts-------------------------")
-    mycursor.execute("SELECT * FROM League_Drafts")
-    for x in mycursor:
-        print(x)
+    # print("League_Drafts-------------------------")
+    # mycursor.execute("SELECT * FROM League_Drafts")
+    # for x in mycursor:
+    #     print(x)
 
-    print("Draft_Picks-------------------------")
-    mycursor.execute("SELECT * FROM Draft_Picks")
-    for x in mycursor:
-        print(x)
+    # print("Draft_Picks-------------------------")
+    # mycursor.execute("SELECT * FROM Draft_Picks")
+    # for x in mycursor:
+        # print(x)
     
     # mycursor.execute("DESCRIBE Teams")
     # for x in mycursor:
@@ -779,7 +803,6 @@ def end_of_draft_finalization(league_id, mycursor):
     
     
 
-print_my_info()
 
 
     

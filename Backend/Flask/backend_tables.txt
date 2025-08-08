@@ -63,3 +63,415 @@ draft_picks (
   weight_class VARCHAR,
   round INT
 )
+
+
+
+Users--------------------------------
+(2, 'mike', '5g5')
+(6, 'steven', '5g5')
+(7, 'tommy', 'adsfasdf')
+(8, 'Timmothy', '$2b$12$4qxvOvVoCEK5tMqRg1r2Yu8qGl3PvH319uVLFzz8nsT/ZvUC4jKVK')
+(10, 'Timmothy2', '$2b$12$MdL8WiueKmlzxUeB76/6k.FLRTLjs8ZJ7RSOy23pNz4KhYbrXGhdy')
+(12, 'Timmothy3', '$2b$12$fGqZyOGJVzEPpGL6JvWkhe6fjSxRvSz5wbef9BLlEuufnLCt5TI0S')
+(14, 'Tom', '$2b$12$LTUeieXgZ97tjb6/I3lV7umQXOaoUj5keRsGQwY28nrzbJtj71xh2')
+(17, '', '$2b$12$kX5/ulca7xpxvFsZZ3w2iuTzYPVqX/WL4xx61fTJooBF8UbPSr3g2')
+(18, 'call', '$2b$12$xScZ.dxnkqZZKw.iM3LDZuOsO14hf1NktufM02VIKlYynmn47PBcu')
+(19, 'this', '$2b$12$tF0P8XQXF9UiiYBH.emZie7/fPCF2W1rc0XAkfg/lcWT7gJg1nlJS')
+
+
+
+leagues-------------------------------
+(1, 'test league 1', 7, 1, '')
+(2, 'test league 1', 7, 1, 'UhGMj1ER')
+(3, 'test league 3', 7, 3, 'Hm0Xxpvp')
+(4, 'test league 3', 7, 1, 'ZgDUxB6Q')
+(5, 'test league 3', 7, 1, 'oWn1PMud')
+(6, 'test league 3', 7, 1, 'pZ1ibw')
+(7, 'test league 3', 7, 4, 'yMb0Pc')
+(8, '"Test 1"', 14, 1, 'S5842O')
+(9, 'poop', 14, 3, '7BtqsL')
+(10, 'hush', 14, 3, 'zbj9QY')
+(11, ' huh', 14, 1, 'drZC6b')
+(12, ' what', 14, 2, 'aJ0pl0')
+(13, 'poop', 14, 2, 'aFisJv')
+(14, '1', 14, 1, '0PClWn')
+(15, '2', 14, 1, 'VnF03v')
+(16, '4', 14, 1, '35hYsm')
+(17, '6', 14, 1, 'LWzISJ')
+(18, 'fake league DNE', 6, 1, 'DQ2t7c')
+
+
+
+Teams-------------------------------
+(2, 9, 'Team Name', 'Amir Albazi', 'Petr Yan', 'Max Holloway', 'Charles Oliveira', 'Belal Muhammad', 'Sean Strickland', 'Jiri Procházka', 'Alexander Volkov', 'Kai Kara‑France', 'Umar Nurmagomedov', 'Diego Lopes', 'Justin Gaethje', 'Khamzat Chimaev', 'Nassourdine Imavov', 'Carlos Ulberg', 'Ciryl Gane')
+(14, 9, 'Team Name', 'Brandon Moreno', "Sean O'Malley", 'Alexander Volkanovski', 'Arman Tsarukyan', 'Khamzat Chimaev', 'Khamzat Chimaev', 'Alex Pereira', 'Ciryl Gane', 'Tatsuro Taira', 'Cory Sandhagen', 'Yair Rodríguez', 'Dustin Poirier', 'Belal Muhammad', 'Sean Strickland', 'Jiri Procházka', 'Alexander Volkov')
+(18, 9, 'Team Name', 'Alexandre Pantoja', 'Merab Dvalishvili', 'Ilia Topuria', 'Islam Makhachev', 'Jack Della Maddalena', 'Dricus du Plessis', 'Magomed Ankalaev', 'Tom Aspinall', 'Manel Kape', 'Song Yadong', 'Arnold Allen', 'Max Holloway', 'Jack Della Maddalena', 'Khamzat Chimaev', 'Alex Pereira', None)
+
+
+
+Users_Leagues-------------------------
+(7, 2)
+(9, 2)
+(3, 6)
+(7, 6)
+(18, 6)
+(1, 7)
+(2, 7)
+(3, 7)
+(4, 7)
+(5, 7)
+(6, 7)
+(7, 7)
+(3, 8)
+(8, 14)
+(9, 14)
+(10, 14)
+(11, 14)
+(12, 14)
+(13, 14)
+(14, 14)
+(15, 14)
+(16, 14)
+(17, 14)
+(9, 18)
+(10, 18)
+(7, 19)
+(10, 19)
+(12, 19)
+(13, 19)
+
+
+
+Fighter_Pool-------------------------
+(1, 'Alexandre Pantoja', 'Flyweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(2, 'Joshua Van', 'Flyweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(3, 'Brandon Moreno', 'Flyweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(4, 'Brandon Royval', 'Flyweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(5, 'Amir Albazi', 'Flyweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(6, 'Kai Kara-France', 'Flyweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(7, 'Tatsuro Taira', 'Flyweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(8, 'Manel Kape', 'Flyweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(9, 'Alex Perez', 'Flyweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(10, 'Asu Almabayev', 'Flyweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(11, 'Steve Erceg', 'Flyweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(12, 'Tim Elliott', 'Flyweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(13, 'Tagir Ulanbekov', 'Flyweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(14, 'Ramazan Temirov', 'Flyweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(15, 'Bruno Silva', 'Flyweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(16, 'Kai Asakura', 'Flyweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(17, 'Merab Dvalishvili', 'Bantamweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(18, "Sean O'Malley", 'Bantamweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(19, 'Umar Nurmagomedov', 'Bantamweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(20, 'Petr Yan', 'Bantamweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(21, 'Cory Sandhagen', 'Bantamweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(22, 'Song Yadong', 'Bantamweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(23, 'Deiveson Figueiredo', 'Bantamweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(24, 'Marlon Vera', 'Bantamweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(25, 'Mario Bautista', 'Bantamweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(26, 'Rob Font', 'Bantamweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(27, 'Aiemann Zahabi', 'Bantamweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(28, 'Henry Cejudo', 'Bantamweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(29, 'Vinicius Oliveira', 'Bantamweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(30, 'Marcus McGhee', 'Bantamweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(31, 'Kyler Phillips', 'Bantamweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(32, 'Montel Jackson', 'Bantamweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(33, 'Alexander Volkanovski', 'Featherweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(34, 'Movsar Evloev', 'Featherweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(35, 'Diego Lopes', 'Featherweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(36, 'Yair Rodriguez', 'Featherweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(37, 'Brian Ortega', 'Featherweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(38, 'Arnold Allen', 'Featherweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(39, 'Lerone Murphy', 'Featherweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(40, 'Aljamain Sterling', 'Featherweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(41, 'Josh Emmett', 'Featherweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(42, 'Youssef Zalal', 'Featherweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(43, 'Jean Silva', 'Featherweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(44, 'Patricio Pitbull', 'Featherweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(45, 'Steve Garcia', 'Featherweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(46, 'David Onama', 'Featherweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(47, 'Dan Ige', 'Featherweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(48, 'Giga Chikadze', 'Featherweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(49, 'Ilia Topuria', 'Lightweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(50, 'Islam Makhachev', 'Lightweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(51, 'Arman Tsarukyan', 'Lightweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(52, 'Max Holloway', 'Lightweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(53, 'Charles Oliveira', 'Lightweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(54, 'Justin Gaethje', 'Lightweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(55, 'Dan Hooker', 'Lightweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(56, 'Mateusz Gamrot', 'Lightweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(57, 'Beneil Dariush', 'Lightweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(58, 'Paddy Pimblett', 'Lightweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(59, 'Rafael Fiziev', 'Lightweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(60, 'Renato Moicano', 'Lightweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(61, 'Michael Chandler', 'Lightweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(62, 'Benoît Saint Denis', 'Lightweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(63, 'Grant Dawson', 'Lightweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(64, 'Joel Álvarez', 'Lightweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(65, 'Jack Della Maddalena', 'Welterweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(66, 'Belal Muhammad', 'Welterweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(67, 'Sean Brady', 'Welterweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(68, 'Shavkat Rakhmonov', 'Welterweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(69, 'Leon Edwards', 'Welterweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(70, 'Kamaru Usman', 'Welterweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(71, 'Ian Machado Garry', 'Welterweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(72, 'Michael Morales', 'Welterweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(73, 'Joaquin Buckley', 'Welterweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(74, 'Colby Covington', 'Welterweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(75, 'Gilbert Burns', 'Welterweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(76, 'Geoff Neal', 'Welterweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(77, 'Carlos Prates', 'Welterweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(78, 'Daniel Rodriguez', 'Welterweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(79, 'Gabriel Bonfim', 'Welterweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(80, 'Michael Page', 'Welterweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(81, 'Dricus Du Plessis', 'Middleweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(82, 'Nassourdine Imavov', 'Middleweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(83, 'Sean Strickland', 'Middleweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(84, 'Khamzat Chimaev', 'Middleweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(85, 'Israel Adesanya', 'Middleweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(86, 'Reinier de Ridder', 'Middleweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(87, 'Caio Borralho', 'Middleweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(88, 'Robert Whittaker', 'Middleweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(89, 'Jared Cannonier', 'Middleweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(90, 'Roman Dolidze', 'Middleweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(91, 'Anthony Hernandez', 'Middleweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(92, 'Brendan Allen', 'Middleweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(93, 'Paulo Costa', 'Middleweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(94, 'Marvin Vettori', 'Middleweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(95, 'Abus Magomedov', 'Middleweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(96, 'Roman Kopylov', 'Middleweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(97, 'Magomed Ankalaev', 'Light Heavyweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(98, 'Alex Pereira', 'Light Heavyweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(99, 'Jiří Procházka', 'Light Heavyweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(100, 'Carlos Ulberg', 'Light Heavyweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(101, 'Khalil Rountree Jr.', 'Light Heavyweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(102, 'Jan Błachowicz', 'Light Heavyweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(103, 'Jamahal Hill', 'Light Heavyweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(104, 'Aleksandar Rakić', 'Light Heavyweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(105, 'Dominick Reyes', 'Light Heavyweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(106, 'Volkan Oezdemir', 'Light Heavyweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(107, 'Bogdan Guskov', 'Light Heavyweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(108, 'Azamat Murzakanov', 'Light Heavyweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(109, 'Nikita Krylov', 'Light Heavyweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(110, 'Johnny Walker', 'Light Heavyweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(111, 'Zhang Mingyang', 'Light Heavyweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(112, 'Alonzo Menifield', 'Light Heavyweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(113, 'Tom Aspinall', 'Heavyweight', 0, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(114, 'Ciryl Gane', 'Heavyweight', 1, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(115, 'Alexander Volkov', 'Heavyweight', 2, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(116, 'Sergei Pavlovich', 'Heavyweight', 3, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(117, 'Curtis Blaydes', 'Heavyweight', 4, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(118, 'Jailton Almeida', 'Heavyweight', 5, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(119, 'Waldo Cortes Acosta', 'Heavyweight', 6, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(120, 'Marcin Tybura', 'Heavyweight', 7, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(121, 'Serghei Spivac', 'Heavyweight', 8, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(122, 'Derrick Lewis', 'Heavyweight', 9, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(123, 'Tai Tuivasa', 'Heavyweight', 10, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(124, 'Shamil Gaziev', 'Heavyweight', 11, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(125, 'Martin Buday', 'Heavyweight', 12, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(126, 'Mick Parkin', 'Heavyweight', 13, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(127, 'Tallison Teixeira', 'Heavyweight', 14, datetime.datetime(2025, 8, 2, 13, 36, 14))
+(128, 'Rizvan Kuniev', 'Heavyweight', 15, datetime.datetime(2025, 8, 2, 13, 36, 14))
+
+
+
+League_Drafts-------------------------
+(8, 9, 16, 18, 16, '[18, 14, 2]', 'in_progress')
+
+
+
+Draft_Picks-------------------------
+(27, 9, 18, 'Alexandre Pantoja', 'Flyweight', 1)
+(28, 9, 14, 'Brandon Moreno', 'Flyweight', 1)
+(29, 9, 2, 'Amir Albazi', 'Flyweight', 1)
+(30, 9, 2, 'Kai Kara‑France', 'Flyweight', 2)
+(31, 9, 14, 'Tatsuro Taira', 'Flyweight', 2)
+(32, 9, 18, 'Manel Kape', 'Flyweight', 2)
+(33, 9, 18, 'Merab Dvalishvili', 'Bantamweight', 3)
+(34, 9, 14, "Sean O'Malley", 'Bantamweight', 3)
+(35, 9, 2, 'Petr Yan', 'Bantamweight', 3)
+(36, 9, 2, 'Umar Nurmagomedov', 'Bantamweight', 4)
+(37, 9, 14, 'Cory Sandhagen', 'Bantamweight', 4)
+(38, 9, 18, 'Song Yadong', 'Bantamweight', 4)
+(39, 9, 18, 'Ilia Topuria', 'Featherweight', 5)
+(40, 9, 14, 'Alexander Volkanovski', 'Featherweight', 5)
+(41, 9, 2, 'Max Holloway', 'Featherweight', 5)
+(42, 9, 2, 'Diego Lopes', 'Featherweight', 6)
+(43, 9, 14, 'Yair Rodríguez', 'Featherweight', 6)
+(44, 9, 18, 'Arnold Allen', 'Featherweight', 6)
+(45, 9, 18, 'Islam Makhachev', 'Lightweight', 7)
+(46, 9, 14, 'Arman Tsarukyan', 'Lightweight', 7)
+(47, 9, 2, 'Charles Oliveira', 'Lightweight', 7)
+(48, 9, 2, 'Justin Gaethje', 'Lightweight', 8)
+(49, 9, 14, 'Dustin Poirier', 'Lightweight', 8)
+(50, 9, 18, 'Max Holloway', 'Lightweight', 8)
+(51, 9, 18, 'Jack Della Maddalena', 'Welterweight', 9)
+(52, 9, 14, 'Khamzat Chimaev', 'Welterweight', 9)
+(53, 9, 2, 'Belal Muhammad', 'Welterweight', 9)
+(54, 9, 2, 'Khamzat Chimaev', 'Welterweight', 10)
+(55, 9, 14, 'Belal Muhammad', 'Welterweight', 10)
+(56, 9, 18, 'Jack Della Maddalena', 'Welterweight', 10)
+(57, 9, 18, 'Dricus du Plessis', 'Middleweight', 11)
+(58, 9, 14, 'Khamzat Chimaev', 'Middleweight', 11)
+(59, 9, 2, 'Sean Strickland', 'Middleweight', 11)
+(60, 9, 2, 'Nassourdine Imavov', 'Middleweight', 12)
+(61, 9, 14, 'Sean Strickland', 'Middleweight', 12)
+(62, 9, 18, 'Khamzat Chimaev', 'Middleweight', 12)
+(63, 9, 18, 'Magomed Ankalaev', 'Light Heavyweight', 13)
+(64, 9, 14, 'Alex Pereira', 'Light Heavyweight', 13)
+(65, 9, 2, 'Jiri Procházka', 'Light Heavyweight', 13)
+(66, 9, 2, 'Carlos Ulberg', 'Light Heavyweight', 14)
+(67, 9, 14, 'Jiri Procházka', 'Light Heavyweight', 14)
+(68, 9, 18, 'Alex Pereira', 'Light Heavyweight', 14)
+(69, 9, 18, 'Tom Aspinall', 'Heavyweight', 15)
+(70, 9, 14, 'Ciryl Gane', 'Heavyweight', 15)
+(71, 9, 2, 'Alexander Volkov', 'Heavyweight', 15)
+(72, 9, 2, 'Ciryl Gane', 'Heavyweight', 16)
+(73, 9, 14, 'Alexander Volkov', 'Heavyweight', 16)
+
+
+
+
+
+
+
+
+tom user 14 state
+user:{
+	"user_id": 14,
+	"username", "Tom"
+},
+leagues{
+	8: {}
+	9: {
+		"league_info": {
+			admin_id: 14
+			"join_code": "7BtqsL"
+			"name": "poop"
+			"num_participants": 3
+		},
+		"league_participants": {
+			2: {
+				"team": {
+					"name": "Team Name"
+					"Bantamweight": {
+						1: "Sean O'Malley",
+						2: "Cory Sandhagen"
+					}
+					"Featherweight": {
+						1: "Alexander Volkanovski",
+						2: "Yair Rodríguez"
+					}
+					"Flyweight": {
+						1: "Brandon Moreno",
+						2: "Tatsuro Taira"
+					}
+					"Heavyweight": {
+						1: "Ciryl Gane",
+						2: "Alexander Volkov"
+					}
+					"Light Heavyweight": {
+						1: "Alex Pereira",
+						2: "Jiri Procházka"
+					}
+					"Lightweight": {
+						1: "Arman Tsarukyan",
+						2: "Dustin Poirier"
+					}
+					"Middleweight": {
+						1: "Khamzat Chimaev",
+						2: "Sean Strickland"
+					}
+					"Welterweight": {
+						1: "Khamzat Chimaev",
+						2: "Belal Muhammad"
+					}
+				},
+				"username": "mike"			
+			},
+			14: {
+				"team": {
+					"name": "Team Name"
+					"Bantamweight": {
+						1: "Sean O'Malley",
+						2: "Cory Sandhagen"
+					}
+					"Featherweight": {
+						1: "Alexander Volkanovski",
+						2: "Yair Rodríguez"
+					}
+					"Flyweight": {
+						1: "Brandon Moreno",
+						2: "Tatsuro Taira"
+					}
+					"Heavyweight": {
+						1: "Ciryl Gane",
+						2: "Alexander Volkov"
+					}
+					"Light Heavyweight": {
+						1: "Alex Pereira",
+						2: "Jiri Procházka"
+					}
+					"Lightweight": {
+						1: "Arman Tsarukyan",
+						2: "Dustin Poirier"
+					}
+					"Middleweight": {
+						1: "Khamzat Chimaev",
+						2: "Sean Strickland"
+					}
+					"Welterweight": {
+						1: "Khamzat Chimaev",
+						2: "Belal Muhammad"
+					}
+				},
+				"username": "Tom"			
+			},
+			18: {
+				"team": {
+					"name": "Team Name"
+					"Bantamweight": {
+						1: "Sean O'Malley",
+						2: "Cory Sandhagen"
+					}
+					"Featherweight": {
+						1: "Alexander Volkanovski",
+						2: "Yair Rodríguez"
+					}
+					"Flyweight": {
+						1: "Brandon Moreno",
+						2: "Tatsuro Taira"
+					}
+					"Heavyweight": {
+						1: "Ciryl Gane",
+						2: "Alexander Volkov"
+					}
+					"Light Heavyweight": {
+						1: "Alex Pereira",
+						2: "Jiri Procházka"
+					}
+					"Lightweight": {
+						1: "Arman Tsarukyan",
+						2: "Dustin Poirier"
+					}
+					"Middleweight": {
+						1: "Khamzat Chimaev",
+						2: "Sean Strickland"
+					}
+					"Welterweight": {
+						1: "Khamzat Chimaev",
+						2: "Belal Muhammad"
+					}
+				},
+				"username": "call"			
+			}	
+		}
+	}
+	10: {}
+	11: {}
+	12: {}
+	13: {}
+	14: {}
+	15: {}
+	16: {}
+	17: {}
+}

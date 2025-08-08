@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import FighterPool from '../components/FighterPool.jsx';
 import DraftBoard from '../components/DraftBoard.jsx';

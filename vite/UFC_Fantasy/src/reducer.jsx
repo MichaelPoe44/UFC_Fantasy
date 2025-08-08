@@ -37,6 +37,11 @@ state{
                 "league_participants":{
                     user_id:{
                         "username": username
+                        "team": {
+                            "name": name
+                            "class": {1: fighter, 2: fighter}
+                            "class": {1: fighter, 2: fighter}...
+                        }
                     }
                 }
         }  
@@ -56,6 +61,8 @@ const initialState = {
 //https://www.frontendmag.com/tutorials/usereducer-vs-usestate/
 export default function reducer(state, action){
     switch (action.type){
+        case "DEBUG":
+            return action.state
        
         case "CREATE_LEAGUE":
             return{
