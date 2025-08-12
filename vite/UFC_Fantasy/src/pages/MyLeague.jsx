@@ -31,6 +31,7 @@ export default function MyLeague(){
 
   	const { leagueId } = useParams();
     const [leagueState, setLeagueState] = useState(state.leagues[leagueId]);
+	const is_admin = (state.user.user_id == leagueState.league_info.admin_id)
 	
 	const navigate = useNavigate();
 
@@ -39,13 +40,19 @@ export default function MyLeague(){
 		setLeagueState(state.leagues[leagueId]);
 	}, [state.leagues[leagueId]]);
 	
-	console.log(state.leagues[leagueId]);
+	console.log("admin? ", is_admin);
 	console.log(leagueState);
 	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
 	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
 
 
+	const admin_button = () => {
+		
+	}
 
+	const navigation_button = () => {
+		hasTeams ? navigate("matchup page") : navigate(`/draft/${leagueId}`)
+	}
 
     return (
     <div className="my-league-page">
@@ -54,11 +61,18 @@ export default function MyLeague(){
       	<p><strong># Participants:</strong> {leagueState.league_info.num_participants}</p>
      	<p><strong>Join Code:</strong> {leagueState.league_info.join_code}</p>
 
-      	{!hasTeams && (
-        	<button type="button" onClick={() => {navigate(`/draft/${leagueId}`)}}>
-          	Go To Draft
-        	</button>
-      	)}
+		{is_admin && (
+			<button type="button" onClick={admin_button}>
+				{hasTeams ? "Start Next Matchups" : "Start Draft"}
+			</button>
+		)}
+
+		
+		<button type="button" onClick={navigation_button}>
+			{hasTeams ? "Go to Matchups" : "Go to Draft"}
+		</button>
+		
+      	
 
       	{hasTeams && (
         	<div className="participants-section">
