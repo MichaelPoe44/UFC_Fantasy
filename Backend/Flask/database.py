@@ -801,14 +801,7 @@ def end_of_draft_finalization(league_id, mycursor):
             placed[weight_class] += 1
     
     
-    
 
-
-
-    
-
-
-            
 
 
 def delete_league_draft(league_id):
@@ -846,13 +839,28 @@ def delete_league_draft(league_id):
 
 !!!!!!!!!!!!!!!!!!!
 
-create a new league_draft and when draft starts then afte
-create new draft pick at every pick
+mycursor.execute("CREATE TABLE League_Matchups (id int AUTO_INCREMENT PRIMARY KEY, league_id int, week int, user_1_id int, user_2_id int, status ENUM('pending', 'completed') DEFAULT 'pending', FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_1_id) REFERENCES Users(user_id), FOREIGN KEY (user_2_id) REFERENCES Users(user_id))")
+mycursor.execute("CREATE TABLE Matchup_Picks (id int AUTO_INCREMENT PRIMARY KEY, matchup_id int, user_id int, weight_class varchar(50), fighter_name int, result ENUM('win', 'loss', 'pending') DEFAULT 'pending', FOREIGN KEY (matchup_id) REFERENCES League_Matchups(id))")
 
 
-League_Drafts
-id  |   league_id |  current_round  |  current_pick_user_id  |  total_rounds | draft_order JSON  |  status 
+CREATE TABLE league_matchups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    league_id INT,
+    week INT,
+    user1_id INT,
+    user2_id INT,
+    status ENUM('pending', 'completed') DEFAULT 'pending'
+);
 
-Draft_Picks
-id |   league_id | user_id |  fighter_name | weight_class | round_picked
+-- Picks for each matchup
+CREATE TABLE matchup_picks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    matchup_id INT,
+    user_id INT,
+    weight_class VARCHAR(50),
+    fighter_id INT,
+    result ENUM('win', 'loss', 'pending') DEFAULT 'pending'
+);
+
+
 """

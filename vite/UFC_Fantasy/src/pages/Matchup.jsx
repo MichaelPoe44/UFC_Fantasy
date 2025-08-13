@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import FighterCard from '../components/FighterCard';
-import WeightClassPicker from '../components/WeightClassPicker';
+// import FighterCard from '../components/FighterCard';
+// import WeightClassPicker from '../components/WeightClassPicker';
 
 export default function Matchup({ leagueId, currentUserId }){
   	const [matchup, setMatchup] = useState(null);
