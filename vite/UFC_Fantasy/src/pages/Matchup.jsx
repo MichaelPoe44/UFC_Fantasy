@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react';
-// import FighterCard from '../components/FighterCard';
-// import WeightClassPicker from '../components/WeightClassPicker';
+import FighterCard from '../components/FighterCard';
+import WeightClassPicker from '../components/WeightClassPicker';
+import { getStateContext } from '../StateProvider';
 
-export default function Matchup({ leagueId, currentUserId }){
+export default function Matchup(){
+	const {state, dispatch} = getStateContext();
+
+		
+	const { leagueId } = useParams();
   	const [matchup, setMatchup] = useState(null);
 	const [userTeam, setUserTeam] = useState([]);
-	const [opponentTeam, setOpponentTeam] = useState([]);
 	const [picks, setPicks] = useState({});
 	const [submitted, setSubmitted] = useState(false);
 
-	useEffect(() => {
-		fetch(`/api/league/${leagueId}/my_matchup`)
-		.then(res => res.json())
-		.then(data => {
-			setMatchup(data);
 
-			if (data.user1_id === currentUserId) {
-			fetch(`/api/team/${data.user1_id}?league_id=${leagueId}`)
-				.then(res => res.json())
-				.then(setUserTeam);
-			fetch(`/api/team/${data.user2_id}?league_id=${leagueId}`)
-				.then(res => res.json())
-				.then(setOpponentTeam);
-			} else {
-			fetch(`/api/team/${data.user2_id}?league_id=${leagueId}`)
-				.then(res => res.json())
-				.then(setUserTeam);
-			fetch(`/api/team/${data.user1_id}?league_id=${leagueId}`)
-				.then(res => res.json())
-				.then(setOpponentTeam);
+
+	const fetch_matchups = async () => {
+    	try {
+	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/get_matchups`);
+    	  	const data = await response.json();
+			if (!data.success){
+				console.error(data.error)
+				navigate('/')
 			}
-		});
-	}, [leagueId, currentUserId]);
+      		if (data.success){							
+				setDraftState(data.payload)
+			}
+    		} 
+    	catch (error) {
+      		setError("Failed to fetch draft state", error);
+ 	   	}
+ 	};
+
+
 
 	const handlePick = (weightClass, fighterId) => {
 		setPicks(prev => ({

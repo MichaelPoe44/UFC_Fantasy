@@ -148,4 +148,70 @@ def get_pool():
     return response
 
 
+@app.route('/api/league/<int:league_id>/create_matchups', methods=['POST'])
+def create_matchups(league_id):
+    users = database.get_league_members(league_id)
+    user_ids = [id for id in users]
+    random.shuffle(user_ids)
 
+    response = database.create_matchups()
+
+    return response
+    
+
+
+#checks  matchups
+@app.route('/api/league/<int:league_id>/get_matchups', methods=["GET"])
+def get_matchups(league_id):
+
+    response = database.draft_status(league_id)
+
+    return response
+
+
+
+@app.route('/api/matchup/<int:matchup_id>/submit_pick', methods=['POST'])
+def submit_pick(matchup_id):
+    data = request.json
+    user_id = data.get("user_id")
+    fighter_name = data.get("fighter_name")
+    weight_class = data.get("weight_class")
+
+    response = database.matchup_pick(matchup_id, user_id, weight_class, fighter_name)
+
+
+    
+
+
+
+# @app.route('/api/matchup/<int:matchup_id>/simulate', methods=['POST'])
+# def simulate_matchup(matchup_id):
+#     picks = db.query("""
+#         SELECT * FROM matchup_picks WHERE matchup_id = %s
+#     """, (matchup_id,))
+    
+#     weight_class_map = {}
+#     for pick in picks:
+#         wc = pick['weight_class']
+#         if wc not in weight_class_map:
+#             weight_class_map[wc] = []
+#         weight_class_map[wc].append(pick)
+    
+#     results = []
+#     for wc, pair in weight_class_map.items():
+#         if len(pair) < 2: continue
+#         winner = random.choice(pair)
+#         loser = pair[0] if pair[1] == winner else pair[1]
+
+#         db.execute("UPDATE matchup_picks SET result = 'win' WHERE id = %s", (winner['id'],))
+#         db.execute("UPDATE matchup_picks SET result = 'loss' WHERE id = %s", (loser['id'],))
+        
+#         results.append({
+#             'weight_class': wc,
+#             'winner_user_id': winner['user_id'],
+#             'loser_user_id': loser['user_id']
+#         })
+    
+#     db.execute("UPDATE league_matchups SET status = 'completed' WHERE id = %s", (matchup_id,))
+    
+#     return jsonify({'status': 'completed', 'results': results})

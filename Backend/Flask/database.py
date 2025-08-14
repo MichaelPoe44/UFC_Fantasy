@@ -494,11 +494,11 @@ def print_my_info():
     # mycursor.execute("SELECT * FROM Users")
     # for x in mycursor:
     #     print(x)
-
-    # print("leagues-------------------------------")
-    # mycursor.execute("SELECT * FROM Leagues")
-    # for x in mycursor:
-    #     print(x)
+    mycursor.execute("ALTER TABLE Leagues ADD COLUMN current_week int DEFAULT 0")
+    print("leagues-------------------------------")
+    mycursor.execute("SELECT * FROM Leagues")
+    for x in mycursor:
+        print(x)
 
     # print("Teams-------------------------------")
     # mycursor.execute("SELECT * FROM Teams")
@@ -525,15 +525,15 @@ def print_my_info():
     # for x in mycursor:
         # print(x)
     
-    # mycursor.execute("DESCRIBE Teams")
-    # for x in mycursor:
-    #     print(x)
+    mycursor.execute("DESCRIBE Leagues")
+    for x in mycursor:
+        print(x)
 
     mycursor.close()
     db.close()
 
 
-
+print_my_info()
 
 
 
@@ -839,8 +839,181 @@ def delete_league_draft(league_id):
 
 !!!!!!!!!!!!!!!!!!!
 
-mycursor.execute("CREATE TABLE League_Matchups (id int AUTO_INCREMENT PRIMARY KEY, league_id int, week int, user_1_id int, user_2_id int, status ENUM('pending', 'completed') DEFAULT 'pending', FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_1_id) REFERENCES Users(user_id), FOREIGN KEY (user_2_id) REFERENCES Users(user_id))")
-mycursor.execute("CREATE TABLE Matchup_Picks (id int AUTO_INCREMENT PRIMARY KEY, matchup_id int, user_id int, weight_class varchar(50), fighter_name int, result ENUM('win', 'loss', 'pending') DEFAULT 'pending', FOREIGN KEY (matchup_id) REFERENCES League_Matchups(id))")
+mycursor.execute("CREATE TABLE League_Matchups (id int AUTO_INCREMENT PRIMARY KEY, league_id int, week int, user1_id int, user2_id int, status ENUM('pending', 'completed') DEFAULT 'pending', FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user1_id) REFERENCES Users(user_id), FOREIGN KEY (user2_id) REFERENCES Users(user_id))")
+
+mycursor.execute("CREATE TABLE Matchup_Picks (id int AUTO_INCREMENT PRIMARY KEY, 
+    matchup_id int,
+    user_id int,
+    Flyweight varchar(50), 3
+    Bantamweight varchar(50), 
+    Featherweight varchar(50), 
+    Lightweight varchar(50), 
+    Welterweight varchar(50), 
+    Middleweight varchar(50), 
+    Light_Heavyweight varchar(50), 
+    Heavyweight varchar(50),
+    Flyweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', 11
+    Bantamweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    Featherweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    Lightweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    Welterweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    Middleweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    Light_Heavyweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    Heavyweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending',
+    FOREIGN KEY (matchup_id) REFERENCES League_Matchups(id))
+    ")
+
+def create_matchups(shuffled_ids, league_id):
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+    try:
+        
+        mycursor.execute("SELECT MAX(week) FROM League_Matchups WHERE league_id = %s", (league_id,))
+        row = mycursor.fetchone()
+        
+        if (row == None):
+            current_week = 1
+        else:
+            current_week = row[0] + 1
+
+        for i in range(0, len(users), 2):
+        if i + 1 >= len(users): break
+        user1 = users[i]
+        user2 = users[i+1]
+        db.execute("INSERT INTO league_matchups (league_id, week, user1_id, user2_id) VALUES (%s, %s, %s, %s)", (league_id, current_week, user1, user2))
+
+        mycursor.execute("UPDATE Leagues SET current_week = %s WHERE league_id = %s", (current_week, league_id))
+        return {"success":True}
+    
+    
+    except:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+
+    finally:
+        mycursor.close()
+        db.close()
+
+        
+
+def get_matchups(league_id):
+
+#create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+    try:
+        #get current week of league
+        mycursor.execute("SELECT current_week FROM Leagues WHERE league_id = %s", (league_id,))
+        row = mycursor.fetchone()
+
+        current_week = row[0]
+        
+        stucture {
+            week_1:{
+                matchup_1: {
+                    user_1:{
+                        "Flyweight":{
+                            fighter_name: status (win loss)
+                        }
+                    }
+                }
+            }
+        }
+        
+        all_matchups = {}
+        for week in range(1, current_week + 1):
+            this_week = {}
+            
+            mycursor.execute("SELECT * FROM League_Matchups WHERE week = %s AND league_id = %s", (week, league_id))
+            matchups = mycursor.fetchall()
+
+            #goes matchup by matchup in that week
+            for matchup in matchups:
+                this_matchup = {}
+
+                matchup_id = row[0]
+                user1_id = row[3]
+                user2_id = row[4]
+                status = row[5]
+                
+                user_ids = [user1_id, user2_id]
+                #for user 1
+                for id in user_ids:
+                    mycursor.execute(SELECT * FROM Matchup_Picks where matchup_id = %s and user_id = %s", (matchup_id, id))
+                    user_picks = mycursor.fetchone()
+
+                    user_info = {
+                        "Flyweight": {user_picks[3]: user_picks[11]},
+                        "Bantamweight": {user_picks[4]: user_picks[12]},
+                        "Featherweight": {user_picks[5]: user_picks[13]},
+                        "Lightweight": {user_picks[6]: user_picks[14]},
+                        "Welterweight": {user_picks[7]: user_picks[15]},
+                        "Middleweight": {user_picks[8]: user_picks[16]},
+                        "Light Heavyweight": {user_picks[9]: user_picks[17]},
+                        "Heavyweight": {user_picks[10]: user_picks[18]}           
+                    }
+                    this_matchup[id] = user_info
+                this_week[matchup] = this_matchup
+            all_matchups[week] = this_week
+
+
+    
+    except:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+
+    finally:
+        mycursor.close()
+        db.close()
+
+        
+#######fix to accomidate new table
+def matchup_pick(matchup_id, user_id, weight_class, fighter_name):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+    try:
+        mycursor.execute("INSERT INTO matchup_picks (matchup_id, user_id, weight_class, fighter_id) VALUES (%s, %s, %s, %s)", (matchup_id, user_id, weight_class, fighter_name))
+        return {"success":True}
+        
+    
+    
+    except:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+
+    finally:
+        mycursor.close()
+        db.close()
+
+
+
+
+
+
 
 
 CREATE TABLE league_matchups (
@@ -858,9 +1031,12 @@ CREATE TABLE matchup_picks (
     matchup_id INT,
     user_id INT,
     weight_class VARCHAR(50),
-    fighter_id INT,
+    fighter_name INT,
     result ENUM('win', 'loss', 'pending') DEFAULT 'pending'
 );
+
+
+
 
 
 """

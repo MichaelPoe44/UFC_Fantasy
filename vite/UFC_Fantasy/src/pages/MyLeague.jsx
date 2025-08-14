@@ -31,7 +31,8 @@ export default function MyLeague(){
 
   	const { leagueId } = useParams();
     const [leagueState, setLeagueState] = useState(state.leagues[leagueId]);
-	const is_admin = (state.user.user_id == leagueState.league_info.admin_id)
+	const is_admin = (state.user.user_id == leagueState.league_info.admin_id);
+	
 	
 	const navigate = useNavigate();
 
@@ -47,10 +48,11 @@ export default function MyLeague(){
 
 
 	const admin_button = () => {
-		
+		//start matchup
 	}
 
 	const navigation_button = () => {
+		
 		hasTeams ? navigate("matchup page") : navigate(`/draft/${leagueId}`)
 	}
 
