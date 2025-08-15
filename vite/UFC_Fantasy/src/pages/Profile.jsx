@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import TeamDisplay from "../components/TeamDisplay.jsx"
 import { getStateContext } from "../StateProvider.jsx";
 import { useNavigate } from "react-router-dom";
 

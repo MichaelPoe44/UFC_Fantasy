@@ -154,6 +154,7 @@ def create_matchups(league_id):
     user_ids = [id for id in users]
     random.shuffle(user_ids)
 
+    ####add a checker here to make sure all current weeks stuff is finished
     response = database.create_matchups()
 
     return response
@@ -161,11 +162,15 @@ def create_matchups(league_id):
 
 
 #checks  matchups
-@app.route('/api/league/<int:league_id>/get_matchups', methods=["GET"])
+@app.route('/api/league/<int:league_id>/get_all_matchups', methods=["GET"])
 def get_matchups(league_id):
+    response = database.get_all_matchups(league_id)
+    return response
 
-    response = database.draft_status(league_id)
 
+@app.route('/api/league/<int:league_id>/get_current_matchups', methods=["GET"])
+def get_matchups(league_id):
+    response = database.get_current_matchups(league_id)
     return response
 
 

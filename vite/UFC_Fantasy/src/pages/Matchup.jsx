@@ -1,36 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import FighterCard from '../components/FighterCard';
-import WeightClassPicker from '../components/WeightClassPicker';
+// import FighterCard from '../components/FighterCard';
+// import WeightClassPicker from '../components/WeightClassPicker';
 import { getStateContext } from '../StateProvider';
 
-export default function Matchup(){
+export default function Matchup(matchupState){
 	const {state, dispatch} = getStateContext();
 
 		
 	const { leagueId } = useParams();
-  	const [matchup, setMatchup] = useState(null);
-	const [userTeam, setUserTeam] = useState([]);
+	
 	const [picks, setPicks] = useState({});
 	const [submitted, setSubmitted] = useState(false);
 
 
-
-	const fetch_matchups = async () => {
-    	try {
-	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/get_matchups`);
-    	  	const data = await response.json();
-			if (!data.success){
-				console.error(data.error)
-				navigate('/')
-			}
-      		if (data.success){							
-				setDraftState(data.payload)
-			}
-    		} 
-    	catch (error) {
-      		setError("Failed to fetch draft state", error);
- 	   	}
- 	};
 
 
 

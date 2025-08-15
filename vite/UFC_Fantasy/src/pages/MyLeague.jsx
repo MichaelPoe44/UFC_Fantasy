@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getStateContext } from "../StateProvider"
+import TeamDisplay from "../components/TeamsDisplay";
 import "../pages_css/MyLeague.css"
 
 /*
@@ -31,9 +32,11 @@ export default function MyLeague(){
 
   	const { leagueId } = useParams();
     const [leagueState, setLeagueState] = useState(state.leagues[leagueId]);
+	const [currentMatchups, setCurrentMatchups] = useState(null)
+	const [myMatchup, setMyMatchup] = useState(null)
 	const is_admin = (state.user.user_id == leagueState.league_info.admin_id);
-	
-	
+	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
+	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
 	const navigate = useNavigate();
 
 
@@ -41,19 +44,55 @@ export default function MyLeague(){
 		setLeagueState(state.leagues[leagueId]);
 	}, [state.leagues[leagueId]]);
 	
-	console.log("admin? ", is_admin);
-	console.log(leagueState);
-	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
-	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
+
+	useEffect(() => {
+		fetch_matchups;
+	},[]);
 
 
+
+	const fetch_matchups = async () => {
+		console.log("here")
+    	try {
+	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/get_current_matchups`);
+    	  	const data = await response.json();
+			if (!data.success){
+				console.error(data.error)
+				
+			}
+      		if (data.success){							
+				setCurrentMatchups(data.payload)
+			}
+		} 
+    	catch (error) {
+			setError("Failed to fetch matchup state", error);
+		}
+		
+		
+	};
+	console.log(currentMatchups)
+	
+
+	const try_create_matchups = async () => {
+		try {
+	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/create_matchups`);
+    	  	const data = await response.json();
+			if (!data.success){
+				console.error(data.error)
+			}	
+		} 
+    	catch (error) {
+			setError("Failed to fetch matchup state", error);
+		}
+	}
+	
 	const admin_button = () => {
-		//start matchup
+		try_create_matchups;
 	}
 
 	const navigation_button = () => {
 		
-		hasTeams ? navigate("matchup page") : navigate(`/draft/${leagueId}`)
+		hasTeams ? navigate("") : navigate(`/draft/${leagueId}`)
 	}
 
     return (
@@ -77,24 +116,7 @@ export default function MyLeague(){
       	
 
       	{hasTeams && (
-        	<div className="participants-section">
-			<h2>Participants & Teams</h2>
-				{participantEntries.map(([userId, { team, username }]) => (
-					<div key={userId} className="participant">
-						<h3>Team: {team.name}</h3>
-						<p>Coach: {username} ({userId})</p>
-						<div className="team-details">
-							{Object.entries(team)
-								.filter(([key]) => key !== "name") // ignore team name when displaying weight classes
-								.map(([weightClass, fighterObj]) => (
-								<div key={weightClass} className="weight-class">
-									<strong>{weightClass}:</strong> {Object.values(fighterObj).join(', ')}
-								</div>
-								))}
-						</div>
-					</div>
-				))}
-			</div>
+        	<TeamDisplay participantEntries={participantEntries} />
       	)}
     </div>
   )
