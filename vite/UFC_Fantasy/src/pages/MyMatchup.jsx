@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 // import FighterCard from '../components/FighterCard';
 // import WeightClassPicker from '../components/WeightClassPicker';
 import { getStateContext } from '../StateProvider';
 
-export default function Matchup(matchupState){
+export default function MyMatchup(){
 	const {state, dispatch} = getStateContext();
 
-		
+	const location = useLocation();
+	const myMatchup = location.state || {};
+
 	const { leagueId } = useParams();
 	
 	const [picks, setPicks] = useState({});
 	const [submitted, setSubmitted] = useState(false);
 
-
-
+	console.log("HEREERER")
+	console.log(myMatchup)
+	console.log("POOOOOOP")
 
 
 	const handlePick = (weightClass, fighterId) => {
@@ -41,14 +45,14 @@ export default function Matchup(matchupState){
 		});
 	};
 
-	if (!matchup || !userTeam.length) return <div>Loading matchup...</div>;
+	
 	if (submitted) return <div>Your picks have been submitted!</div>;
 
 	const uniqueWeightClasses = [...new Set(userTeam.map(f => f.weight_class))];
 
 	return (
 		<div>
-		<h2>Matchup: You vs {matchup.user1_id === currentUserId ? matchup.user2_name : matchup.user1_name}</h2>
+		<h2>Matchup: You vs </h2>
 
 		<h3>Your Team</h3>
 		<div className="team-list">

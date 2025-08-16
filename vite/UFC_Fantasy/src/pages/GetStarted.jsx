@@ -153,8 +153,7 @@ function GetStarted() {
 		
 /* current_matchups payload\
 
-{'success': True, 'payload': {(5, 9, 1, 18, 14, 'pending'): {18: {'Flyweight': {None: 'pending'}, 'Bantamweight': {None: 'pending'}, 'Featherweight': {None: 'pending'}, 'Lightweight': {None: 'pending'}, 'Welterweight': {None: 'pending'}, 'Middleweight': {None: 'pending'}, 'Light Heavyweight': {None: 'pending'}, 'Heavyweight': {None: 'pending'}}, 14: {'Flyweight': {None: 'pending'}, 'Bantamweight': {None: 'pending'}, 'Featherweight': {None: 'pending'}, 'Lightweight': {None: 'pending'}, 'Welterweight': {None: 'pending'}, 'Middleweight': {None: 'pending'}, 'Light Heavyweight': {None: 'pending'}, 'Heavyweight': {None: 'pending'}}, 'status': 'pending'}}}
-
+{'success': True, 'payload': {5: {'user_info': {18: {'Flyweight': {None: 'pending'}, 'Bantamweight': {None: 'pending'}, 'Featherweight': {None: 'pending'}, 'Lightweight': {None: 'pending'}, 'Welterweight': {None: 'pending'}, 'Middleweight': {None: 'pending'}, 'Light Heavyweight': {None: 'pending'}, 'Heavyweight': {None: 'pending'}}, 14: {'Flyweight': {None: 'pending'}, 'Bantamweight': {None: 'pending'}, 'Featherweight': {None: 'pending'}, 'Lightweight': {None: 'pending'}, 'Welterweight': {None: 'pending'}, 'Middleweight': {None: 'pending'}, 'Light Heavyweight': {None: 'pending'}, 'Heavyweight': {None: 'pending'}}}, 'status': 'pending'}}}
 */
 
 

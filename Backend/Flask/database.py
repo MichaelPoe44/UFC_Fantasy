@@ -963,6 +963,7 @@ def get_current_matchups(league_id):
 
         for matchup in matchups:
             this_matchup = {}
+            user_info = {}
 
             matchup_id = matchup[0]
             user1_id = matchup[3]
@@ -979,7 +980,7 @@ def get_current_matchups(league_id):
                 user_picks = mycursor.fetchone()
 
                 
-                user_info = {
+                this_user_info = {
                     "Flyweight": {user_picks[3]: user_picks[11]},
                     "Bantamweight": {user_picks[4]: user_picks[12]},
                     "Featherweight": {user_picks[5]: user_picks[13]},
@@ -989,9 +990,11 @@ def get_current_matchups(league_id):
                     "Light Heavyweight": {user_picks[9]: user_picks[17]},
                     "Heavyweight": {user_picks[10]: user_picks[18]}           
                 }
-                this_matchup[id] = user_info
+                user_info[id] = this_user_info
+            this_matchup["user_info"] = user_info
             this_matchup["status"] = status
-            all_matchups[matchup] = this_matchup
+            all_matchups[matchup_id] = this_matchup
+            
 
         return {"success": True, "payload": all_matchups}
 
@@ -1081,7 +1084,7 @@ def get_all_matchups(league_id):
                     }
                     this_matchup[id] = user_info        
                 this_matchup["status"] = status
-                this_week[matchup] = this_matchup
+                this_week[matchup_id] = this_matchup
             all_matchups[week] = this_week
 
         return {"success": True, "payload": all_matchups}

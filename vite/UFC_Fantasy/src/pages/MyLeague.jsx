@@ -42,26 +42,28 @@ export default function MyLeague(){
 
 	useEffect(() => {
 		setLeagueState(state.leagues[leagueId]);
+		fetch_matchups();
 	}, [state.leagues[leagueId]]);
 	
 
-	useEffect(() => {
-		fetch_matchups;
-	},[]);
-
-
 
 	const fetch_matchups = async () => {
-		console.log("here")
     	try {
 	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/get_current_matchups`);
     	  	const data = await response.json();
 			if (!data.success){
-				console.error(data.error)
+				console.error(data.error);
 				
 			}
       		if (data.success){							
-				setCurrentMatchups(data.payload)
+				setCurrentMatchups(data.payload);
+				for (const m_id in data.payload){
+					const match = data.payload[m_id]
+					if (state.user.user_id in match.user_info){
+						setMyMatchup({[m_id]: match});
+						break;
+					}
+				}
 			}
 		} 
     	catch (error) {
@@ -70,7 +72,7 @@ export default function MyLeague(){
 		
 		
 	};
-	console.log(currentMatchups)
+	
 	
 
 	const try_create_matchups = async () => {
@@ -86,13 +88,16 @@ export default function MyLeague(){
 		}
 	}
 	
+
+
+
 	const admin_button = () => {
 		try_create_matchups;
 	}
 
 	const navigation_button = () => {
 		
-		hasTeams ? navigate("") : navigate(`/draft/${leagueId}`)
+		hasTeams ? navigate(`/my-league/${leagueId}/my-matchup`, {state : myMatchup}) : navigate(`/draft/${leagueId}`)
 	}
 
     return (

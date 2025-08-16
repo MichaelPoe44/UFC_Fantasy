@@ -163,13 +163,13 @@ def create_matchups(league_id):
 
 #checks  matchups
 @app.route('/api/league/<int:league_id>/get_all_matchups', methods=["GET"])
-def get_matchups(league_id):
+def get_all_matchups(league_id):
     response = database.get_all_matchups(league_id)
     return response
 
 
 @app.route('/api/league/<int:league_id>/get_current_matchups', methods=["GET"])
-def get_matchups(league_id):
+def get_current_matchups(league_id):
     response = database.get_current_matchups(league_id)
     return response
 
