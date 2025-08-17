@@ -42,29 +42,37 @@ export default function MyLeague(){
 
 	useEffect(() => {
 		setLeagueState(state.leagues[leagueId]);
-		fetch_matchups();
+		fetch_current_matchups();
 	}, [state.leagues[leagueId]]);
 	
 
 
-	const fetch_matchups = async () => {
+	const fetch_current_matchups = async () => {
     	try {
-	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/get_current_matchups`);
-    	  	const data = await response.json();
-			if (!data.success){
-				console.error(data.error);
+	      	// const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/get_current_matchups`);
+    	  	// const data = await response.json();
+			// if (!data.success){
+			// 	console.error(data.error);
 				
-			}
-      		if (data.success){							
-				setCurrentMatchups(data.payload);
-				for (const m_id in data.payload){
-					const match = data.payload[m_id]
+			// }
+      		// if (data.success){							
+			// 	setCurrentMatchups(data.payload);
+			// 	for (const m_id in data.payload){
+			// 		const match = data.payload[m_id]
+			// 		if (state.user.user_id in match.user_info){
+			// 			setMyMatchup({[m_id]: match});
+			// 			break;
+			// 		}
+			// 	}
+			// }
+			setCurrentMatchups(state.matchups_payload.payload);
+				for (const m_id in state.matchups_payload.payload){
+					const match = state.matchups_payload.payload[m_id]
 					if (state.user.user_id in match.user_info){
 						setMyMatchup({[m_id]: match});
 						break;
 					}
-				}
-			}
+				}	
 		} 
     	catch (error) {
 			setError("Failed to fetch matchup state", error);

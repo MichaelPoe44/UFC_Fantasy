@@ -60,7 +60,7 @@ export default function Profile(){
                 const info = leagueObj.league_info;
                 return(
 
-                <button key={leagueId} onClick={handleClick} value={leagueId}>League ID: {leagueId} {info.name}</button>
+                <button key={leagueId} onClick={handleClick} value={leagueId}>League ID: {leagueId} {/*info.name*/}change back</button>
                 
                 );
             })}

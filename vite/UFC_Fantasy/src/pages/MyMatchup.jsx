@@ -9,15 +9,15 @@ export default function MyMatchup(){
 
 	const location = useLocation();
 	const myMatchup = location.state || {};
-
 	const { leagueId } = useParams();
-	
+	const userId = state.user.user_id
+	const userTeam = state.leagues[leagueId].league_participants[userId].team
 	const [picks, setPicks] = useState({});
 	const [submitted, setSubmitted] = useState(false);
 
-	console.log("HEREERER")
-	console.log(myMatchup)
-	console.log("POOOOOOP")
+	
+	console.log("matchup: ", myMatchup)
+	
 
 
 	const handlePick = (weightClass, fighterId) => {
@@ -28,7 +28,7 @@ export default function MyMatchup(){
 	};
 
 	const handleSubmit = () => {
-		const matchupId = matchup.id;
+		const matchupId = Object.keys(myMatchup[0]);
 
 		Promise.all(Object.entries(picks).map(([weightClass, fighterId]) => {
 		return fetch(`/api/matchup/${matchupId}/submit_pick`, {
@@ -48,7 +48,8 @@ export default function MyMatchup(){
 	
 	if (submitted) return <div>Your picks have been submitted!</div>;
 
-	const uniqueWeightClasses = [...new Set(userTeam.map(f => f.weight_class))];
+	console.log(userTeam)
+	const uniqueWeightClasses = [...new Set(Object.keys(userTeam))];
 
 	return (
 		<div>
@@ -56,7 +57,9 @@ export default function MyMatchup(){
 
 		<h3>Your Team</h3>
 		<div className="team-list">
-			{userTeam.map(f => <FighterCard key={f.id} fighter={f} />)}
+			{Object.entries(userTeam).map(([weightClass, fighters_obj]) => {
+				<FighterCard />
+			})}
 		</div>
 
 		<h3>Your Picks</h3>
