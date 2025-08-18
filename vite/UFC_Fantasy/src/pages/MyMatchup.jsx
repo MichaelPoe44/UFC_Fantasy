@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-// import FighterCard from '../components/FighterCard';
-// import WeightClassPicker from '../components/WeightClassPicker';
+import FighterCard from '../components/FighterCard';
+import WeightClassPicker from '../components/WeightClassPicker';
 import { getStateContext } from '../StateProvider';
 
 export default function MyMatchup(){
@@ -11,13 +11,23 @@ export default function MyMatchup(){
 	const myMatchup = location.state || {};
 	const { leagueId } = useParams();
 	const userId = state.user.user_id
-	const userTeam = state.leagues[leagueId].league_participants[userId].team
+	const userTeam = state.leagues[leagueId].league_participants[userId].team;
 	const [picks, setPicks] = useState({});
 	const [submitted, setSubmitted] = useState(false);
-
+	
 	
 	console.log("matchup: ", myMatchup)
 	
+	
+	const getOppentId = () => {
+		const both_users_id = Object.values(myMatchup)[0].user_info;
+		const oppId = Object.keys(both_users_id).filter(id => id != userId);
+		return oppId[0];
+	}
+	const opponentId = getOppentId();
+	const opponentTeam = state.leagues[leagueId].league_participants[opponentId].team;
+
+
 
 
 	const handlePick = (weightClass, fighterId) => {
@@ -26,6 +36,9 @@ export default function MyMatchup(){
 		[weightClass]: fighterId
 		}));
 	};
+
+
+
 
 	const handleSubmit = () => {
 		const matchupId = Object.keys(myMatchup[0]);
@@ -50,7 +63,7 @@ export default function MyMatchup(){
 
 	console.log(userTeam)
 	const uniqueWeightClasses = [...new Set(Object.keys(userTeam))];
-
+	
 	return (
 		<div>
 		<h2>Matchup: You vs </h2>
@@ -58,16 +71,19 @@ export default function MyMatchup(){
 		<h3>Your Team</h3>
 		<div className="team-list">
 			{Object.entries(userTeam).map(([weightClass, fighters_obj]) => {
-				<FighterCard />
+				Object.values(fighters_obj).map(fighter_name => {
+					{console.log("name: "+fighter_name+", wc: "+weightClass)}
+					<FighterCard key={fighter_name} fighter={fighter_name} weightclass={weightClass}/>
+				})
 			})}
 		</div>
 
-		<h3>Your Picks</h3>
+		<h3>Your Picks----------------------</h3>
 		{uniqueWeightClasses.map(wc => (
 			<WeightClassPicker
 			key={wc}
 			weightClass={wc}
-			fighters={userTeam.filter(f => f.weight_class === wc)}
+			fighters={Object.values(userTeam[wc])}
 			onPick={handlePick}
 			selectedId={picks[wc]}
 			/>
@@ -79,7 +95,9 @@ export default function MyMatchup(){
 
 		<h3>Opponent's Team</h3>
 		<div className="team-list">
-			{opponentTeam.map(f => <FighterCard key={f.id} fighter={f} />)}
+			{Object.entries(opponentTeam).map(([weightClass, fighters_obj]) => {
+				<FighterCard key={fighters_obj[1]} fighter={fighters_obj[1]}/>
+			})}
 		</div>
 		</div>
 	);
