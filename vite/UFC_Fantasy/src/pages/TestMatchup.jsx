@@ -47,6 +47,11 @@ const TestMatchup = () => {
   };
 
   const submitPicks = async () => {
+    if (Object.keys(picks).length != 8){
+        alert('Need to pick 1 fighter per weightclass');
+        return;
+    } 
+        
     try {
       await fakeApiCall(picks);
       alert('Picks submitted successfully!');

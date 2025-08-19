@@ -19,6 +19,7 @@ export default function MyMatchup(){
 	console.log("matchup: ", myMatchup)
 	
 	
+	
 	const getOppentId = () => {
 		const both_users_id = Object.values(myMatchup)[0].user_info;
 		const oppId = Object.keys(both_users_id).filter(id => id != userId);

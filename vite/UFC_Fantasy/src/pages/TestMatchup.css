@@ -8,11 +8,6 @@
   --border-color: #444;
 }
 
-body {
-  background-color: var(--primary-bg);
-  color: var(--text-color);
-  font-family: 'Segoe UI', sans-serif;
-}
 
 .matchup-container {
   display: flex;

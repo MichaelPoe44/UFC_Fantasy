@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import { getStateContext } from "../StateProvider"
 import TeamDisplay from "../components/TeamsDisplay";
+import MatchupsSection from "../components/MatchupsSection";
 import "../pages_css/MyLeague.css"
 
 /*
@@ -32,8 +33,8 @@ export default function MyLeague(){
 
   	const { leagueId } = useParams();
     const [leagueState, setLeagueState] = useState(state.leagues[leagueId]);
-	const [currentMatchups, setCurrentMatchups] = useState(null)
-	const [myMatchup, setMyMatchup] = useState(null)
+	const [currentMatchups, setCurrentMatchups] = useState({})
+	const [myMatchup, setMyMatchup] = useState({})
 	const is_admin = (state.user.user_id == leagueState.league_info.admin_id);
 	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
 	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
@@ -98,7 +99,6 @@ export default function MyLeague(){
 	
 
 
-
 	const admin_button = () => {
 		try_create_matchups;
 	}
@@ -128,8 +128,9 @@ export default function MyLeague(){
 		
       	
 
-      	{hasTeams && (
-        	<TeamDisplay participantEntries={participantEntries} />
+      	{hasTeams && Object.keys(currentMatchups).length > 0 && (
+        	//<TeamDisplay participantEntries={participantEntries} />
+			<MatchupsSection matchups={currentMatchups} leagueId={leagueId} />
       	)}
     </div>
   )
