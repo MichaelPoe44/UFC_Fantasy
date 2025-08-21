@@ -38,6 +38,8 @@ export default function MyLeague(){
 	const is_admin = (state.user.user_id == leagueState.league_info.admin_id);
 	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
 	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
+	const [view, setView] = useState("matchups")
+	
 	const navigate = useNavigate();
 
 
@@ -108,12 +110,41 @@ export default function MyLeague(){
 		hasTeams ? navigate(`/my-league/${leagueId}/my-matchup`, {state : myMatchup}) : navigate(`/draft/${leagueId}`)
 	}
 
+	const toggleContent = () => {
+		if (view == "matchups") setView("teams");
+		if (view == "teams") setView("matchups");
+	}
+	const renderContent = () => {
+
+		if (!hasTeams) return <h3>Please Complete Draft</h3>
+		
+		switch (view) {
+			case "matchups":
+				if (Object.keys(currentMatchups).length > 0) return <MatchupsSection matchups={currentMatchups} leagueId={leagueId} />
+				else return <h3>No Matchups this week</h3>
+				break;
+			
+			case "teams":
+				return <TeamDisplay participantEntries={participantEntries}/>
+				break;
+
+			default:
+				break;
+		}
+		
+		
+
+		return <h3>Error loading content</h3>
+	}
+
+
     return (
     <div className="my-league-page">
     	<h1>League: {leagueState.league_info.name}</h1>
       	<p><strong>Admin ID:</strong> {leagueState.league_info.admin_id}</p>
       	<p><strong># Participants:</strong> {leagueState.league_info.num_participants}</p>
      	<p><strong>Join Code:</strong> {leagueState.league_info.join_code}</p>
+		<button type="button" onClick={console.log("go to")}>See All Matchups</button>
 
 		{is_admin && (
 			<button type="button" onClick={admin_button}>
@@ -128,10 +159,12 @@ export default function MyLeague(){
 		
       	
 
-      	{hasTeams && Object.keys(currentMatchups).length > 0 && (
-        	//<TeamDisplay participantEntries={participantEntries} />
-			<MatchupsSection matchups={currentMatchups} leagueId={leagueId} />
-      	)}
+		<button type="button" onClick={toggleContent}>See All Teams</button>
+		<div>{renderContent()}</div>
+      	{/* {hasTeams && Object.keys(currentMatchups).length > 0 && (
+
+			// <MatchupsSection matchups={currentMatchups} leagueId={leagueId} />
+      	)} */}
     </div>
   )
 }

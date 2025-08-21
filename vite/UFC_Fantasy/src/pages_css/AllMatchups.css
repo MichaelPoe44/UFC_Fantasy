@@ -1,0 +1,84 @@
+.all-matchups-page {
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  background-color: #f5f7fa;
+  color: #222;
+}
+
+.week-section {
+  margin-bottom: 3rem;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.week-section h2 {
+  color: #333;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.matchup-container {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f0f3f7;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.matchup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.team-name {
+  width: 40%;
+  text-align: center;
+  background-color: #dbeafe;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.vs {
+  width: 20%;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.matchup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.matchup-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.fighter-name {
+  width: 40%;
+  text-align: center;
+  color: #333;
+}
+
+.weight-class-label {
+  width: 20%;
+  text-align: center;
+  font-weight: bold;
+  color: #555;
+}

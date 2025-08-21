@@ -48,7 +48,7 @@ export default function MatchupsSection({ matchups, leagueId }) {
           <div key={index} className="matchup-container">
             <div className="matchup-header">
               <div className="team-name">{team1?.username || `User ${userId1}`}</div>
-              <div className="vs">VS</div>
+              <div className="vs"> VS </div>
               <div className="team-name">{team2?.username || `User ${userId2}`}</div>
             </div>
 
