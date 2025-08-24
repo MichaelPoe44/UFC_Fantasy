@@ -46,7 +46,7 @@ You can score teams based on real UFC event results and logic you define in back
 
 
 #league matchup tables
-#mycursor.execute("CREATE TABLE League_Matchups (matchup_id int AUTO_INCREMENT PRIMARY KEY, league_id int, week int, user1_id int, user2_id int, status ENUM('pending', 'completed') DEFAULT 'pending', FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user1_id) REFERENCES Users(user_id), FOREIGN KEY (user2_id) REFERENCES Users(user_id))")
+#mycursor.execute("CREATE TABLE League_Matchups (matchup_id int AUTO_INCREMENT PRIMARY KEY, league_id int, week int, user1_id int, user2_id int, status ENUM('pending', 'ready', 'completed') DEFAULT 'pending', FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user1_id) REFERENCES Users(user_id), FOREIGN KEY (user2_id) REFERENCES Users(user_id))")
 # query_1 = "CREATE TABLE Matchup_Picks (id int AUTO_INCREMENT PRIMARY KEY, matchup_id int, user_id int, "
 # query_wc = "Flyweight varchar(50), Bantamweight varchar(50), Featherweight varchar(50), Lightweight varchar(50), Welterweight varchar(50), Middleweight varchar(50), Light_Heavyweight varchar(50), Heavyweight varchar(50), "
 # query_results = "Flyweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', Bantamweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', Featherweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', Lightweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', Welterweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', Middleweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', Light_Heavyweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending', Heavyweight_result ENUM('win', 'loss', 'pending') DEFAULT 'pending'"
@@ -544,17 +544,15 @@ def print_my_info():
     # for x in mycursor:
     #     print(x)
     
-    # mycursor.execute("DESCRIBE Matchup_Picks")
-    # for x in mycursor:
-    #     print(x)
+    mycursor.execute("DESCRIBE Matchup_Picks")
+    for x in mycursor:
+        print(x)
 
     mycursor.close()
     db.close()
 
 
-
-
-
+print_my_info()
 
 
 
@@ -578,7 +576,7 @@ def start_draft(league_id, draft_order, total_rounds):
     if row:
         mycursor.close()
         db.close()
-        return{"success": False, "error":"League already started/completed draft"}
+        return{"success": False, "error":"League already started"}
 
 
     current_pick = draft_order[0]
@@ -887,6 +885,7 @@ def debug(league_id):
 
 
 
+
 def create_matchups(shuffled_ids, league_id):
     #create connection  
     db = mysql.connector.connect(
@@ -1113,6 +1112,20 @@ def matchup_pick(matchup_id, user_id, weight_class, fighter_name):
 
     try:
         mycursor.execute("INSERT INTO matchup_picks (matchup_id, user_id, weight_class, fighter_id) VALUES (%s, %s, %s, %s)", (matchup_id, user_id, weight_class, fighter_name))
+        
+        #check if other player has made picks to set to ready
+        mycursor.execute("SELECT user1_id, user2_id FROM League_Matchups WHERE matchup_id = %s", (matchup_id,))
+        row = mycursor.fetchone()
+
+        if (user_id == row[0]):
+            opp_id = row[1]
+        if (user_id == row[1]):
+            opp_id = row[0]
+        
+        mycursor.execute("SELECT Flyweight FROM Matchup_Picks WHERE matchup_id = %s AND user_id = %s", (matchup_id,opp_id))
+        row = mycursor.fetchone()
+        if (row[0] != None):
+            mycursor.execute("UPDATE League_Matchups SET status = 'ready' WHERE matchup_id = %s", (matchup_id))
         return {"success":True}
         
     

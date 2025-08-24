@@ -33,7 +33,7 @@ id |   league_id | user_id |  fighter_name | weight_class | round_picked
 
 
 League_Matchups
-id |   league_id |  week |  user1_id | user2_id |  status ENUM('pending', 'completed') DEFAULT 'pending
+id |   league_id |  week |  user1_id | user2_id |  status ENUM('pending', 'ready','completed') DEFAULT 'pending
 
 Matchup_Picks
 id | matchup_id |  user_id | column for each weightclass fighter | result of that weightclass

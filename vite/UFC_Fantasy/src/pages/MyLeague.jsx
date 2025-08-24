@@ -39,6 +39,7 @@ export default function MyLeague(){
 	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
 	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
 	const [view, setView] = useState("matchups")
+	const [matchupsStatus, setMatchupsStatus] = useState("pending")
 	
 	const navigate = useNavigate();
 
@@ -60,13 +61,24 @@ export default function MyLeague(){
 			// }
       		// if (data.success){							
 			// 	setCurrentMatchups(data.payload);
+			//	let hasPicks = True
+			//	let isComplete = False
 			// 	for (const m_id in data.payload){
 			// 		const match = data.payload[m_id]
-			// 		if (state.user.user_id in match.user_info){
+			// 		if (state.user.user_id in match.user_info){//finds which match has user in it
 			// 			setMyMatchup({[m_id]: match});
-			// 			break;
 			// 		}
+			//		if (match.status == "pending"){//checks that every match id ready (has picks for every class)
+			//			hasPicks = False
+			//		}
+			//		if (match.status == "complete"){//checks if they are complete 
+			//			isComplete == True
+			//		}
 			// 	}
+			//	
+			//	if (hasPicks == True && isComplete == False) setMatchupsStatus("ready")
+			
+			// 	else if (isComplete == True) setMatchupsState("complete")
 			// }
 			setCurrentMatchups(state.matchups_payload.payload);
 				for (const m_id in state.matchups_payload.payload){
@@ -84,7 +96,31 @@ export default function MyLeague(){
 		
 	};
 	
+	const try_start_draft = async () => {
+		try {
+	      	const response = await fetch(`http://127.0.0.1:5000`);
+    	  	const data = await response.json();
+			if (!data.success){
+				console.error(data.error)
+			}	
+		} 
+    	catch (error) {
+			setError("Failed to simulate matches", error);
+		}
+	}
 	
+	const try_simulate_matchups = async () => {
+		try {
+	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/create_matchups`);
+    	  	const data = await response.json();
+			if (!data.success){
+				console.error(data.error)
+			}	
+		} 
+    	catch (error) {
+			setError("Failed to simulate matches", error);
+		}
+	}
 
 	const try_create_matchups = async () => {
 		try {
@@ -101,12 +137,43 @@ export default function MyLeague(){
 	
 
 
-	const admin_button = () => {
+	const admin_button = (state) => {
+		switch (state){
+
+			case "draft":
+				try_start_draft();
+				break;
+				
+			case "ready":
+				try_create_matchups();
+				break;
+
+			case "complete":
+				try_simulate_matchups();
+				break;
+
+			case "pending":
+
+			default:
+
+		}
+
+		// if (fights for week simulated) make
+		// if (fights not simulated && all picks made) simulate
 		try_create_matchups;
 	}
 
-	const navigation_button = () => {
+	const rederAdminButton = () => {
+		if (!hasTeams) return <button type="button" onClick={admin_button("draft")}>Start Draft</button>
+
+		if (matchupsStatus == "ready") return <button type="button" onClick={admin_button("ready")}>Fight!</button>
 		
+		if (matchupsStatus == "complete") return <button type="button" onClick={admin_button("complete")}>Start Next Matchups</button>
+
+		if (matchupsStatus == "pending") return <button type="button" onClick={admin_button("pending")}>Waiting for selections</button>
+
+
+	const navigation_button = () => {
 		hasTeams ? navigate(`/my-league/${leagueId}/my-matchup`, {state : myMatchup}) : navigate(`/draft/${leagueId}`)
 	}
 
@@ -114,6 +181,7 @@ export default function MyLeague(){
 		if (view == "matchups") setView("teams");
 		if (view == "teams") setView("matchups");
 	}
+
 	const renderContent = () => {
 
 		if (!hasTeams) return <h3>Please Complete Draft</h3>

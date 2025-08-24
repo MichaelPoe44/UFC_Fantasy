@@ -100,6 +100,7 @@ def join__league():
 @app.route('/api/draft/start/<int:league_id>', methods=["POST"])
 def start_draft(league_id):
 
+
     participants = database.get_league_members(league_id)
     participants_id = [id for id in participants]
 
