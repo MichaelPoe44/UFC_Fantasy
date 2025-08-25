@@ -1,5 +1,7 @@
 import { getStateContext } from "../StateProvider";
-import "../pages_css/AllMatchups.css"; // CSS is in the same folder
+import { useParams } from "react-router-dom";
+import "../pages_css/AllMatchups.css"; 
+import { useEffect } from "react";
 
 const weightClasses = [
   "Flyweight",
@@ -16,8 +18,17 @@ export default function AllMatchups() {
 
 	const { state, dispatch } = getStateContext();
 
+	const [allMatchups, setAllMatchups] = useState({})
   	const { leagueId } = useParams();
 
+	
+	useEffect(() => {
+		fetch_all_matchups();
+	}, [])
+
+	const fetch_all_matchups = () => {
+		
+	}
 
 
   	return (

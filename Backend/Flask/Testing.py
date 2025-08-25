@@ -9,10 +9,10 @@ user_2 = 14
 user_3 = 2
 
 
+
 order = [18, 14, 2]
 league_id = 9
 
-print(database.get_current_matchups(league_id))
+# print(database.user_login("Tom"))
 
-# database.debug(9)
-# database.print_my_info()
+database.print_my_info()

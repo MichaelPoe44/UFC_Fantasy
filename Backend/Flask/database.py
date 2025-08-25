@@ -197,6 +197,7 @@ def join_league(user_id, join_code):
     name = row[1]
     admin_id = row[2]
     current_num_participants = row[3]
+    current_week = row[5]
     
 
     #if user already in that league
@@ -239,7 +240,8 @@ def join_league(user_id, join_code):
                         "name": name,
                         "admin_id": admin_id,
                         "num_particpiants": num_participants,
-                        "join_code": join_code
+                        "join_code": join_code,
+                        "current_week": current_week
                     },
                     "league_participants": league_participants
                 }
@@ -303,6 +305,7 @@ def user_login(username):
         league_info["admin_id"] = temp_row[2]
         league_info["num_participants"] = temp_row[3]
         league_info["join_code"] = temp_row[4]
+        league_info["current_week"] = temp_row[5]
         league["league_info"] = league_info
                     
         #grab the info for each player in that league
@@ -326,7 +329,7 @@ def user_login(username):
 
 
             query = f"SELECT {all_team_columns} FROM Teams WHERE user_id = %s AND league_id = %s"
-            mycursor.execute(query, (user_id, league_id))
+            mycursor.execute(query, (participants_id, league_id))
             row = mycursor.fetchone()
 
             if (row != None): #make sure player has a team
@@ -500,10 +503,11 @@ def print_my_info():
     # mycursor.execute("SELECT * FROM Users")
     # for x in mycursor:
     #     print(x)
-    # print("leagues-------------------------------")
-    # mycursor.execute("SELECT * FROM Leagues")
-    # for x in mycursor:
-    #     print(x)
+
+    print("leagues-------------------------------")
+    mycursor.execute("SELECT * FROM Leagues")
+    for x in mycursor:
+        print(x)
 
     # print("Teams-------------------------------")
     # mycursor.execute("SELECT * FROM Teams")
@@ -530,29 +534,26 @@ def print_my_info():
     # for x in mycursor:
         # print(x)
     
-    # print("League_Matchups-------------------------")
-    # mycursor.execute("SELECT * FROM League_Matchups")
-    # for x in mycursor:
-    #     print(x)
+    print("League_Matchups-------------------------")
+    mycursor.execute("SELECT * FROM League_Matchups")
+    for x in mycursor:
+        print(x)
     
     # print("Matchup_Picks-------------------------")
     # mycursor.execute("SELECT * FROM Matchup_Picks")
     # for x in mycursor:
     #     print(x)
 
-    # mycursor.execute("DESCRIBE League_Matchups")
+
+    
+    # mycursor.execute("DESCRIBE Matchup_Picks")
     # for x in mycursor:
     #     print(x)
-    
-    mycursor.execute("DESCRIBE Matchup_Picks")
-    for x in mycursor:
-        print(x)
 
     mycursor.close()
     db.close()
 
 
-print_my_info()
 
 
 
@@ -866,6 +867,8 @@ def debug(league_id):
 
 
     try:
+
+        mycursor.execute("Update Leagues SET current_week = 0 WHERE league_id = %s", (league_id,))
         mycursor.execute("SELECT matchup_id FROM League_Matchups WHERE league_id = %s", (league_id,))
         rows = mycursor.fetchall()
 
@@ -882,7 +885,6 @@ def debug(league_id):
     finally:
         mycursor.close()
         db.close()
-
 
 
 

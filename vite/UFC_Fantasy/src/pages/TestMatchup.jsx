@@ -1,4 +1,4 @@
-import './TestMatchup.css';
+import '../pages_css/TestMatchup.css';
 import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { getStateContext } from '../StateProvider';

@@ -15,6 +15,7 @@ import GetStarted from "./pages/GetStarted.jsx"
 import DraftLobby from "./pages/DraftLobby.jsx"
 import MyLeague from "./pages/MyLeague.jsx"
 import TestMatchup from "./pages/TestMatchup.jsx"
+import AllMatchups from "./pages/AllMatchups.jsx"
 
   // {showSidebar && (
   //           <Sidebar setShowSidebar={setShowSidebar}/>
@@ -40,6 +41,7 @@ function App() {
           <Route path="/login" element={<Login />}/>
           <Route path="/my-league/:leagueId" element={<MyLeague />}/>
           <Route path="/my-league/:leagueId/my-matchup" element={<TestMatchup />}/>
+          <Route path="/my-league/:leagueId/all-matchups" element={<AllMatchups />}/>
           <Route path="/draft/:leagueId" element={<DraftLobby />}/>
         </Routes>
     </StateProvider>

@@ -97,6 +97,13 @@ export default function reducer(state, action){
                 leagues: [],
                 
             }
+        
+        case "UPDATE_WEEK":
+            const new_week = state.leagues[action.leagueId].league_info.current_week + 1;
+            return {
+                ...state,
+                leagues: {...state.leagues, [action.leagueId]: {...state.leagues[action.leagueId], current_week: new_week}}
+            }
 
         case "do something else":
             // do sum else and update state

@@ -77,7 +77,7 @@ def try_login():
     
     if stored_hash and bcrypt.checkpw(currentPassword.encode("utf-8"), stored_hash.encode("utf-8")):
         response = database.user_login(currentUsername)
-    
+         
         return jsonify(response)
     
     return jsonify({"success": False, "error": "username or password incorrect"})
@@ -155,8 +155,7 @@ def create_matchups(league_id):
     user_ids = [id for id in users]
     random.shuffle(user_ids)
 
-    ####add a checker here to make sure all current weeks stuff is finished
-    response = database.create_matchups()
+    response = database.create_matchups(user_ids, league_id)
 
     return response
     
