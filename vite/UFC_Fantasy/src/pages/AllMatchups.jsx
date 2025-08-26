@@ -1,7 +1,7 @@
 import { getStateContext } from "../StateProvider";
 import { useParams } from "react-router-dom";
 import "../pages_css/AllMatchups.css"; 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const weightClasses = [
   "Flyweight",
@@ -26,8 +26,20 @@ export default function AllMatchups() {
 		fetch_all_matchups();
 	}, [])
 
-	const fetch_all_matchups = () => {
-		
+	const fetch_all_matchups = async () => {
+    	try {
+	      	const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/get_all_matchups`);
+    	  	const data = await response.json();
+			if (!data.success){
+				console.error(data.error);
+			}
+      		if (data.success){
+				setAllMatchups(data.payload)
+			}
+		}
+		catch (error) {
+			console.error("Failed to fetch matchup state", error);
+		}
 	}
 
 

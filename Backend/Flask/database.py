@@ -1007,19 +1007,6 @@ def get_current_matchups(league_id):
         mycursor.close()
         db.close()
 
-        
-"""
-
-
-
-!!!!!!!!!!!!!!!!!!!
-
-
-
-
-        
-
-
 def get_all_matchups(league_id):
 
     #create connection  
@@ -1039,18 +1026,6 @@ def get_all_matchups(league_id):
 
         current_week = row[0]
         
-        stucture {
-            week_1:{
-                matchup_1: {
-                    status: {}
-                    user_1:{
-                        "Flyweight":{
-                            fighter_name: status (win loss)
-                        }
-                    }
-                }
-            }
-        }
         
         all_matchups = {}
         for week in range(1, current_week + 1):
@@ -1062,6 +1037,7 @@ def get_all_matchups(league_id):
             #goes matchup by matchup in that week
             for matchup in matchups:
                 this_matchup = {}
+                user_info = {}
 
                 matchup_id = matchup[0]
                 user1_id = matchup[3]
@@ -1070,10 +1046,10 @@ def get_all_matchups(league_id):
 
                 user_ids = [user1_id, user2_id]
                 for id in user_ids:
-                    mycursor.execute(SELECT * FROM Matchup_Picks where matchup_id = %s and user_id = %s", (matchup_id, id))
+                    mycursor.execute("SELECT * FROM Matchup_Picks where matchup_id = %s and user_id = %s", (matchup_id, id))
                     user_picks = mycursor.fetchone()
 
-                    user_info = {
+                    this_user_info = {
                         "Flyweight": {user_picks[3]: user_picks[11]},
                         "Bantamweight": {user_picks[4]: user_picks[12]},
                         "Featherweight": {user_picks[5]: user_picks[13]},
@@ -1083,7 +1059,8 @@ def get_all_matchups(league_id):
                         "Light Heavyweight": {user_picks[9]: user_picks[17]},
                         "Heavyweight": {user_picks[10]: user_picks[18]}           
                     }
-                    this_matchup[id] = user_info        
+                    user_info[id] = this_user_info
+                this_matchup["user_info"] = user_info        
                 this_matchup["status"] = status
                 this_week[matchup_id] = this_matchup
             all_matchups[week] = this_week
@@ -1097,6 +1074,19 @@ def get_all_matchups(league_id):
     finally:
         mycursor.close()
         db.close()
+        
+"""
+
+
+
+!!!!!!!!!!!!!!!!!!!
+
+
+
+
+        
+
+
 
         
 #######fix to accomidate new table
