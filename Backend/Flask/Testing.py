@@ -12,32 +12,6 @@ user_3 = 2
 
 order = [18, 14, 2]
 league_id = 9
-
-print(database.get_all_matchups(league_id))
-
+# database.clear_all_matchup_picks(87)
+# database.debug(9)
 database.print_my_info()
-{'success': True, 
-'payload': 
-    {1: #week
-        {41: #matchupId
-            {18: 
-                {'Flyweight': {None: 'pending'}, 
-                 'Bantamweight': {None: 'pending'}, 
-                 'Featherweight': {None: 'pending'}, 
-                 'Lightweight': {None: 'pending'}, 
-                 'Welterweight': {None: 'pending'}, 
-                 'Middleweight': {None: 'pending'}, 
-                 'Light Heavyweight': {None: 'pending'}, 
-                 'Heavyweight': {None: 'pending'}
-                }, 
-            2: 
-                {'Flyweight': {None: 'pending'}, 
-                 'Bantamweight': {None: 'pending'}, 
-                 'Featherweight': {None: 'pending'}, 
-                 'Lightweight': {None: 'pending'}, 
-                 'Welterweight': {None: 'pending'}, 
-                 'Middleweight': {None: 'pending'}, 
-                 'Light Heavyweight': {None: 'pending'}, 
-                 'Heavyweight': {None: 'pending'}
-                },
-            'status': 'pending'}}}}

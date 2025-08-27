@@ -504,10 +504,10 @@ def print_my_info():
     # for x in mycursor:
     #     print(x)
 
-    print("leagues-------------------------------")
-    mycursor.execute("SELECT * FROM Leagues")
-    for x in mycursor:
-        print(x)
+    # print("leagues-------------------------------")
+    # mycursor.execute("SELECT * FROM Leagues")
+    # for x in mycursor:
+    #     print(x)
 
     # print("Teams-------------------------------")
     # mycursor.execute("SELECT * FROM Teams")
@@ -534,15 +534,15 @@ def print_my_info():
     # for x in mycursor:
         # print(x)
     
-    print("League_Matchups-------------------------")
-    mycursor.execute("SELECT * FROM League_Matchups")
-    for x in mycursor:
-        print(x)
-    
-    # print("Matchup_Picks-------------------------")
-    # mycursor.execute("SELECT * FROM Matchup_Picks")
+    # print("League_Matchups-------------------------")
+    # mycursor.execute("SELECT * FROM League_Matchups")
     # for x in mycursor:
     #     print(x)
+    
+    print("Matchup_Picks-------------------------")
+    mycursor.execute("SELECT * FROM Matchup_Picks")
+    for x in mycursor:
+        print(x)
 
 
     
@@ -935,6 +935,21 @@ def create_matchups(shuffled_ids, league_id):
         db.close()
 
 
+def clear_all_matchup_picks(matchup_id):
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+    mycursor.execute("DELETE FROM Matchup_Picks WHERE matchup_id = %s", (matchup_id,))
+    db.commit() 
+
+    mycursor.close()
+    db.close()
 
 
 
@@ -1074,23 +1089,12 @@ def get_all_matchups(league_id):
     finally:
         mycursor.close()
         db.close()
-        
-"""
-
-
-
-!!!!!!!!!!!!!!!!!!!
 
 
 
 
-        
 
-
-
-        
-#######fix to accomidate new table
-def matchup_pick(matchup_id, user_id, weight_class, fighter_name):
+def matchup_pick(matchup_id, user_id, picks):
 
     #create connection  
     db = mysql.connector.connect(
@@ -1102,13 +1106,24 @@ def matchup_pick(matchup_id, user_id, weight_class, fighter_name):
     db.autocommit = False
     mycursor = db.cursor()
 
+    
+    weights = "Flyweight = %s, Bantamweight = %s, Featherweight = %s, Lightweight = %s, Welterweight = %s, Middleweight = %s, Light_Heavyweight = %s, Heavyweight = %s"
+    query = f"UPDATE Matchup_Picks SET {weights} WHERE matchup_id = %s AND user_id = %s"
+    values = (picks["Flyweight"], picks["Bantamweight"], picks["Featherweight"], picks["Lightweight"],picks["Welterweight"], picks["Middleweight"], picks["Light Heavyweight"], picks["Heavyweight"], matchup_id, user_id)
     try:
-        mycursor.execute("INSERT INTO matchup_picks (matchup_id, user_id, weight_class, fighter_id) VALUES (%s, %s, %s, %s)", (matchup_id, user_id, weight_class, fighter_name))
+        
+        mycursor.execute("SELECT Flyweight FROM Matchup_Picks WHERE matchup_id = %s AND user_id = %s", (matchup_id, user_id))
+        row = mycursor.fetchone()
+        if (row[0] != None):#they already made picks
+            return {"success": False, "error": "Already made picks"}
+        
+
+        mycursor.execute(query, values)
         
         #check if other player has made picks to set to ready
         mycursor.execute("SELECT user1_id, user2_id FROM League_Matchups WHERE matchup_id = %s", (matchup_id,))
         row = mycursor.fetchone()
-
+        
         if (user_id == row[0]):
             opp_id = row[1]
         if (user_id == row[1]):
@@ -1118,13 +1133,15 @@ def matchup_pick(matchup_id, user_id, weight_class, fighter_name):
         row = mycursor.fetchone()
         if (row[0] != None):
             mycursor.execute("UPDATE League_Matchups SET status = 'ready' WHERE matchup_id = %s", (matchup_id))
+        
+        db.commit()
         return {"success":True}
         
     
     
     except:
         db.rollback()
-        return {"success": False, "error": "Database Error"}
+        return {"success": False, "error": "Database Error", "debug": DEBUG}
 
     finally:
         mycursor.close()
@@ -1132,6 +1149,15 @@ def matchup_pick(matchup_id, user_id, weight_class, fighter_name):
 
 
 
+"""
+
+
+!!!!!!!!!!!!!!!!!!!
+
+
+
+        
+#######fix to accomidate new table
 
 
 

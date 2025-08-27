@@ -179,10 +179,11 @@ def get_current_matchups(league_id):
 def submit_pick(matchup_id):
     data = request.json
     user_id = data.get("user_id")
-    fighter_name = data.get("fighter_name")
-    weight_class = data.get("weight_class")
+    picks = data.get("picks")
 
-    response = database.matchup_pick(matchup_id, user_id, weight_class, fighter_name)
+    response = database.matchup_pick(matchup_id, user_id, picks)
+    
+    return response
 
 
     
