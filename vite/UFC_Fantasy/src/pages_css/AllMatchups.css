@@ -68,17 +68,42 @@
   padding: 0.4rem 0.8rem;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
+  gap: 16px;
 }
 
 .fighter-name {
-  width: 40%;
+  flex: 1;
   text-align: center;
+  padding: 6px 8px;
+  background-color: #e9eef5;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
   color: #333;
+  min-width: 0;
 }
 
 .weight-class-label {
-  width: 20%;
+  flex-shrink: 0;
   text-align: center;
   font-weight: bold;
-  color: #555;
+  color: #1976d2;
+  font-size: 1rem;
+  white-space: nowrap;
+  padding: 0 12px;
+}
+
+/* Winner and loser styles */
+.fighter-name.winner {
+  background-color: #2e7d32;
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid #66bb6a;
+}
+
+.fighter-name.loser {
+  background-color: #c62828;
+  color: #fff;
+  opacity: 0.85;
+  border: 1px solid #ff5252;
 }

@@ -119,14 +119,19 @@ export default function MyLeague(){
 	
 	const try_simulate_matchups = async () => {
 		try {
-	      	// const response = await fetch(`http://127.0.0.1:5000/api/league/${leagueId}/create_matchups`, {
-			//	method: 'POST',
-			//	headers: {'Content-Type': 'application/json'}
-			//});
-    	  	// const data = await response.json();
-			// if (!data.success){
-			// 	console.error(data.error)
-			// }		change the url and build in backend	
+	      	const response = await fetch(`http://127.0.0.1:5000/api/matchup/${leagueId}/simulate`, {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'}
+			});
+    	  	const data = await response.json();
+
+			if (!data.success){
+				console.error(data.error)
+			}	
+			if (data.success){
+				console.log(data.results)
+				setCurrentMatchups(data.results)
+			}	
 		} 
     	catch (error) {
 			console.error("Failed to simulate matches", error);

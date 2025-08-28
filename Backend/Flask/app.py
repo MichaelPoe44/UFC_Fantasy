@@ -190,34 +190,18 @@ def submit_pick(matchup_id):
 
 
 
-# @app.route('/api/matchup/<int:matchup_id>/simulate', methods=['POST'])
-# def simulate_matchup(matchup_id):
-#     picks = db.query("""
-#         SELECT * FROM matchup_picks WHERE matchup_id = %s
-#     """, (matchup_id,))
-    
-#     weight_class_map = {}
-#     for pick in picks:
-#         wc = pick['weight_class']
-#         if wc not in weight_class_map:
-#             weight_class_map[wc] = []
-#         weight_class_map[wc].append(pick)
-    
-#     results = []
-#     for wc, pair in weight_class_map.items():
-#         if len(pair) < 2: continue
-#         winner = random.choice(pair)
-#         loser = pair[0] if pair[1] == winner else pair[1]
+@app.route('/api/matchup/<int:matchup_id>/simulate', methods=['POST'])
+def simulate_matchup(league_id):
 
-#         db.execute("UPDATE matchup_picks SET result = 'win' WHERE id = %s", (winner['id'],))
-#         db.execute("UPDATE matchup_picks SET result = 'loss' WHERE id = %s", (loser['id'],))
-        
-#         results.append({
-#             'weight_class': wc,
-#             'winner_user_id': winner['user_id'],
-#             'loser_user_id': loser['user_id']
-#         })
+    response = database.simulate_matchups(league_id)
+    return response
     
-#     db.execute("UPDATE league_matchups SET status = 'completed' WHERE id = %s", (matchup_id,))
     
-#     return jsonify({'status': 'completed', 'results': results})
+    
+    
+
+
+
+
+"""
+"""

@@ -3,6 +3,7 @@ from mysql.connector import Error
 import string 
 import secrets
 import json
+from random import choice
 
 
 host="localhost"
@@ -534,10 +535,10 @@ def print_my_info():
     # for x in mycursor:
         # print(x)
     
-    # print("League_Matchups-------------------------")
-    # mycursor.execute("SELECT * FROM League_Matchups")
-    # for x in mycursor:
-    #     print(x)
+    print("League_Matchups-------------------------")
+    mycursor.execute("SELECT * FROM League_Matchups")
+    for x in mycursor:
+        print(x)
     
     print("Matchup_Picks-------------------------")
     mycursor.execute("SELECT * FROM Matchup_Picks")
@@ -546,7 +547,7 @@ def print_my_info():
 
 
     
-    # mycursor.execute("DESCRIBE Matchup_Picks")
+    # mycursor.execute("DESCRIBE League_Matchups")
     # for x in mycursor:
     #     print(x)
 
@@ -1117,7 +1118,7 @@ def matchup_pick(matchup_id, user_id, picks):
         if (row[0] != None):#they already made picks
             return {"success": False, "error": "Already made picks"}
         
-
+        
         mycursor.execute(query, values)
         
         #check if other player has made picks to set to ready
@@ -1132,7 +1133,7 @@ def matchup_pick(matchup_id, user_id, picks):
         mycursor.execute("SELECT Flyweight FROM Matchup_Picks WHERE matchup_id = %s AND user_id = %s", (matchup_id,opp_id))
         row = mycursor.fetchone()
         if (row[0] != None):
-            mycursor.execute("UPDATE League_Matchups SET status = 'ready' WHERE matchup_id = %s", (matchup_id))
+            mycursor.execute("UPDATE League_Matchups SET status = 'ready' WHERE matchup_id = %s", (matchup_id,))
         
         db.commit()
         return {"success":True}
@@ -1141,12 +1142,97 @@ def matchup_pick(matchup_id, user_id, picks):
     
     except:
         db.rollback()
-        return {"success": False, "error": "Database Error", "debug": DEBUG}
+        return {"success": False, "error": "Database Error"}
 
     finally:
         mycursor.close()
         db.close()
 
+
+
+
+def simulate_matchups(league_id):
+    
+     #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+   
+    weights_string = "Flyweight, Bantamweight, Featherweight, Lightweight, Welterweight, Middleweight, Light_Heavyweight, Heavyweight"
+    weights_list = ["Flyweight", "Bantamweight", "Featherweight", "Lightweight", "Welterweight", "Middleweight", "Light_Heavyweight", "Heavyweight"]
+    query = f"SELECT {weights_string} FROM Matchup_Picks WHERE matchup_id = %s AND user_id = %s"
+    try:
+        
+        #get all matchups ids
+        mycursor.execute("SELECT current_week FROM Leagues WHERE league_id = %s", (league_id,))
+        current_week = mycursor.fetchone()[0]
+        
+        mycursor.execute("SELECT status, matchup_id, user1_id, user2_id FROM League_Matchups WHERE league_id = %s AND week = %s", (league_id, current_week))
+        rows = mycursor.fetchall()
+        
+        #first just cycle through and make sure all matchups are ready
+        for row in rows:
+            status = row[0]
+            if (status != 'ready'):
+                return {"success": False, "error": "Not all matchups ready"}
+            
+        
+        #now know all matchups are ready so iterate through each matchup and get results
+        results = {}
+        for row in rows:
+            matchup_id = row[1]
+            user1_id = row[2]
+            user2_id = row[3]
+            
+            #in each matchup grab the fighters for each weightclass for each user
+            mycursor.execute(query, (matchup_id, user1_id))
+            user1_fighters = mycursor.fetchone()
+            
+            mycursor.execute(query, (matchup_id, user2_id))
+            user2_fighters = mycursor.fetchone()
+            
+            #get both fighters from each weight and decide who wins add a function for probabiltiy later
+            for i in range(8): #8 since 8 weightclasses
+                weight = weights_list[i]
+                fighter1 = user1_fighters[i]
+                fighter2 = user2_fighters[i]
+                
+                #call function here to decide winner
+                #for now use random
+                winner = choice([fighter1, fighter2])
+                
+                win_condition = f"UPDATE Matchup_Picks SET {weight}_result = 'win' WHERE matchup_id = %s AND user_id = %s"
+                loss_condition = f"UPDATE Matchup_Picks SET {weight}_result = 'loss' WHERE matchup_id = %s AND user_id = %s"
+               
+                if (winner == fighter1): #then user1 fighter won
+                    mycursor.execute(win_condition, (matchup_id, user1_id))
+                    mycursor.execute(loss_condition, (matchup_id, user2_id))
+                
+                elif (winner == fighter2): #then user2 fighter won
+                    mycursor.execute(win_condition, (matchup_id, user2_id))
+                    mycursor.execute(loss_condition, (matchup_id, user1_id))
+                
+            mycursor.execute("UPDATE League_Matchups SET status = 'completed' WHERE matchup_id = %s", (matchup_id,))
+            
+        db.commit()
+
+        #now get the updated current matchups and return them 
+        results = get_current_matchups(league_id)
+        return {"success": True, "results": results["payload"]}
+    
+    except:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+
+    finally:
+        mycursor.close()
+        db.close()
 
 
 """
