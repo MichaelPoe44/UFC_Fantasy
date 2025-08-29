@@ -1,6 +1,6 @@
 import '../pages_css/MyMatchup.css';
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { getStateContext } from '../StateProvider';
 
 
@@ -26,6 +26,7 @@ const TestMatchup = () => {
 	const userId = state.user.user_id
 	const userTeam = state.leagues[leagueId].league_participants[userId].team;
 	const [picks, setPicks] = useState({});
+	const navigate = useNavigate();
 	
 	
 	
@@ -105,9 +106,11 @@ const TestMatchup = () => {
 					</div>
 				</div>
 				))}
-				{!madePicks && (
+				{madePicks ?
+					<button className="submit-button" onClick={() => navigate(-1)}>Go Back</button>
+					:
 					<button className="submit-button" onClick={submitPicks}>Submit Picks</button>
-				)}
+				}
 			</div>
 
 			<div className="team-column opponent">

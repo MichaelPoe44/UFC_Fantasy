@@ -190,7 +190,7 @@ def submit_pick(matchup_id):
 
 
 
-@app.route('/api/matchup/<int:matchup_id>/simulate', methods=['POST'])
+@app.route('/api/matchup/<int:league_id>/simulate', methods=['POST'])
 def simulate_matchup(league_id):
 
     response = database.simulate_matchups(league_id)

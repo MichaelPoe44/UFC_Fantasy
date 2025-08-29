@@ -5,7 +5,7 @@ import reducer from "./reducer";
 const initialState = {
     user: null,
     leagues: {},
-    matchups_payload: {} //just for debug away from local sql
+    ///matchups_payload: {} //just for debug away from local sql
 };
 
 

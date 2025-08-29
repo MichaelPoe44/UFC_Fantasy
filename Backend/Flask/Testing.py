@@ -14,8 +14,7 @@ order = [18, 14, 2]
 league_id = 9
 # database.clear_all_matchup_picks(87)
 # database.debug(9)
-matchup_id = 92
-user_id =  2 #mike = 2    call = 18
+ #mike = 2    call = 18
 picks_2 = {
     "Flyweight": "Amir Albazi",
     "Bantamweight": "Petr Yan", 
@@ -26,9 +25,18 @@ picks_2 = {
     "Light Heavyweight": "Jiri Procházka", 
     "Heavyweight": "Alexander Volkov"
 }
-# picks_2 = {
-
-# }
-# print(database.matchup_pick(matchup_id, user_id, picks_2))
-print(database.get_current_matchups(league_id))
-# database.print_my_info()
+picks_18 = {
+    "Flyweight": "Alexandre Pantoja",
+    "Bantamweight": "Song Yadong", 
+    "Featherweight": "Arnold Allen", 
+    "Lightweight": "Max Holloway", 
+    "Welterweight": "Jack Della Maddalena", 
+    "Middleweight": "Khamzat Chimaev", 
+    "Light Heavyweight": "Magomed Ankalaev", 
+    "Heavyweight": "Tom Aspinall"
+}
+matchup_id = 106
+# print(database.matchup_pick(matchup_id, 18, picks_18))
+print(database.matchup_pick(matchup_id, 2, picks_2))
+# print(database.get_current_matchups(league_id))
+database.print_my_info()

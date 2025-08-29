@@ -35,12 +35,13 @@ export default function MyLeague(){
     const [leagueState, setLeagueState] = useState(state.leagues[leagueId]);
 	const [currentMatchups, setCurrentMatchups] = useState({})
 	const [myMatchup, setMyMatchup] = useState({})
-	const is_week_zero = (leagueState.league_info.current_week == 0 ? true : false)
+	const [week, setWeek] = useState(leagueState.league_info.current_week)
 	const is_admin = (state.user.user_id == leagueState.league_info.admin_id);
 	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
 	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
 	const [view, setView] = useState("matchups")
 	const [matchupsStatus, setMatchupsStatus] = useState("sim_pending")
+	const [refreshKey, setRefreshKey] = useState(0);
 	
 	const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ export default function MyLeague(){
 	useEffect(() => {
 		setLeagueState(state.leagues[leagueId]);
 		fetch_current_matchups();
-	}, [state.leagues[leagueId]]);
+	}, [refreshKey]);
 	
 
 
@@ -70,17 +71,18 @@ export default function MyLeague(){
 					if (state.user.user_id in match.user_info){//finds which match has user in it
 						setMyMatchup({[m_id]: match});
 					}
-					if (match.status == "pending" || d){//checks that every match id ready (has picks for every class)
+					if (match.status == "pending"){//checks that every match id ready (has picks for every class)
 						hasPicks = false;
 					}
-					if (match.status == "complete"){//checks if they are complete 
-						isComplete == true;
+					if (match.status == "completed"){//checks if they are complete 
+						isComplete = true;
 					}
 				}
 				
+				
 				if (hasPicks && !isComplete) setMatchupsStatus("ready_to_sim")
 			
-				if (isComplete || is_week_zero) setMatchupsStatus("sim_complete")
+				if (isComplete || week == 0) setMatchupsStatus("sim_complete")
 				
 
 			
@@ -131,6 +133,7 @@ export default function MyLeague(){
 			if (data.success){
 				console.log(data.results)
 				setCurrentMatchups(data.results)
+				setMatchupsStatus("sim_complete")
 			}	
 		} 
     	catch (error) {
@@ -150,6 +153,14 @@ export default function MyLeague(){
 			if (!data.success){
 				console.error(data.error)
 			}
+			setMatchupsStatus("sim_pending")
+			const new_week = week + 1
+			dispatch({
+				type: "UPDATE_WEEK",
+				leagueId: leagueId,
+				new_week: new_week
+			})
+			setWeek(new_week)
 				
 		} 
     	catch (error) {
@@ -164,20 +175,21 @@ export default function MyLeague(){
 
 			case "draft":
 				try_start_draft();
+				setRefreshKey(prevKey => prevKey + 1);
 				break;
 				
 			case "ready_to_sim":
 				try_simulate_matchups();
+				
+				setRefreshKey(prevKey => prevKey + 1);
 				break;
 				
 			case "sim_complete":
 				try_create_matchups();
-				dispatch({
-					type: "UPDATE_WEEK",
-					leagueId: leagueId,
-				})
-				setMatchupsStatus("sim_pending")
+				
+				
 				fetch_current_matchups();
+				setRefreshKey(prevKey => prevKey + 1);
 				break;
 
 			case "sim_pending":
@@ -193,8 +205,8 @@ export default function MyLeague(){
 	const renderAdminButton = () => {
 		if (!hasTeams) return <button type="button" onClick={() => admin_button("draft")}>Start Draft</button>
 		let text = "";
+		if (matchupsStatus == "sim_complete" || currentMatchups.status == "completed") text = "Start Next Matchups";
 		if (matchupsStatus == "ready_to_sim") text = "Fight!";
-		if (matchupsStatus == "sim_complete") text = "Start Next Matchups";
 		if (matchupsStatus == "sim_pending") text = "Waiting for selections";
 		return <button type="button" onClick={() => admin_button(matchupsStatus)}>{text}</button>
 	}
@@ -244,6 +256,7 @@ export default function MyLeague(){
       	<p><strong>Admin ID:</strong> {leagueState.league_info.admin_id}</p>
       	<p><strong># Participants:</strong> {leagueState.league_info.num_participants}</p>
      	<p><strong>Join Code:</strong> {leagueState.league_info.join_code}</p>
+     	<p><strong>week:</strong> {week}</p>
 		<button type="button" onClick={() => navigate(`/my-league/${leagueId}/all-matchups`)}>See All Matchups</button>
 
 		{is_admin && renderAdminButton()}
