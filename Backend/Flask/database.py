@@ -36,7 +36,7 @@ You can score teams based on real UFC event results and logic you define in back
 # mycursor.execute("CREATE TABLE Users_Leagues (league_id int NOT NULL, user_id int NOT NULL, UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
 
 # #one to many teams table
-#mycursor.execute("CREATE TABLE Teams (user_id int NOT NULL, league_id int NOT NULL, name varchar(128) NOT NULL, Flyweight_1 varchar(50), Bantamweight_1 varchar(50), Featherweight_1 varchar(50), Lightweight_1 varchar(50), Welterweight_1 varchar(50), Middleweight_1 varchar(50), Light_Heavyweight_1 varchar(50), Heavyweight_1 varchar(50), Flyweight_2 varchar(50), Bantamweight_2 varchar(50), Featherweight_2 varchar(50), Lightweight_2 varchar(50), Welterweight_2 varchar(50), Middleweight_2 varchar(50), Light_Heavyweight_2 varchar(50), Heavyweight_2 varchar(50), UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
+#mycursor.execute("CREATE TABLE Teams (user_id int NOT NULL, league_id int NOT NULL, name varchar(128) NOT NULL, Flyweight_1 varchar(50), Bantamweight_1 varchar(50), Featherweight_1 varchar(50), Lightweight_1 varchar(50), Welterweight_1 varchar(50), Middleweight_1 varchar(50), Light_Heavyweight_1 varchar(50), Heavyweight_1 varchar(50), Flyweight_2 varchar(50), Bantamweight_2 varchar(50), Featherweight_2 varchar(50), Lightweight_2 varchar(50), Welterweight_2 varchar(50), Middleweight_2 varchar(50), Light_Heavyweight_2 varchar(50), Heavyweight_2 varchar(50), score int DEFAULT 0, UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
 
 #fighter pool
 # mycursor.execute("CREATE TABLE Fighter_Pool (fighter_id int PRIMARY KEY AUTO_INCREMENT, name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, ranking int NOT NULL, last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
@@ -272,7 +272,7 @@ def user_login(username):
     mycursor = db.cursor()
 
 
-    all_team_columns = "name, Flyweight_1, Bantamweight_1, Featherweight_1, Lightweight_1, Welterweight_1, Middleweight_1, Light_Heavyweight_1, Heavyweight_1, Flyweight_2, Bantamweight_2, Featherweight_2, Lightweight_2, Welterweight_2, Middleweight_2, Light_Heavyweight_2, Heavyweight_2"
+    all_team_columns = "name, score, Flyweight_1, Bantamweight_1, Featherweight_1, Lightweight_1, Welterweight_1, Middleweight_1, Light_Heavyweight_1, Heavyweight_1, Flyweight_2, Bantamweight_2, Featherweight_2, Lightweight_2, Welterweight_2, Middleweight_2, Light_Heavyweight_2, Heavyweight_2"
 
     #look for the user
     mycursor.execute("SELECT user_id FROM Users WHERE username = %s", (username,))
@@ -336,15 +336,16 @@ def user_login(username):
             if (row != None): #make sure player has a team
                 team = {}
                 team["name"] = row[0]
+                team["score"] = row[1]
                 
-                team["Flyweight"] = {"1": row[1], "2": row[9]}
-                team["Bantamweight"] = {"1": row[2], "2": row[10]}
-                team["Featherweight"] = {"1": row[3], "2": row[11]}
-                team["Lightweight"] = {"1": row[4], "2": row[12]}
-                team["Welterweight"] = {"1": row[5], "2": row[13]}
-                team["Middleweight"] = {"1": row[6], "2": row[14]}
-                team["Light Heavyweight"] = {"1": row[7], "2": row[15]}
-                team["Heavyweight"] = {"1": row[8], "2": row[16]}
+                team["Flyweight"] = {"1": row[2], "2": row[10]}
+                team["Bantamweight"] = {"1": row[3], "2": row[11]}
+                team["Featherweight"] = {"1": row[4], "2": row[12]}
+                team["Lightweight"] = {"1": row[5], "2": row[13]}
+                team["Welterweight"] = {"1": row[6], "2": row[14]}
+                team["Middleweight"] = {"1": row[7], "2": row[15]}
+                team["Light Heavyweight"] = {"1": row[8], "2": row[16]}
+                team["Heavyweight"] = {"1": row[9], "2": row[17]}
                 
             
                 player_info["team"] = team
@@ -535,25 +536,23 @@ def print_my_info():
     # for x in mycursor:
         # print(x)
     
-    print("League_Matchups-------------------------")
-    mycursor.execute("SELECT * FROM League_Matchups")
-    for x in mycursor:
-        print(x)
+    # print("League_Matchups-------------------------")
+    # mycursor.execute("SELECT * FROM League_Matchups")
+    # for x in mycursor:
+    #     print(x)
     
-    print("Matchup_Picks-------------------------")
-    mycursor.execute("SELECT * FROM Matchup_Picks")
-    for x in mycursor:
-        print(x)
-
+    # print("Matchup_Picks-------------------------")
+    # mycursor.execute("SELECT * FROM Matchup_Picks")
+    # for x in mycursor:
+    #     print(x)
 
     
-    # mycursor.execute("DESCRIBE League_Matchups")
+    # mycursor.execute("DESCRIBE Teams")
     # for x in mycursor:
     #     print(x)
 
     mycursor.close()
     db.close()
-
 
 
 
@@ -1213,11 +1212,13 @@ def simulate_matchups(league_id):
                 if (winner == fighter1): #then user1 fighter won
                     mycursor.execute(win_condition, (matchup_id, user1_id))
                     mycursor.execute(loss_condition, (matchup_id, user2_id))
+                    mycursor.execute("UPDATE Teams SET score = score + 1 WHERE user_id = %s AND league_id = %s", (user1_id, league_id))
                 
                 elif (winner == fighter2): #then user2 fighter won
                     mycursor.execute(win_condition, (matchup_id, user2_id))
                     mycursor.execute(loss_condition, (matchup_id, user1_id))
-                
+                    mycursor.execute("UPDATE Teams SET score = score + 1 WHERE user_id = %s AND league_id = %s", (user2_id, league_id))
+
             mycursor.execute("UPDATE League_Matchups SET status = 'completed' WHERE matchup_id = %s", (matchup_id,))
             
         db.commit()
@@ -1234,6 +1235,45 @@ def simulate_matchups(league_id):
         mycursor.close()
         db.close()
 
+
+
+def get_scores(league_id):
+    
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+    try:
+        #get all teams in league
+        mycursor.execute("SELECT user_id, score FROM Teams WHERE league_id = %s", (league_id,))
+        rows = mycursor.fetchall()
+
+        scores = {}
+        for row in rows:
+            (user_id, score) = row
+
+            #get the username
+            mycursor.execute("SELECT username FROM Users WHERE user_id = %s", (user_id,))
+            username = mycursor.fetchone()[0]
+
+            scores[username] = score
+        
+        return {"success": True, "scores": scores}
+    
+
+    except:
+        db.rollback()
+        return {"success": False, "error": "Database Error"}
+
+    finally:
+        mycursor.close()
+        db.close()
 
 """
 

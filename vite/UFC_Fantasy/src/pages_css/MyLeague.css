@@ -11,6 +11,25 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
+.league-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 20px;
+	flex-wrap: wrap; 
+	margin-bottom: 20px;
+}
+
+.league-info {
+	flex: 1;
+}
+
+.leaderboard-window {
+	width: 300px; 
+  margin-top: 40px;
+  margin-right: 40px;
+}
+
 .participants-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

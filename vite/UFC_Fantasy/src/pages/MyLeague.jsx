@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getStateContext } from "../StateProvider"
 import TeamDisplay from "../components/TeamsDisplay";
 import MatchupsSection from "../components/MatchupsSection";
+import Leaderboard from "../components/Leaderboard";
 import "../pages_css/MyLeague.css"
 
 /*
@@ -253,10 +254,17 @@ export default function MyLeague(){
     return (
     <div className="my-league-page">
     	<h1>League: {leagueState.league_info.name}</h1>
-      	<p><strong>Admin ID:</strong> {leagueState.league_info.admin_id}</p>
-      	<p><strong># Participants:</strong> {leagueState.league_info.num_participants}</p>
-     	<p><strong>Join Code:</strong> {leagueState.league_info.join_code}</p>
-     	<p><strong>week:</strong> {week}</p>
+		<div className="league-header">
+			<div className="league-info">
+				<p><strong>Admin ID:</strong> {leagueState.league_info.admin_id}</p>
+				<p><strong># Participants:</strong> {leagueState.league_info.num_participants}</p>
+				<p><strong>Join Code:</strong> {leagueState.league_info.join_code}</p>
+				<p><strong>week:</strong> {week}</p>
+			</div>
+			<div className="leaderboard-window">
+				<Leaderboard leagueId={leagueId} />
+			</div>
+		</div>
 		<button type="button" onClick={() => navigate(`/my-league/${leagueId}/all-matchups`)}>See All Matchups</button>
 
 		{is_admin && renderAdminButton()}
@@ -270,10 +278,7 @@ export default function MyLeague(){
 
 		<button type="button" onClick={toggleContent}>{(view == "teams") ? "See Matchups" : "See Teams"}</button>
 		<div>{renderContent()}</div>
-      	{/* {hasTeams && Object.keys(currentMatchups).length > 0 && (
-
-			// <MatchupsSection matchups={currentMatchups} leagueId={leagueId} />
-      	)} */}
+      	
     </div>
   )
 }

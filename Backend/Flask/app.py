@@ -198,7 +198,11 @@ def simulate_matchup(league_id):
     
     
     
-    
+@app.route('/api/leaderboard/<int:league_id>', methods=["GET"])
+def get_leader_board(league_id):
+
+    response = database.get_scores(league_id)
+    return response
 
 
 

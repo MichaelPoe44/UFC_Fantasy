@@ -8,17 +8,17 @@ Users_Leagues
 league_id   user_id
 
 Teams
-user_id     league_id    name      two for each
-                                    fighter_pool = [
-                                        "Flyweight_2",
-                                        "Bantamweight_2",
-                                        "Featherweight_2",
-                                        "Lightweight_2",
-                                        "Welterweight_2",
-                                        "Middleweight_2",
-                                        "Light_Heavyweight_2",
-                                        "Heavyweight_2"
-                                    ]
+user_id     league_id    name   score   two for each
+                                    	fighter_pool = [
+											"Flyweight_2",
+											"Bantamweight_2",
+											"Featherweight_2",
+											"Lightweight_2",
+											"Welterweight_2",
+											"Middleweight_2",
+											"Light_Heavyweight_2",
+											"Heavyweight_2"
+                                    	]
 
 
 Fighter_pool  """universal"""

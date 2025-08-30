@@ -1,0 +1,58 @@
+.leaderboard {
+  width: 300px;
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  font-family: Arial, sans-serif;
+}
+
+.leaderboard h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #ffc107;
+}
+
+.leaderboard ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leaderboard li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #444;
+  align-items: center;
+}
+
+.leaderboard .rank {
+  font-weight: bold;
+  color: #aaa;
+  width: 30px;
+}
+
+.leaderboard .username {
+  flex: 1;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.leaderboard .score {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.leaderboard .first-place {
+  background-color: #2a2a2a;
+  color: gold;
+  border-left: 4px solid gold;
+  padding-left: 0.5rem;
+}
+
+.leaderboard.error {
+  color: red;
+  text-align: center;
+}
