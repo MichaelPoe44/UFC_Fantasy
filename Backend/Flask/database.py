@@ -4,6 +4,8 @@ import string
 import secrets
 import json
 from random import choice
+from scrape import get_fighter_stats
+import fight_sim
 
 
 host="localhost"
@@ -1204,7 +1206,11 @@ def simulate_matchups(league_id):
                 
                 #call function here to decide winner
                 #for now use random
-                winner = choice([fighter1, fighter2])
+                fighter1_stats = get_fighter_stats(fighter1)
+                fighter2_stats = get_fighter_stats(fighter2)
+
+                results = fight_sim.compare_fighters(fighter1_stats, fighter2_stats)
+                winner = fighter1 if (results.get("winner") == "Fighter 1") else fighter2
                 
                 win_condition = f"UPDATE Matchup_Picks SET {weight}_result = 'win' WHERE matchup_id = %s AND user_id = %s"
                 loss_condition = f"UPDATE Matchup_Picks SET {weight}_result = 'loss' WHERE matchup_id = %s AND user_id = %s"
