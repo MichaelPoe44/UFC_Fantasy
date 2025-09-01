@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { getStateContext } from "../StateProvider";
 import "../pages_css/LeagueMenu.css"
 
 
 
-const try_create_league = async (leagueName, state, dispatch, setErrorMessage) => {
+const try_create_league = async (leagueName, state, dispatch, setErrorMessage, navigate) => {
+    if (state.user == null){
+        navigate('/login')
+        return
+    } 
+        
     const user_id = state.user.user_id;
     const payload = {
         "name": leagueName,
@@ -32,7 +38,12 @@ const try_create_league = async (leagueName, state, dispatch, setErrorMessage) =
 }
 
 
-const try_join_league = async (joinCode, state, dispatch, setErrorMessage) => {
+const try_join_league = async (joinCode, state, dispatch, setErrorMessage, navigate) => {
+    if (state.user == null){
+        navigate('/login')
+        return
+    } 
+
     const user_id = state.user.user_id;
     const payload = {
         "join_code": joinCode,
@@ -66,7 +77,7 @@ export default function LeagueMenu(){
     const {state, dispatch} = getStateContext();
 
     const [errorMessage, setErrorMessage] = useState("")
-
+    const navigate = useNavigate()
     //for league creation
     const [showCreateForm, setShowCreateForm] = useState(false)
     const [leagueName, setName] = useState("");
@@ -78,12 +89,12 @@ export default function LeagueMenu(){
 
     const create_league = (e) => {
         e.preventDefault();
-        try_create_league(leagueName, state, dispatch, setErrorMessage);
+        try_create_league(leagueName, state, dispatch, setErrorMessage, navigate);
     }
 
     const join_league = (e) => {
         e.preventDefault();
-        try_join_league(joinCode, state, dispatch, setErrorMessage);
+        try_join_league(joinCode, state, dispatch, setErrorMessage, navigate);
         
     }
 

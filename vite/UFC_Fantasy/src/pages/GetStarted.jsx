@@ -10,7 +10,12 @@ function GetStarted() {
 				"username": "Tom"
 			},
 			"leagues":{
-				8: {},
+				8: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
 				9: {
 					"league_info": {
 						"admin_id": 14,
@@ -135,14 +140,54 @@ function GetStarted() {
 						}	
 					}
 				},
-				10: {},
-				11: {},
-				12: {},
-				13: {},
-				14: {},
-				15: {},
-				16: {},
-				17: {}
+				10: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
+				11: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
+				12: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
+				13: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
+				14: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
+				15: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
+				16: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}},
+				17: {"league_info": {
+						"admin_id": 14,
+						"join_code": "7BtqsL",
+						"name": "poop",
+						"num_participants": 3,
+					}}
 			},
 			"matchups_payload": {'success': true, 'payload': {5: {'user_info': {18: {'Flyweight': {None: 'pending'}, 'Bantamweight': {None: 'pending'}, 'Featherweight': {None: 'pending'}, 'Lightweight': {None: 'pending'}, 'Welterweight': {None: 'pending'}, 'Middleweight': {None: 'pending'}, 'Light Heavyweight': {None: 'pending'}, 'Heavyweight': {None: 'pending'}}, 14: {'Flyweight': {None: 'pending'}, 'Bantamweight': {None: 'pending'}, 'Featherweight': {None: 'pending'}, 'Lightweight': {None: 'pending'}, 'Welterweight': {None: 'pending'}, 'Middleweight': {None: 'pending'}, 'Light Heavyweight': {None: 'pending'}, 'Heavyweight': {None: 'pending'}}}, 'status': 'pending'}}}
   		}

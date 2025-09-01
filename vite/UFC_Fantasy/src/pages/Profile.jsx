@@ -1,49 +1,14 @@
-import { useEffect, useState } from "react"
 import { getStateContext } from "../StateProvider.jsx";
 import { useNavigate } from "react-router-dom";
-
-
-
-{/*async since having to fetch*/}
-const get_stats = async (fighter_name, set_fighter) => {    //my flask endpoint
-    try {     
-        const response = await fetch(`http://127.0.0.1:5000/api/fighter?name=${fighter_name}`);//a query string used to send data with request
-        const data = await response.json();   //uses "URL?key=value&key1=value1" ? starts it and keyvalues separated with &
-        
-        set_fighter(data);
-    } 
-    catch (e) {
-        console.error("Error fetching fighter", e);
-    }
-}
+import "../pages_css/Profile.css"
 
 
 
 export default function Profile(){
-    //////example
+    
     const {state, dispatch} = getStateContext();
     const navigate = useNavigate();
-    // const [fighter_stats, set_fighter] = useState({});
     
-
-    // //grab stats when page first renders
-    // useEffect(() => {
-    //     get_stats("jon-jones",set_fighter);
-    //     console.log(fighter_stats);
-    // },[])
-    
-
-
-    // //logs stats when they change (preventing empty json while waiting)
-    // useEffect(() => {
-    //     console.log(fighter_stats)
-    // }, [fighter_stats])
-    
-    // //example
-    // const log_amount = () => {
-    //     console.log(user)
-    // }
-
     
     const handleClick = (e) => {
         const id = e.target.value;
@@ -53,21 +18,28 @@ export default function Profile(){
 
 
     return(
-        <div className="profile">
-        <h1>here 1</h1>
-        
-            {Object.entries(state.leagues).map(([leagueId, leagueObj]) => {
-                const info = leagueObj.league_info;
-                return(
+        <div className="profile-container">
+            <h1 className="profile-title">My Leagues</h1>
+            <div className="league-list">
+                {Object.entries(state.leagues).map(([leagueId, leagueObj]) => {
+                    console.log(leagueObj)
+                    const info = leagueObj.league_info;
+                    console.log(info)
+                    return (
+                        <button
+                            key={leagueId}
+                            className="league-button"
+                            onClick={handleClick}
+                            value={leagueId}
+                        >
+                            <div className="league-content">
+                                <h2 className="league-name">{info.name || `League ID: ${leagueId}`}</h2>
 
-                <button key={leagueId} onClick={handleClick} value={leagueId}>League ID: {leagueId} {/*info.name*/}change back</button>
-                
-                );
-            })}
-        
-
-        <h1>here</h1>
-
+                            </div>
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     )
 }

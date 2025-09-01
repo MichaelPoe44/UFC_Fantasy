@@ -1,0 +1,60 @@
+
+
+.profile-container {
+  padding: 3rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.profile-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #ffffff;
+}
+
+.league-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.league-button {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  width: 280px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s ease;
+  color: #f0f0f0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.league-button:hover {
+  transform: scale(1.03);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+}
+
+.league-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.league-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.league-id {
+  font-size: 0.9rem;
+  color: #cccccc;
+}
