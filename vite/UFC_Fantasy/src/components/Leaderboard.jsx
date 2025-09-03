@@ -7,9 +7,7 @@ export default function Leaderboard({leagueId}){
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log("WE ARE HERE")
         fetch_scores();
-        console.log("what")
     }, []);
 
 

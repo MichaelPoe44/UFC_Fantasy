@@ -10,27 +10,23 @@ export default function Profile(){
     const navigate = useNavigate();
     
     
-    const handleClick = (e) => {
-        const id = e.target.value;
-        navigate(`/my-league/${id}`)
-        
+    const handleClick = (leagueId) => {
+        navigate(`/my-league/${leagueId}`)  
     }
-
+    
 
     return(
         <div className="profile-container">
             <h1 className="profile-title">My Leagues</h1>
             <div className="league-list">
                 {Object.entries(state.leagues).map(([leagueId, leagueObj]) => {
-                    console.log(leagueObj)
                     const info = leagueObj.league_info;
-                    console.log(info)
                     return (
                         <button
                             key={leagueId}
                             className="league-button"
-                            onClick={handleClick}
-                            value={leagueId}
+                            onClick={() => handleClick(leagueId)}
+                            
                         >
                             <div className="league-content">
                                 <h2 className="league-name">{info.name || `League ID: ${leagueId}`}</h2>

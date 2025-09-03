@@ -29,7 +29,7 @@ export default function Header({setShowSidebar, showSidebar}){
     return(
         <div className="header">
             
-            <img className="drop_down_button" src="bars.svg" onClick={() => setShowSidebar(!showSidebar)}/>
+            <img className="drop_down_button" src="/bars.svg" onClick={() => setShowSidebar(!showSidebar)}/>
             
             
             <Link to="/get-started">
