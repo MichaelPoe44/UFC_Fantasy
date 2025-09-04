@@ -1,5 +1,5 @@
 
-
+import "./styles/DraftBoard.css"
 
 export default function DraftBoard({ picks }){
     return (

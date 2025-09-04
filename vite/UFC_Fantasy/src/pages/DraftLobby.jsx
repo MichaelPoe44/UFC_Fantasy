@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import FighterPool from '../components/FighterPool.jsx';
 import DraftBoard from '../components/DraftBoard.jsx';
 import { getStateContext } from '../StateProvider.jsx'; 
-
+import "../pages_css/DraftLobby.css"
 
 //to go to
 //<Link to={`/draft/${leagueId}`}> 

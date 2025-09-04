@@ -32,12 +32,6 @@ export default function Header({setShowSidebar, showSidebar}){
             <img className="drop_down_button" src="/bars.svg" onClick={() => setShowSidebar(!showSidebar)}/>
             
             
-            <Link to="/get-started">
-                <p style={{position: "absolute", left: "160px", top: "0px"}}>get started</p>
-            </Link>
-
-    
-            
             <Link to={state.user ? (onProfile ? "/" : "/profile") : "/login"}>
                 <button className="logout" onClick={handleLogout}>
                     {state.user ? (onProfile ? "Log Out" : "Profile") : "Log in"}

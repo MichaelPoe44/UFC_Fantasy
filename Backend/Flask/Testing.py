@@ -40,5 +40,6 @@ matchup_id = 106
 # print(database.matchup_pick(matchup_id, 2, picks_2))
 # print(database.get_current_matchups(league_id))
 
-print(database.get_scores(9))
-# database.print_my_info()
+# print(database.get_scores(9))
+
+database.print_my_info()

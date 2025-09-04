@@ -12,7 +12,7 @@ export default function Leaderboard({leagueId}){
 
 
     const fetch_scores = async () => {
-        console.log(leagueId)
+        
         try{
             const response = await fetch(`http://127.0.0.1:5000/api/leaderboard/${leagueId}`);
             const data = await response.json();

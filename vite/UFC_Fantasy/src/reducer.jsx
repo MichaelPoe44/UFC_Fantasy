@@ -8,9 +8,7 @@ import { clearState } from "./Storage"
 
 export default function reducer(state, action){
     switch (action.type){
-        case "DEBUG":
-            return action.state
-       
+        
         case "CREATE_LEAGUE":
             return{
                 ...state,
@@ -60,9 +58,7 @@ export default function reducer(state, action){
                             current_week: new_week}}}
             }
 
-        case "do something else":
-            // do sum else and update state
-
+        
         default:
             return state;
     }

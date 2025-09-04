@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from scrape import get_fighter_stats
 import database
 import bcrypt
 import random
@@ -16,21 +15,6 @@ app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173"])#the dev react server
 
  
-#maybe switch to json package as argument
-@app.route('/api/fighter', methods=["GET"])
-def get_stats():
-    fighter_name = request.args.get('name')
-    fighter_stats = get_fighter_stats(fighter_name)
-    return jsonify(fighter_stats)
-
-
-# @app.route('/', methods=["POST"])
-# def add_fighter():
-    #need the user and fighter
-    #get team append fighter
-    #incomes.append(request.get_json())
-    return '', 204
-
 
 
 
@@ -109,7 +93,7 @@ def start_draft(league_id):
 
     
     response = database.start_draft(league_id, draft_order, total_rounds)
-
+    print(response)
     return response
 
 

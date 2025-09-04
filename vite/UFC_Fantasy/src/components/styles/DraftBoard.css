@@ -1,0 +1,35 @@
+.draft-board {
+  margin-top: 40px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+.draft-board h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.draft-board table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.draft-board th,
+.draft-board td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.draft-board th {
+  background-color: #f0f0f0;
+  color: #333;
+  font-weight: 600;
+}
+
+.draft-board tr:hover {
+  background-color: #f9f9f9;
+}

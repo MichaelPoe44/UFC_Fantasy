@@ -11,15 +11,11 @@ import Home from "./pages/Home.jsx"
 import Login from "./pages/Login.jsx"
 import LeagueMenu from "./pages/LeagueMenu.jsx"
 import Profile from "./pages/Profile.jsx"
-import GetStarted from "./pages/GetStarted.jsx"
 import DraftLobby from "./pages/DraftLobby.jsx"
 import MyLeague from "./pages/MyLeague.jsx"
 import MyMatchup from "./pages/MyMatchup.jsx"
 import AllMatchups from "./pages/AllMatchups.jsx"
 
-  // {showSidebar && (
-  //           <Sidebar setShowSidebar={setShowSidebar}/>
-  //         )}
 
 function App() {
 
@@ -35,7 +31,6 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />}/>
-          <Route path="/get-started" element={<GetStarted />}/>
           <Route path="/profile" element={<Profile />}/>
           <Route path="/league-menu" element={<LeagueMenu />}/>
           <Route path="/login" element={<Login />}/>

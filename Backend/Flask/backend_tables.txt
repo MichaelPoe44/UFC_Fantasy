@@ -25,7 +25,7 @@ Fighter_pool  """universal"""
 id          name        weight_class     ranking       last_updated
 
 
-League_Draft
+League_Drafts
 id  |   league_id |  current_round  |  current_pick_user_id  |  total_rounds | draft_order JSON  |  status ENUM('not_started', 'in_progress', 'complete'),
 
 Draft_Picks

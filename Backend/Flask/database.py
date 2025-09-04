@@ -15,36 +15,22 @@ database="mytest"
 
 
 
-
-"""
-Example Use Case Flow
-User signs up → insert into users
-
-User creates or joins a league → insert into leagues and league_participants
-
-User builds team → insert into teams, then insert fighters into team_fighters
-
-You can score teams based on real UFC event results and logic you define in backend
-"""
-
-
-
 #mycursor.execute("CREATE DATABASE mytest")
 
 #mycursor.execute("CREATE TABLE Users (user_id int AUTO_INCREMENT NOT NULL PRIMARY KEY, username varchar(128) NOT NULL UNIQUE, password_hash varchar(128) NOT NULL)")
 #mycursor.execute("CREATE TABLE Leagues (league_id int AUTO_INCREMENT NOT NULL PRIMARY KEY, name varchar(128) NOT NULL, admin_id int NOT NULL, num_participants int NOT NULL, join_code varchar(6) NOT NULL UNIQUE, current_week int DEFAULT 0, FOREIGN KEY (admin_id) REFERENCES Users(user_id))")
 
-# #many to many users-leagues table     swap order to match name user then league!!!!!!!!!!!!!                                                      So the combo is not repeated            
+# users-leagues table                        
 # mycursor.execute("CREATE TABLE Users_Leagues (league_id int NOT NULL, user_id int NOT NULL, UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
 
-# #one to many teams table
+# teams table
 #mycursor.execute("CREATE TABLE Teams (user_id int NOT NULL, league_id int NOT NULL, name varchar(128) NOT NULL, Flyweight_1 varchar(50), Bantamweight_1 varchar(50), Featherweight_1 varchar(50), Lightweight_1 varchar(50), Welterweight_1 varchar(50), Middleweight_1 varchar(50), Light_Heavyweight_1 varchar(50), Heavyweight_1 varchar(50), Flyweight_2 varchar(50), Bantamweight_2 varchar(50), Featherweight_2 varchar(50), Lightweight_2 varchar(50), Welterweight_2 varchar(50), Middleweight_2 varchar(50), Light_Heavyweight_2 varchar(50), Heavyweight_2 varchar(50), score int DEFAULT 0, UNIQUE (league_id, user_id), FOREIGN KEY (league_id) REFERENCES Leagues(league_id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE)")
 
 #fighter pool
 # mycursor.execute("CREATE TABLE Fighter_Pool (fighter_id int PRIMARY KEY AUTO_INCREMENT, name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, ranking int NOT NULL, last_updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)")
 
 #league draft tables
-# mycursor.execute("CREATE TABLE League_Drafts (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_rounds int NOT NULL, draft_order JSON NOT NULL, status ENUM('not_started', 'in_progress', 'complete'), FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")                                                                                     
+# mycursor.execute("CREATE TABLE League_Drafts (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, current_round int NOT NULL, current_pick_user_id int NOT NULL, total_rounds int NOT NULL, draft_order JSON NOT NULL, status ENUM('in_progress', 'complete') DEFAULT 'in_progress', FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (current_pick_user_id) REFERENCES Users(user_id))")                                                                                     
 # mycursor.execute("CREATE TABLE Draft_Picks (id int PRIMARY KEY AUTO_INCREMENT, league_id int NOT NULL, user_id int NOT NULL, fighter_name varchar(50) NOT NULL, weight_class varchar(50) NOT NULL, round_picked int NOT NULL, FOREIGN KEY (league_id) REFERENCES Leagues(league_id), FOREIGN KEY (user_id) REFERENCES Users(user_id))")
 
 
@@ -57,30 +43,11 @@ You can score teams based on real UFC event results and logic you define in back
 
 
 
-# mycursor.execute("DESCRIBE Users")
-# mycursor.execute("DESCRIBE Leagues")
-# # mycursor.execute("DESCRIBE Users_Leagues")
-# # mycursor.execute("DESCRIBE Teams")
 
-# for i in mycursor:
-#     print(i)
-"""
-Users
-user_id     username    password_hash
 
-Leagues
-league_id   name        admin_id        num_participants    join_code
-
-Users_Leagues
-league_id   user_id
-
-Teams
-user_id     league_id    name       fighter_name  
-"""
 ##################################################################################################################################
 #users and leagues handling
 
-#creating a user should take a user and pass a return the user id
 def create_user(username, hashedpassword):
 
     #create connection  
@@ -114,7 +81,6 @@ def create_user(username, hashedpassword):
         db.close()
 
 
-#take league name and creator id and return the league info 
 def create_league(name, user_id):
 
 
@@ -260,7 +226,6 @@ def join_league(user_id, join_code):
 
 
 
-#will need to add info grabing for the teams of each player
 def user_login(username):
 
     #create connection  
@@ -428,7 +393,7 @@ def get_league_members(league_id):
     return participants
 
 #####################################################################################
-#fighters and drafting
+#fighter pool and drafting
 
 def update_fighter_pool(pool):
     
@@ -492,73 +457,6 @@ def get_fighter_pool():
     return fighter_pool
 
 
-
-def print_my_info():
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=database
-    )
-    db.autocommit = False
-    mycursor = db.cursor()
-
-    # print("Users--------------------------------")
-    # mycursor.execute("SELECT * FROM Users")
-    # for x in mycursor:
-    #     print(x)
-
-    # print("leagues-------------------------------")
-    # mycursor.execute("SELECT * FROM Leagues")
-    # for x in mycursor:
-    #     print(x)
-
-    # print("Teams-------------------------------")
-    # mycursor.execute("SELECT * FROM Teams")
-    # for x in mycursor:
-    #     print(x)
-
-    # print("Users_Leagues-------------------------")
-    # mycursor.execute("SELECT * FROM Users_Leagues")
-    # for x in mycursor:
-    #     print(x)
-
-    # print("Fighter_Pool-------------------------")
-    # mycursor.execute("SELECT * FROM Fighter_Pool")
-    # for x in mycursor:
-    #     print(x)
-
-    # print("League_Drafts-------------------------")
-    # mycursor.execute("SELECT * FROM League_Drafts")
-    # for x in mycursor:
-    #     print(x)
-
-    # print("Draft_Picks-------------------------")
-    # mycursor.execute("SELECT * FROM Draft_Picks")
-    # for x in mycursor:
-        # print(x)
-    
-    # print("League_Matchups-------------------------")
-    # mycursor.execute("SELECT * FROM League_Matchups")
-    # for x in mycursor:
-    #     print(x)
-    
-    # print("Matchup_Picks-------------------------")
-    # mycursor.execute("SELECT * FROM Matchup_Picks")
-    # for x in mycursor:
-    #     print(x)
-
-    
-    # mycursor.execute("DESCRIBE Teams")
-    # for x in mycursor:
-    #     print(x)
-
-    mycursor.close()
-    db.close()
-
-
-
-
 def start_draft(league_id, draft_order, total_rounds):
 
     #create connection  
@@ -586,14 +484,14 @@ def start_draft(league_id, draft_order, total_rounds):
 
     try:
         draft_order_json = json.dumps(draft_order)
-        mycursor.execute("INSERT INTO League_Drafts (league_id, current_round, current_pick_user_id, total_rounds, draft_order, status) VALUES (%s,%s,%s,%s,%s,%s)", (league_id, 1, current_pick, total_rounds, draft_order_json, "in_progress"))
+        mycursor.execute("INSERT INTO League_Drafts (league_id, current_round, current_pick_user_id, total_rounds, draft_order) VALUES (%s,%s,%s,%s,%s)", (league_id, 1, current_pick, total_rounds, draft_order_json))
         db.commit()
         return {"success":True, "draft_info":{
             "current_pick": current_pick,
             "draft_order": draft_order
         }}
 
-    except Error as e:
+    except:    
         db.rollback()
         return {"success": False, "error": "Database Error"}
     
@@ -601,7 +499,6 @@ def start_draft(league_id, draft_order, total_rounds):
         mycursor.close()
         db.close()
     
-  
 
 def draft_pick(league_id, user_id, fighter_name, weight_class):
 
@@ -686,7 +583,6 @@ def draft_pick(league_id, user_id, fighter_name, weight_class):
 
 
 
-
 def draft_status(league_id):
 
     #create connection  
@@ -734,7 +630,6 @@ def draft_status(league_id):
     finally:
         mycursor.close()
         db.close()
-
 
 
 
@@ -822,73 +717,8 @@ def end_of_draft_finalization(league_id, mycursor):
     
 
 
-
-def delete_league_draft(league_id):
-
-    #create connection  
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=database
-    )
-    db.autocommit = False
-    mycursor = db.cursor()
-
-
-    try:
-        mycursor.execute("DELETE FROM League_Drafts WHERE league_id = %s", (league_id,))
-        if mycursor.rowcount != 1:
-            raise RuntimeError("MORE THAN 1 League AFFECTED: " + str(mycursor.rowcount))
-
-        mycursor.execute("DELETE FROM Draft_Picks WHERE league_id = %s", (league_id,))
-
-        mycursor.execute("DELETE FROM Teams WHERE league_id = %s", (league_id))
-
-        db.commit()
-    except:
-        db.rollback()
-    
-    finally:
-        mycursor.close()
-        db.close()
-
-
-
-def debug(league_id):
-
-    #create connection  
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=database
-    )
-    db.autocommit = False
-    mycursor = db.cursor()
-
-
-    try:
-
-        mycursor.execute("Update Leagues SET current_week = 0 WHERE league_id = %s", (league_id,))
-        mycursor.execute("SELECT matchup_id FROM League_Matchups WHERE league_id = %s", (league_id,))
-        rows = mycursor.fetchall()
-
-        for row in rows:
-            match_id = row[0]
-            mycursor.execute("DELETE FROM Matchup_Picks WHERE matchup_id = %s", (match_id,))
-        mycursor.execute("DELETE FROM League_Matchups WHERE league_id = %s", (league_id,))
-        
-
-        db.commit()
-    except:
-        db.rollback()
-    
-    finally:
-        mycursor.close()
-        db.close()
-
-
+###################################################################
+#for matchmaking 
 
 def create_matchups(shuffled_ids, league_id):
     #create connection  
@@ -935,24 +765,6 @@ def create_matchups(shuffled_ids, league_id):
     finally:
         mycursor.close()
         db.close()
-
-
-def clear_all_matchup_picks(matchup_id):
-    db = mysql.connector.connect(
-        host=host,
-        user=user,
-        passwd=passwd,
-        database=database
-    )
-    db.autocommit = False
-    mycursor = db.cursor()
-
-    mycursor.execute("DELETE FROM Matchup_Picks WHERE matchup_id = %s", (matchup_id,))
-    db.commit() 
-
-    mycursor.close()
-    db.close()
-
 
 
 def get_current_matchups(league_id):
@@ -1012,11 +824,15 @@ def get_current_matchups(league_id):
             this_matchup["user_info"] = user_info
             this_matchup["status"] = status
             all_matchups[matchup_id] = this_matchup
-            
+        
+        mycursor.execute("SELECT status FROM League_Drafts WHERE league_id = %s", (league_id,))
+        row = mycursor.fetchone()
+        draft_status = row[0] if (row != None) else "not_started"
 
-        return {"success": True, "payload": all_matchups}
+        return {"success": True, "payload": all_matchups, "draft_status": draft_status}
 
-    except:
+    except Error as error:
+        print(error)
         db.rollback()
         return {"success": False, "error": "Database Error"}
 
@@ -1093,9 +909,6 @@ def get_all_matchups(league_id):
         db.close()
 
 
-
-
-
 def matchup_pick(matchup_id, user_id, picks):
 
     #create connection  
@@ -1140,7 +953,6 @@ def matchup_pick(matchup_id, user_id, picks):
         return {"success":True}
         
     
-    
     except:
         db.rollback()
         return {"success": False, "error": "Database Error"}
@@ -1148,8 +960,6 @@ def matchup_pick(matchup_id, user_id, picks):
     finally:
         mycursor.close()
         db.close()
-
-
 
 
 def simulate_matchups(league_id):
@@ -1242,7 +1052,6 @@ def simulate_matchups(league_id):
         db.close()
 
 
-
 def get_scores(league_id):
     
     #create connection  
@@ -1281,41 +1090,153 @@ def get_scores(league_id):
         mycursor.close()
         db.close()
 
-"""
 
 
-!!!!!!!!!!!!!!!!!!!
+#################################################################################
+#ect for details and debug
+def print_my_info():
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+    # print("Users--------------------------------")
+    # mycursor.execute("SELECT * FROM Users")
+    # for x in mycursor:
+    #     print(x)
+
+    # print("leagues-------------------------------")
+    # mycursor.execute("SELECT * FROM Leagues")
+    # for x in mycursor:
+    #     print(x)
+
+    # print("Teams-------------------------------")
+    # mycursor.execute("SELECT * FROM Teams")
+    # for x in mycursor:
+    #     print(x)
+
+    # print("Users_Leagues-------------------------")
+    # mycursor.execute("SELECT * FROM Users_Leagues")
+    # for x in mycursor:
+    #     print(x)
+
+    # print("Fighter_Pool-------------------------")
+    # mycursor.execute("SELECT * FROM Fighter_Pool")
+    # for x in mycursor:
+    #     print(x)
+
+    print("League_Drafts-------------------------")
+    mycursor.execute("SELECT * FROM League_Drafts")
+    for x in mycursor:
+        print(x)
+
+    # print("Draft_Picks-------------------------")
+    # mycursor.execute("SELECT * FROM Draft_Picks")
+    # for x in mycursor:
+        # print(x)
+    
+    print("League_Matchups-------------------------")
+    mycursor.execute("SELECT * FROM League_Matchups")
+    for x in mycursor:
+        print(x)
+    
+    # print("Matchup_Picks-------------------------")
+    # mycursor.execute("SELECT * FROM Matchup_Picks")
+    # for x in mycursor:
+    #     print(x)
+
+    
+    # mycursor.execute("DESCRIBE League_Drafts")
+    # for x in mycursor:
+    #     print(x)
+
+    
+    mycursor.close()
+    db.close()
+
+def delete_league_draft(league_id):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
 
 
+    try:
+        mycursor.execute("DELETE FROM League_Drafts WHERE league_id = %s", (league_id,))
+        if mycursor.rowcount != 1:
+            raise RuntimeError("MORE THAN 1 League AFFECTED: " + str(mycursor.rowcount))
 
+        mycursor.execute("DELETE FROM Draft_Picks WHERE league_id = %s", (league_id,))
+
+        mycursor.execute("DELETE FROM Teams WHERE league_id = %s", (league_id))
+
+        db.commit()
+    except:
+        db.rollback()
+    
+    finally:
+        mycursor.close()
+        db.close()
+
+
+def delete_matchups(league_id):
+
+    #create connection  
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
+
+
+    try:
+
+        mycursor.execute("Update Leagues SET current_week = 0 WHERE league_id = %s", (league_id,))
+        mycursor.execute("SELECT matchup_id FROM League_Matchups WHERE league_id = %s", (league_id,))
+        rows = mycursor.fetchall()
+
+        for row in rows:
+            match_id = row[0]
+            mycursor.execute("DELETE FROM Matchup_Picks WHERE matchup_id = %s", (match_id,))
+        mycursor.execute("DELETE FROM League_Matchups WHERE league_id = %s", (league_id,))
         
-#######fix to accomidate new table
+
+        db.commit()
+    except:
+        db.rollback()
+    
+    finally:
+        mycursor.close()
+        db.close()
 
 
 
+def clear_all_matchup_picks(matchup_id):
+    db = mysql.connector.connect(
+        host=host,
+        user=user,
+        passwd=passwd,
+        database=database
+    )
+    db.autocommit = False
+    mycursor = db.cursor()
 
+    mycursor.execute("DELETE FROM Matchup_Picks WHERE matchup_id = %s", (matchup_id,))
+    db.commit() 
 
-CREATE TABLE league_matchups (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    league_id INT,
-    week INT,
-    user1_id INT,
-    user2_id INT,
-    status ENUM('pending', 'completed') DEFAULT 'pending'
-);
+    mycursor.close()
+    db.close()
 
--- Picks for each matchup
-CREATE TABLE matchup_picks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    matchup_id INT,
-    user_id INT,
-    weight_class VARCHAR(50),
-    fighter_name INT,
-    result ENUM('win', 'loss', 'pending') DEFAULT 'pending'
-);
-
-
-
-
-
-"""

@@ -36,10 +36,10 @@ export default function MyLeague(){
     const [leagueState, setLeagueState] = useState(state.leagues[leagueId]);
 	const [currentMatchups, setCurrentMatchups] = useState({})
 	const [myMatchup, setMyMatchup] = useState({})
+	const [draftStatus, setDraftStatus] = useState(null)
 	const [week, setWeek] = useState(leagueState.league_info.current_week)
 	const is_admin = (state.user.user_id == leagueState.league_info.admin_id);
-	const participantEntries = Object.entries(leagueState.league_participants || {}); //later replace this with a draft status in
-	const hasTeams = (participantEntries.length > 0);							// the league info ei fix backend etc
+	const participantEntries = Object.entries(leagueState.league_participants || []); 
 	const [view, setView] = useState("matchups")
 	const [matchupsStatus, setMatchupsStatus] = useState("sim_pending")
 	const [refreshKey, setRefreshKey] = useState(0);
@@ -64,6 +64,7 @@ export default function MyLeague(){
 			}
       		if (data.success){							
 				setCurrentMatchups(data.payload);
+				setDraftStatus(data.draft_status)
 				
 				let hasPicks = true;
 				let isComplete = false;
@@ -83,19 +84,14 @@ export default function MyLeague(){
 				
 				if (hasPicks && !isComplete) setMatchupsStatus("ready_to_sim")
 			
-				if (isComplete || week == 0) setMatchupsStatus("sim_complete")
+				if (isComplete || data.draft_status == "complete") setMatchupsStatus("sim_complete")
+
+				if (data.draft_status == "in_progress") setMatchupsStatus("sim_pending")
 				
 
 			
 			}
-			// setCurrentMatchups(state.matchups_payload.payload);
-			// 	for (const m_id in state.matchups_payload.payload){			//for debug away from local sql
-			// 		const match = state.matchups_payload.payload[m_id]
-			// 		if (state.user.user_id in match.user_info){
-			// 			setMyMatchup({[m_id]: match});
-			// 			break;
-			// 		}
-			// 	}	
+			
 		} 
     	catch (error) {
 			console.error("Failed to fetch matchup state", error);
@@ -194,7 +190,8 @@ export default function MyLeague(){
 				break;
 
 			case "sim_pending":
-				window.alert("Not all teams have made their selections")
+				if (draftStatus == "in_progress") window.alert("Draft has not finished")
+				else window.alert("Not all teams have made their selections")
 				break;
 			
 			default:
@@ -202,9 +199,10 @@ export default function MyLeague(){
 
 		}
 	};
-
+	
 	const renderAdminButton = () => {
-		if (!hasTeams) return <button type="button" onClick={() => admin_button("draft")}>Start Draft</button>
+		if (draftStatus == "not_started") return <button type="button" onClick={() => admin_button("draft")}>Start Draft</button>
+		
 		let text = "";
 		if (matchupsStatus == "sim_complete" || currentMatchups.status == "completed") text = "Start Next Matchups";
 		if (matchupsStatus == "ready_to_sim") text = "Fight!";
@@ -212,14 +210,45 @@ export default function MyLeague(){
 		return <button type="button" onClick={() => admin_button(matchupsStatus)}>{text}</button>
 	}
 
-	const navigation_button = () => {
-		if (Object.keys(myMatchup).length === 0){
-			window.alert("You have no matchup for this week!");
-		}
-		else{
-			hasTeams ? navigate(`/my-league/${leagueId}/my-matchup`, {state : myMatchup}) : navigate(`/draft/${leagueId}`)
+
+
+	const renderNavButton = () => {
+		switch (draftStatus){
+
+			case ("not_started"):
+				return
+				break;
+
+			case ("in_progress"):
+				return <button
+							type="button"
+							onClick={() => navigate(`/draft/${leagueId}`)}
+						>
+							Go to draft	
+						</button>
+				break
+
+			case ("complete"):
+				if (Object.keys(myMatchup).length === 0){
+					window.alert("You have no matchup for this week!");
+				}
+				return (<button 
+							type="button"
+							onClick={() => navigate(`/my-league/${leagueId}/my-matchup`, {state : myMatchup})}
+						>
+							Go to Matchup
+						</button>)
+				break;
+			
+			default:
+				break;
+
+
 		}
 	}
+
+
+
 
 
 	const toggleContent = () => {
@@ -229,9 +258,13 @@ export default function MyLeague(){
 
 	const renderContent = () => {
 
-		if (!hasTeams) return <h3>Please Complete Draft</h3>
+		if (draftStatus != "complete"){
+			if (draftStatus == "in_progress") return <h3>Please Complete Draft</h3>
+			else return <h3>Waiting for admin to start draft</h3>
+		}
 		
 		switch (view) {
+
 			case "matchups":
 				if (Object.keys(currentMatchups).length > 0) return <MatchupsSection matchups={currentMatchups} leagueId={leagueId} />
 				else return <h3>No Matchups this week</h3>
@@ -265,18 +298,19 @@ export default function MyLeague(){
 				<Leaderboard leagueId={leagueId} />
 			</div>
 		</div>
-		<button type="button" onClick={() => navigate(`/my-league/${leagueId}/all-matchups`)}>See All Matchups</button>
+		
+		{(week != 0) && (
+			<button type="button" onClick={() => navigate(`/my-league/${leagueId}/all-matchups`)}>See All Matchups</button>
+		)}
 
 		{is_admin && renderAdminButton()}
 
+		{renderNavButton()}
 		
-		<button type="button" onClick={navigation_button}>
-			{hasTeams ? "Go to my Matchup" : "Go to Draft"}
-		</button>
-		
-      	
 
-		<button type="button" onClick={toggleContent}>{(view == "teams") ? "See Matchups" : "See Teams"}</button>
+		{(draftStatus == "complete") && (
+			<button type="button" onClick={toggleContent}>{(view == "teams") ? "See Matchups" : "See Teams"}</button>
+		)}
 		<div>{renderContent()}</div>
       	
     </div>

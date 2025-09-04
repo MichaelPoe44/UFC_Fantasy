@@ -1,0 +1,50 @@
+
+.fighter-pool {
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+.fighter-pool h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.fighter-pool select {
+  padding: 10px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 300px;
+}
+
+.fighters-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fighter-button {
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.fighter-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.fighter-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

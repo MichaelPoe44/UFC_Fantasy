@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import "./styles/FighterPool.css"
 
 export default function FighterPool({ fighterPool, onPick, draftState, userId }){
     const [selectedWeight, setSelectedWeight] = useState("Lightweight");
